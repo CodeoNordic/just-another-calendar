@@ -4,7 +4,7 @@ Bygget i [Preact](https://preactjs.com/) og kompilert i [Parcel](https://parcelj
 ## Installasjon
 **Sørg for at du har [Bun](https://bun.sh) installert** (det anbefales ikke å bruke npm for dette)
 
-1. Klon GitHub repository med `git clone https://github.com/CodeoNordic/nobs-module-base`
+1. Klon GitHub repository med GitHub Desktop eller `git clone https://github.com/CodeoNordic/nobs-module-template-preact`
 2. Følg terminal-kommandoene
 ```sh
 cd nobs-module-base
