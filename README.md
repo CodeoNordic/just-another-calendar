@@ -1,0 +1,112 @@
+# NOBS Modul
+Bygget i [Preact](https://preactjs.com/) og kompilert i [Parcel](https://parceljs.org/) for minimal størrelse og maksimal skalerbarhet og kompatibilitet. Bruker også Typescript og SCSS for økt robusthet.
+
+## Installasjon
+**Sørg for at du har [Bun](https://bun.sh) installert** (det anbefales ikke å bruke npm for dette)
+
+1. Klon GitHub repository med `git clone https://github.com/CodeoNordic/nobs-module-base`
+2. Følg terminal-kommandoene
+```sh
+cd nobs-module-base
+bun install
+```
+
+### Utvikling
+1. Kjør `bun start` i terminal
+2. Åpne [Dev.fmp12](./Dev.fmp12) og gå til `Dev` layout
+3. Gjør endringer i kildekoden og trykk på refresh-knappen
+
+Fram til [#8615](https://github.com/parcel-bundler/parcel/issues/8615) (Aktiv pull request [#8616](https://github.com/parcel-bundler/parcel/pull/8616)) hos Parcel er løst, må vi benytte `--no-hmr` under utvikling for å hindre regelmessige krasj, hvilket betyr at man må refreshe modulen hver gang man gjør endringer.
+
+### Bygging
+#### 1. Kontroller at [widget.json](./widget.json) konfigurasjonen er riktig
+- `name` brukes som en identifikator, slik at FileMaker vet hvilken komponent det er man prøver å laste opp.
+- `uploadScript` tilsvarer navnet på FileMaker-skriptet som skal lagre web-komponenten på server.
+- `file` må tilsvare FileMaker-filen som skal ta imot komponenten, f.eks `NOBS_Calendar`
+- `server` bestemmer hvilken server-addresse filen skal lastes opp til. `$` symbolet tilsvarer serveren til den aktive FileMaker-filen. Dette feltet kan f.eks. byttes ut med `devmaster.codeo.no`
+- Om nødvendig, kan flere parametre legges til i JSON-filen. Alle nøkler som ikke tilsvarer de nevnt over vil inkluderes i skript-parametret.
+
+#### 2. Bygg web-komponenten
+```sh
+bun run build
+```
+
+#### 3. Last opp web-komponenten til FileMaker
+```sh
+bun run upload
+```
+
+#### For å kjøre steg 2 og 3 samtidig
+```sh
+bun run upload:clean
+```
+
+## Integrasjon mellom FileMaker og web-modulen
+- Info sendes fra FileMaker til web via `Perform JavaScript in Web Viewer`
+- Info sendes fra web til FileMaker via `FileMaker.PerformScript()`
+
+Som standard brukes `init()` for å initialisere web-modulen, der aktuelle JSON parametre gis.
+
+For å benytte verdier i `config` i React, bruk `useConfig` fra [`@context/Config`](./src/context/Config.tsx)
+
+```tsx
+import { useConfig } from '@context/Config';
+
+const MyComponent: React.FC = () => {
+    const config = useConfig();
+
+    // ...
+}
+```
+
+## Konsepter
+### Parcel
+Siden FileMaker kun lar oss sende HTML-kode via tekst, betyr det at sluttresultatet må ligge i én HTML-fil. Dette gjøres ved bruk av Parcel.
+
+Når man bygger komponenten, vil man se hvilke filer som ble kompilert når alt er ferdig. Dersom det er mer enn bare HTML-filen, vil ikke komponenten kunne fungere riktig i FileMaker.
+
+Eksempel på riktig resultat:
+```sh
+> bun run build
+✨ Built in 3.87s
+
+dist\index.html    32.95 KB    1.32s
+```
+
+Eksempel på dårlig resultat:
+```sh
+> bun run build
+✨ Built in 3.37s
+
+dist\index.html                 15.52 KB    858ms
+dist\codeo_logo.27960b70.png    13.14 KB    262ms
+```
+
+### Kjøring av skript via web-modulen
+Prosjektmalen kommer ferdigstilt med [`performScript()`](./src/utils/performScript.ts) funksjonen. Formålet er at skriptnavn skal gis via `config` fra FileMaker, slik at det ikke blir en mismatch mellom skriptnavn.
+
+Funksjonen vil også automatisk benytte `JSON.stringify()`, da skript parametre sendt til FileMaker må være av typen tekst.
+
+Nøkler som anses som gyldige skriptnavn skal defineres i [`config.d.ts`](src/types/config.d.ts)
+
+```tsx
+import performScript from '@utils/performScript';
+import CustomRecordComponent from '@components/...';
+
+// ...
+
+<CustomRecordComponent
+    data={recordData}
+    onClick={() => performScript('onRecordClick', recordData)}
+/>
+```
+
+### Bilder
+For at bilder skal inlines riktig inn i HTML, må man bruke `data-url:` syntax.
+```tsx
+import codeoLogo from 'data-url:@png/codeo_logo.png';
+
+// ...
+<img src={codeoLogo} width="100" height="100" />
+```
+SVG-er kan også importeres på denne måten, men om ikonet har dynamiske verdier, er det anbefalt å gjøre ikonet om til en React-komponent.

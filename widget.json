@@ -1,0 +1,6 @@
+{
+    "name": "ModuleBase",
+    "server": "$",
+    "file": "Dev",
+    "uploadScript": "UploadHTML"
+}
