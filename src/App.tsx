@@ -11,6 +11,7 @@ const App: React.FC = () => {
         <p>Message from FileMaker: {config?.messageFromFileMaker ?? <pre>no message</pre>}</p>
         <p>{config?.records?.length || 0} records were passed through the config</p>
         <Button />
+        <br />
         <img src={codeo_logo} width="100" height="100" />
     </>
 }
