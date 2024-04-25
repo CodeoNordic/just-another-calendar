@@ -10,11 +10,11 @@ Basis boilerplate hentet fra [benevolarX/parcel-preact-typescript-boilerplate](h
 2. Følg terminal-kommandoene
 ```sh
 cd nobs-module-base
-bun install
+npm install # eller bun install
 ```
 
 ### Utvikling
-1. Kjør `bun start` i terminal (`bun dev` vil også fungere, da det er et alias til `bun start`)
+1. Kjør `npm start` i terminal
 2. Åpne [`Dev.fmp12`](./Dev.fmp12) og gå til `Dev` layout
 3. Skru på utviklings-modus via `Enable/Disable DevMode` knappen
 4. Gjør endringer i kildekoden og trykk på refresh-knappen
@@ -36,17 +36,17 @@ Det samme gjelder for [`Dev.fmp12`](./Dev.fmp12)
 
 #### 2. Bygg web-komponenten
 ```sh
-bun run build
+npm run build # eller bun run b:build
 ```
 
 #### 3. Last opp web-komponenten til FileMaker
 ```sh
-bun run upload
+npm run upload # eller bun run b:upload
 ```
 
 #### For å kjøre steg 2 og 3 samtidig
 ```sh
-bun run upload:clean
+npm run upload:clean # eller bun run b:upload:clean
 ```
 
 ## Integrasjon mellom FileMaker og web-modulen
@@ -75,7 +75,7 @@ Når man bygger komponenten, vil man se hvilke filer som ble kompilert når alt 
 
 Eksempel på riktig resultat:
 ```sh
-> bun run build
+> npm run build
 ✨ Built in 3.87s
 
 dist\index.html    32.95 KB    1.32s
@@ -83,7 +83,7 @@ dist\index.html    32.95 KB    1.32s
 
 Eksempel på dårlig resultat:
 ```sh
-> bun run build
+> npm run build
 ✨ Built in 3.37s
 
 dist\index.html                 15.52 KB    858ms

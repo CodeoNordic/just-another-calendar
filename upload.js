@@ -1,8 +1,11 @@
-import { join } from 'path';
-import config from './widget.json';
+//import { join } from 'path';
+//import config from './widget.json' assert { type: 'json' };
+
+const { join } = require('path');
+const config = require('./widget.json');
 
 // open is used to run the fmp:// protocol
-import open from 'open';
+const open = require('open');
 
 // Map the values of config
 const {
