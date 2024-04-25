@@ -1,6 +1,8 @@
 # NOBS Modul
 Bygget i [Preact](https://preactjs.com/) og kompilert i [Parcel](https://parceljs.org/) for minimal størrelse og maksimal skalerbarhet og kompatibilitet. Bruker også Typescript og SCSS for økt robusthet.
 
+Basis boilerplate hentet fra [benevolarX/parcel-preact-typescript-boilerplate](https://github.com/benevolarX/parcel-preact-typescript-boilerplate)
+
 ## Installasjon
 **Sørg for at du har [Bun](https://bun.sh) installert** (det anbefales ikke å bruke npm for dette)
 
