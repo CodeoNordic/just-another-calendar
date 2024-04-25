@@ -125,4 +125,3 @@ import ProfileIcon from 'jsx:@svg/profile.svg';
 // ...
 <ProfileIcon width="20" height="20">
 ```
-SVG-er kan også importeres på denne måten, men om ikonet har dynamiske verdier, er det anbefalt å gjøre ikonet om til en React-komponent.
