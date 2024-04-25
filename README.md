@@ -4,7 +4,7 @@ Bygget i [Preact](https://preactjs.com/) og kompilert i [Parcel](https://parcelj
 Basis boilerplate hentet fra [benevolarX/parcel-preact-typescript-boilerplate](https://github.com/benevolarX/parcel-preact-typescript-boilerplate)
 
 ## Installasjon
-**Sørg for at du har [Bun](https://bun.sh) installert** (det anbefales ikke å bruke npm for dette)
+**Sørg for at du har [NodeJS](https://nodejs.org/en/) [Bun](https://bun.sh) installert**
 
 1. Klon GitHub repository med GitHub Desktop eller `git clone https://github.com/CodeoNordic/nobs-module-template-preact`
 2. Følg terminal-kommandoene
