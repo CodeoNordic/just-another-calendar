@@ -1,18 +1,41 @@
+import { useState } from 'preact/hooks';
 import { useConfig } from '@context/Config';
-import Button from '@components/Button';
 
-import codeo_logo from '@png/codeo_logo.png';
+import Contact from '@components/Contact';
+import useContactSearch from '@hooks/useContactSearch';
 
 const App: React.FC = () => {
+    const [search, setSearch] = useState<string|null>(null);
+    const records = useContactSearch(search);
+
     const config = useConfig();
 
+    // Optionally, for a better workflow, we can tell FileMaker whenever the widget has loaded
+    /*
+    useEffect(() => {
+        window.FileMaker.PerformScript('On Widget Load');
+    }, []);
+    */
+
     return <>
-        <h1>Hello world!</h1>
-        <p>Message from FileMaker: {config?.messageFromFileMaker ?? <pre>no message</pre>}</p>
-        <p>{config?.records?.length || 0} records were passed through the config</p>
-        <Button />
-        <br />
-        <img src={codeo_logo} width="100" height="100" />
+        <div className="hello">
+            <h1>Hello world!</h1>
+            <p>Message from FileMaker: {config?.messageFromFileMaker ?? <pre>no message</pre>}</p>
+            <p>{config?.records?.length || 0} records were passed through the config</p>
+
+            <input
+                type="text"
+                onInput={e => setSearch(e.currentTarget.value)}
+            />
+
+            {records.length
+                ?<p>Showing {records.length} results</p>
+                :<pre>No results</pre>}
+        </div>
+
+        <div className="contacts">
+            {records.map((props, i) => <Contact key={i} {...props as FM.ContactRecord} />)}
+        </div>
     </>
 }
 

@@ -1,9 +1,10 @@
-const { join } = require('path');
-const open = require('open').default;
-
+import { join } from 'path';
 import config from './widget.json';
-//const config = require('./widget.json');
 
+// open is used to run the fmp:// protocol
+import open from 'open';
+
+// Map the values of config
 const {
     name,
     file,
@@ -15,7 +16,10 @@ const {
 // Construct the base FMP URL
 const fmpUrl = `fmp://${server}/${file}`;
 
+// Get the path to index.html in the dist folder
 const filePath = join(__dirname, 'dist', 'index.html');
+
+// Parameters to pass to the script
 const params = { name, filePath, ...extra };
 
 // Add parameters to the FMP URL

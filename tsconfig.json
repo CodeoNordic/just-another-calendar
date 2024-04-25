@@ -13,10 +13,12 @@
 		"outDir": "dist",
 		"paths": {
 			"@components/*": ["./src/components/*"],
-			"@utils/*": ["./src/utils/*"],
 			"@context/*": ["./src/context/*"],
+			"@hooks/*": ["./src/hooks/*"],
 			"@png/*": ["./src/assets/png/*"],
+			"@styles/*": ["./src/styles/*"],
 			"@svg/*": ["./src/assets/svg/*"],
+			"@utils/*": ["./src/utils/*"],
 			"@assets/*": ["./src/assets/*"],
 			"@/*": ["./src/*"]
 		},

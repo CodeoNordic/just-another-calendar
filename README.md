@@ -13,18 +13,24 @@ bun install
 
 ### Utvikling
 1. Kjør `bun start` i terminal
-2. Åpne [Dev.fmp12](./Dev.fmp12) og gå til `Dev` layout
-3. Gjør endringer i kildekoden og trykk på refresh-knappen
+2. Åpne [`Dev.fmp12`](./Dev.fmp12) og gå til `Dev` layout
+3. Skru på utviklings-modus via `Enable/Disable DevMode` knappen
+4. Gjør endringer i kildekoden og trykk på refresh-knappen
 
 Fram til [#8615](https://github.com/parcel-bundler/parcel/issues/8615) (Aktiv pull request [#8616](https://github.com/parcel-bundler/parcel/pull/8616)) hos Parcel er løst, må vi benytte `--no-hmr` under utvikling for å hindre regelmessige krasj, hvilket betyr at man må refreshe modulen hver gang man gjør endringer.
 
+`Enable/Disable DevMode` bytter mellom utviklings- og produksjonsversjonen. Dersom utviklings-modus er skrudd på, settes web-viewer til `localhost:1234`, mens i produksjons-modus hentes kildekode fra `Widgets` tabellen.
+
 ### Bygging
-#### 1. Kontroller at [widget.json](./widget.json) konfigurasjonen er riktig
+#### 1. Kontroller at [`widget.json`](./widget.json) konfigurasjonen er riktig
 - `name` brukes som en identifikator, slik at FileMaker vet hvilken komponent det er man prøver å laste opp.
 - `uploadScript` tilsvarer navnet på FileMaker-skriptet som skal lagre web-komponenten på server.
 - `file` må tilsvare FileMaker-filen som skal ta imot komponenten, f.eks `NOBS_Calendar`
 - `server` bestemmer hvilken server-addresse filen skal lastes opp til. `$` symbolet tilsvarer serveren til den aktive FileMaker-filen. Dette feltet kan f.eks. byttes ut med `devmaster.codeo.no`
 - Om nødvendig, kan flere parametre legges til i JSON-filen. Alle nøkler som ikke tilsvarer de nevnt over vil inkluderes i skript-parametret.
+
+[`widget.json`](./widget.json) kan ha forskjellige verdier per branch siden `widget.json merge=ours` er benyttet i [`.gitattributes`](./.gitattributes).
+Det samme gjelder for [`Dev.fmp12`](./Dev.fmp12)
 
 #### 2. Bygg web-komponenten
 ```sh
@@ -102,11 +108,20 @@ import CustomRecordComponent from '@components/...';
 ```
 
 ### Bilder
-For at bilder skal inlines riktig inn i HTML, må man bruke `data-url:` syntax.
+For at bilder skal inlines riktig inn i HTML, må man bruke `data-url:` syntaks.
 ```tsx
 import codeoLogo from 'data-url:@png/codeo_logo.png';
 
 // ...
 <img src={codeoLogo} width="100" height="100" />
 ```
-SVG-er kan også importeres på denne måten, men om ikonet har dynamiske verdier, er det anbefalt å gjøre ikonet om til en React-komponent.
+
+### SVG ikoner
+Likt med bilder, kan SVG ikoner også importeres. Da bruker man `jsx:` syntaks.
+Ikoner som importeres med denne syntaksen vil konverteres til en brukbar React-komponent.
+```tsx
+import ProfileIcon from 'jsx:@svg/profile.svg';
+
+// ...
+<ProfileIcon width="20" height="20">
+```

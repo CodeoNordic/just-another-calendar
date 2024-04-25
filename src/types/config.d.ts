@@ -1,8 +1,8 @@
 declare global {
     namespace NOBS {
         // Define the web config here
-        interface Config {
-            records: FM.Record[]|null;
+        interface Config<T = RSAny> {
+            records: null|FM.ContactRecord[];
 
             messageFromFileMaker?: string;
 

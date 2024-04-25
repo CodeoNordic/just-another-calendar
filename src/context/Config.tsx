@@ -4,13 +4,10 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 import getRecordsFromObject from '@utils/getRecordsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
-import isDevMode from '@utils/isDevMode';
-
 // Parses the JSON from FileMaker into a readable config
 const parseConfig = (cfg: string) => {
     try {
         const config = JSON.parse(cfg) as NOBS.Config;
-        console.log(config)
         config.records = getRecordsFromObject(config.records);
 
         return config;
@@ -46,8 +43,6 @@ const ConfigProvider: React.FC = ({ children }) => {
             window.config = parsedConfig;
             runLoadCallbacks();
         }
-
-        isDevMode() && window.FileMaker.PerformScript('On Widget Load');
     }, []);
 
     return <ConfigContext.Provider value={config}>

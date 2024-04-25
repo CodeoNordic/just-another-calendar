@@ -1,5 +1,12 @@
 :root {
     --nobs-font: Tahoma, Geneva, Verdana, sans-serif;
+
+    // Colors
+    --nobs-text: #000000;
+    --nobs-background: #FFFFFF;
+    --nobs-background-gray: #D9D9D9;
+
+    --nobs-blue: #009CC6;
 }
 
 body {
@@ -7,4 +14,21 @@ body {
     padding: 0;
 
     font-family: var(--nobs-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.hello {
+    text-align: center;
+    user-select: none;
+}
+
+.contacts {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+
+    gap: 12px 24px;
+
+    width: 95%;
+    margin: 24px auto;
 }

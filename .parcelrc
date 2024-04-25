@@ -5,6 +5,8 @@
 	},
 	"transformers": {
 		"*.{ts,tsx}": ["@parcel/transformer-typescript-tsc"],
-		"*.{png,jpg}": ["@parcel/transformer-image"]
+		"*.{png,jpg}": ["@parcel/transformer-image"],
+		"jsx:*.svg": ["...", "@parcel/transformer-svg-react"],
+		"jsx:*": ["..."]
 	}
 }

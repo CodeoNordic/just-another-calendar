@@ -1,0 +1,19 @@
+declare module '*.module.scss' {
+    const classes: Record<string, string>;
+    export default classes;
+}
+
+declare module '*.png' {
+    const src: string;
+    export default src;
+}
+
+declare module '*.svg' {
+    const src: string;
+    export default src
+}
+
+declare module 'jsx:*.svg' {
+    const Icon: React.FC<import('preact').JSX.SVGAttributes<SVGElement>>;
+    export default Icon;
+}
