@@ -12,7 +12,7 @@ bun install
 ```
 
 ### Utvikling
-1. Kjør `bun start` i terminal
+1. Kjør `bun start` i terminal (`bun dev` vil også fungere, da det er et alias til `bun start`)
 2. Åpne [`Dev.fmp12`](./Dev.fmp12) og gå til `Dev` layout
 3. Skru på utviklings-modus via `Enable/Disable DevMode` knappen
 4. Gjør endringer i kildekoden og trykk på refresh-knappen

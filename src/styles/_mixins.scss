@@ -1,0 +1,13 @@
+// Apply rules when the screen is <= 1000px wide. Often used for mobile sizes.
+/*
+.element {
+    @include md {
+        font-size: 2em;
+    }
+}
+*/
+@mixin md {
+    @media screen and (max-width: 1000px) {
+        @content;
+    }
+}

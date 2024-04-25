@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "parcel --no-cache --no-source-maps --no-hmr",
+    "dev": "bun start",
     "build": "rm -rf .parcel-cache dist && parcel build --no-cache",
     "upload": "bun upload.js",
     "upload:clean": "bun run build && bun run upload"

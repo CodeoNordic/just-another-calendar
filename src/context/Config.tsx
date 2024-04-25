@@ -8,7 +8,7 @@ import { loadCallbacks } from '@utils/performScript';
 const parseConfig = (cfg: string) => {
     try {
         const config = JSON.parse(cfg) as NOBS.Config;
-        config.records = getRecordsFromObject(config.records);
+        config.records = getRecordsFromObject(config.records) || [];
 
         return config;
     } catch(err) {
@@ -25,30 +25,44 @@ const runLoadCallbacks = () => loadCallbacks.length && loadCallbacks.forEach(cb 
 // FileMaker may call init before useEffect can assign the function
 // This acts as a failsafe
 window.init = cfg => {
-    window.config = parseConfig(cfg);
+    window._config = parseConfig(cfg);
     runLoadCallbacks();
 };
 
-const ConfigContext = createContext<NOBS.Config|null>(null);
+const ConfigContext = createContext<React.State<NOBS.Config|null>>([null, () => {}]);
 const ConfigProvider: React.FC = ({ children }) => {
     const [config, setConfig] = useState<NOBS.Config|null>(null);
 
     useEffect(() => {
-        if (window.config !== undefined) setConfig(window.config);
+        if (window._config !== undefined) setConfig(window._config);
 
         window.init = cfg => {
             const parsedConfig = parseConfig(cfg);
             parsedConfig && setConfig(parsedConfig);
 
-            window.config = parsedConfig;
+            window._config = parsedConfig;
             runLoadCallbacks();
         }
     }, []);
 
-    return <ConfigContext.Provider value={config}>
+    // Update window._config upon change
+    useEffect(() => {
+        window._config = config || undefined;
+    }, [config]);
+
+    return <ConfigContext.Provider value={[config, setConfig]}>
         {children}
     </ConfigContext.Provider>
 }
 
-export const useConfig = () => useContext(ConfigContext);
+export const useConfig = () => {
+    const [config] = useContext(ConfigContext);
+    return config;
+}
+
+export const useConfigState = () => {
+    const ctx = useContext(ConfigContext);
+    return ctx;
+}
+
 export default ConfigProvider;

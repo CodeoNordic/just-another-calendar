@@ -29,12 +29,12 @@ const App: React.FC = () => {
             />
 
             {records.length
-                ?<p>Showing {records.length} results</p>
+                ?<p>Showing {records.length || 0} results</p>
                 :<pre>No results</pre>}
         </div>
 
         <div className="contacts">
-            {records.map((props, i) => <Contact key={i} {...props as FM.ContactRecord} />)}
+            {!!records.length && records.map((props, i) => <Contact key={i} {...props as FM.ContactRecord} />)}
         </div>
     </>
 }

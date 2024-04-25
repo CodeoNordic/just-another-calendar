@@ -20,7 +20,7 @@ export default function useContactSearch<T = {}>(search?: null|string|Partial<FM
     const config = useConfig();
 
     useEffect(() => {
-        if (!config?.records?.length) return;
+        if (!config?.records?.length) return setRecords([]);
 
         // If the search is empty, it should be cleared
         if ((search === null) || (search === undefined) || (search === '')) {
