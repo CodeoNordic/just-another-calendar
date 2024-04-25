@@ -4,7 +4,7 @@ Bygget i [Preact](https://preactjs.com/) og kompilert i [Parcel](https://parcelj
 ## Installasjon
 **Sørg for at du har [Bun](https://bun.sh) installert** (det anbefales ikke å bruke npm for dette)
 
-1. Klon GitHub repository med `git clone https://github.com/CodeoNordic/nobs-module-base`
+1. Klon GitHub repository med GitHub Desktop eller `git clone https://github.com/CodeoNordic/nobs-module-template-preact`
 2. Følg terminal-kommandoene
 ```sh
 cd nobs-module-base
@@ -125,3 +125,4 @@ import ProfileIcon from 'jsx:@svg/profile.svg';
 // ...
 <ProfileIcon width="20" height="20">
 ```
+SVG-er kan også importeres på denne måten, men om ikonet har dynamiske verdier, er det anbefalt å gjøre ikonet om til en React-komponent.
