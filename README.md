@@ -107,6 +107,13 @@ import CustomRecordComponent from '@components/...';
 />
 ```
 
+### Import aliaser
+Det er mulig å importere filer fra f.eks [`src/utils`](./src/utils/) via `@utils` alias.
+Disse aliasene er tilgjengelig under `paths` i [`tsconfig.json`](./tsconfig.json).
+
+**NB:** Når VsCode autofyller inn import path, vil den jobbe fra øverst til nederst med aliaser.
+Derfor er det viktig at de dypeste mappene ligger øverst.
+
 ### Bilder
 For at bilder skal inlines riktig inn i HTML, må man bruke `data-url:` syntaks.
 ```tsx
