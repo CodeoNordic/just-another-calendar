@@ -1,6 +1,7 @@
 declare global {
     interface Window {
         init(data: string): void;
+        onScriptResult(uuid: string, data: string): void;
 
         /** Add one or more records */
         addRecords(data: FM.ContactRecord|FM.ContactRecord[]): void;

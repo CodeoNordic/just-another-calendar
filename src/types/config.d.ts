@@ -9,6 +9,9 @@ declare global {
             // Define valid script names here
             scriptNames: {
                 onRecordClick: string;
+                onJsRequest: string;
+
+                getContacts: string;
             };
         }
     }

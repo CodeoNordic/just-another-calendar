@@ -1,7 +1,9 @@
 # NOBS Modul
 Bygget i [Preact](https://preactjs.com/) og kompilert i [Parcel](https://parceljs.org/) for minimal størrelse og maksimal skalerbarhet og kompatibilitet. Bruker også Typescript og SCSS for økt robusthet.
 
-Basis boilerplate hentet fra [benevolarX/parcel-preact-typescript-boilerplate](https://github.com/benevolarX/parcel-preact-typescript-boilerplate)
+Boilerplate benyttet: [benevolarX/parcel-preact-typescript-boilerplate](https://github.com/benevolarX/parcel-preact-typescript-boilerplate)
+
+Det anbefales å sjekke [React Docs](https://react.dev/reference/react), spesielt området om [Hooks](https://react.dev/reference/react/hooks) for å sørge for riktig praktisk bruk av React.
 
 ## Installasjon
 **Sørg for at du har [NodeJS](https://nodejs.org/en/) [Bun](https://bun.sh) installert**
@@ -108,6 +110,62 @@ import CustomRecordComponent from '@components/...';
     onClick={() => performScript('onRecordClick', recordData)}
 />
 ```
+
+### Innhenting av Script Result fra web
+Funksjonen [`fetchFromFileMaker()`]() kjører gitt skript, og returnerer script result i et Promise.
+
+Her benyttes også nøkler gitt fra **config.scriptNames**.
+
+```tsx
+import { useState, useCallback } from 'preact/hooks';
+
+import fetchFromFileMaker from '@utils/fetchFromFileMaker';
+import getRecordsFromObject from '@utils/getRecordsFromObject';
+
+const contactsPerClick = 10;
+
+async function getContacts(offset: number) {
+    const records = await fetchFromFileMaker('getContacts', { limit: contactsPerClick, offset });
+    return getRecordsFromObject<FM.ContactRecord>(records) ?? [];
+}
+
+const MyComponent: React.FC = () => {
+    const [contacts, setContacts] = useState<FM.ContactRecord[]>([]);
+    const [offset, setOffset] = useState<number>(1);
+
+    // Create a 'loading' state to prevent running the script multiple times
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const loadMore = useCallback(() => {
+        setLoading(true);
+
+        // Fetch the contacts
+        getContacts(offset)
+            .then(res => {
+                // Update the contacts React state
+                setContacts(prev => [...prev, ...res]);
+
+                // Increment offset for the next click
+                setOffset(offset + contactsPerClick);
+            })
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
+
+    return <>
+        <div className="emails">
+            {/* Map over each contact and display its E-mail */}
+            {contacts.map((contact, i) => <li key={i}>
+                {contact.Email}
+            </li>)}
+        </div>
+
+        <button onClick={loadMore}>Load more</button>
+    </>
+}
+```
+I dette eksemplet vil det først være 0 E-poster i listen, fram til man trykker på "Load More".
+Da vil koden hente kontakter via skriptet under nøkkelen `getContacts`, og sette en React-state.
 
 ### Import aliaser
 Det er mulig å importere filer fra f.eks [`src/utils`](./src/utils/) via `@utils` alias.

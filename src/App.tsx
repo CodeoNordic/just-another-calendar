@@ -4,6 +4,8 @@ import { useConfig } from '@context/Config';
 import Contact from '@components/Contact';
 import useContactSearch from '@hooks/useContactSearch';
 
+import LoadMore from '@components/LoadMore';
+
 const App: React.FC = () => {
     const [search, setSearch] = useState<string|null>(null);
     const records = useContactSearch(search);
@@ -20,8 +22,7 @@ const App: React.FC = () => {
     return <>
         <div className="hello">
             <h1>Hello world!</h1>
-            <p>Message from FileMaker: {config?.messageFromFileMaker ?? <pre>no message</pre>}</p>
-            <p>{config?.records?.length || 0} records were passed through the config</p>
+            <p>Message from FileMaker: {config?.messageFromFileMaker ?? '(no message)'}</p>
 
             <input
                 type="text"
@@ -29,13 +30,15 @@ const App: React.FC = () => {
             />
 
             {records.length
-                ?<p>Showing {records.length || 0} results</p>
-                :<pre>No results</pre>}
+                ?<p>Showing {records.length || 0} contacts</p>
+                :<pre>No contacts in config</pre>}
         </div>
 
         <div className="contacts">
             {!!records.length && records.map((props, i) => <Contact key={i} {...props as FM.ContactRecord} />)}
         </div>
+
+        <LoadMore perClick={5} />
     </>
 }
 
