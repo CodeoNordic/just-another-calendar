@@ -8,6 +8,8 @@ Det anbefales å sjekke [React Docs](https://react.dev/reference/react), spesiel
 ## Installasjon
 **Sørg for at du har [NodeJS](https://nodejs.org/en/) [Bun](https://bun.sh) installert**
 
+Det anbefales sterkt å bruke [VsCode](https://code.visualstudio.com)
+
 1. Klon GitHub repository med GitHub Desktop eller `git clone https://github.com/CodeoNordic/nobs-module-template-preact`
 2. Følg terminal-kommandoene
 ```sh
