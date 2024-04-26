@@ -1,3 +1,4 @@
+import { v4 as randomUUID } from 'uuid';
 import performScript, { loadCallbacks } from './performScript';
 
 const promises = new Map<string, (data: any) => any>();
@@ -56,7 +57,7 @@ export default async function fetchFromFileMaker<T = RSAny>(
         return null
     }
 
-    const uuid = crypto.randomUUID();
+    const uuid = randomUUID();
     
     return new Promise<T>((res, rej) => {
         // Configure the timeout
