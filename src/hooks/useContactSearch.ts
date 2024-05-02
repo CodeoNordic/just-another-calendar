@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'preact/hooks';
 import { useConfig } from '@context/Config';
 
+import searchArray from '@utils/searchArray';
+
 /** 
  * Perform a search with similar functionality to that of FileMaker
  * @example
@@ -21,28 +23,7 @@ export default function useContactSearch<T = {}>(search?: null|string|Partial<FM
 
     useEffect(() => {
         if (!config?.records?.length) return setRecords([]);
-
-        // If the search is empty, it should be cleared
-        if ((search === null) || (search === undefined) || (search === '')) {
-            setRecords(config.records);
-            return;
-        }
-
-        if (typeof search === 'string') {
-            // Checks whether a record includes the search string in any of it's values
-            setRecords(config.records.filter(r =>
-                Object.values(r)
-                    .some(v => Boolean(
-                        String(v).match(search)
-                    ))
-            ));
-        } else {
-            // Ensure that every value matches the search on the record
-            setRecords(config.records.filter(r => {
-                Object.keys(search)
-                    .every(k => r[k] == search[k])
-            }));
-        }
+        setRecords(searchArray(config.records, search));
     }, [config, search]);
 
     return records;

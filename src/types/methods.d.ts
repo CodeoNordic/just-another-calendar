@@ -11,6 +11,8 @@ declare global {
             search?: Partial<FM.ContactRecord>|Partial<FM.ContactRecord>[],
             limit?: number
         ): void;
+
+        updateRecord(find: Partial<FM.ContactRecord>, data: FM.ContactRecord): void;
     }
 }
 
