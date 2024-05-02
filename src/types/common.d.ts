@@ -1,6 +1,14 @@
 declare global {
     type RSAny = Record<string, any>;
-    type FC<T = {}> = React.FC<T>;
+    type FC<T = {}> = React.FC<React.PropsWithChildren<T>>;
+
+    /**
+         * Custom state shortcut. Provides autocomplete for react states.
+         * ```ts
+         * const [state, setState] = props.unknownValue as React.State<boolean>;
+         * ```
+         */
+    type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];
 
     /**
      * Filters out properties of T given by constraint C

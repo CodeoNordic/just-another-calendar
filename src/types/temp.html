@@ -1,0 +1,546 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@5.7.0/main.min.css" />
+
+<!-- moment lib -->
+<script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
+
+<!-- jQuery lib -->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- fullcalendar bundle -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@5.7.0/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@5.7.0/locales-all.min.js"></script>
+
+<!-- the moment-to-fullcalendar connector. must go AFTER the moment lib -->
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/moment@5.7.0/main.global.min.js"></script>
+
+<style>
+    html, body {
+          overflow: hidden; /* don't do scrollbars */
+          margin: 0;
+          padding: 0;
+          /*font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;*/
+          font-family: Tahoma, Verdana, Segoe, sans-serif;
+          font-size: 14px;
+        }
+        #calendar {
+          margin: 10px;
+        }
+        .fc-scroller {
+            /*overflow: hidden !important;*/ /* hide scrollbars */
+        }
+        .fc-event-time {
+            font-weight: 700 !important;
+        }
+        .fc-event-time,
+        .fc-event-title {
+            font-size: 13px !important;
+        }
+        .fc-h-event .fc-event-time {
+            max-width: 100%;
+            overflow: visible;
+        }
+        .fc-daygrid-event,
+        .fc-timegrid-event {
+            white-space: normal;
+            overflow: hidden;
+        }
+        .fc-daygrid-event {
+            height: auto; // 150px;
+        }
+        .fc-timegrid-event {
+            min-height: 16px;
+        }
+        .fc-daygrid-event.fc-event-timeGridWeek,
+        .fc-daygrid-event.fc-event-timeGridDay,
+        .fc-daygrid-event.fc-event-dayGridMonth {
+            height: 16px;
+        }
+        .fc-daygrid-body {
+            /*max-height: 150px;*/
+        }
+        td.fc-timegrid-axis div.fc-timegrid-axis-frame {
+            align-items: normal;
+        }
+        .tooltipevent {
+            position: absolute;
+            width: 240px;
+            min-height:10px;
+            padding: 6px;
+            background: rgb(236, 236, 236);
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 3px;
+            font-size: 12px;
+            color: rgb(0, 0, 0);
+            z-index: 10001;
+            top: 50%;
+            left: 50%;
+        }
+        .tooltipevent a {
+            color:#000000 !important;
+        }
+        .tooltipevent path {
+            fill:#000000 !important;
+        }
+    
+        .link {
+            color: white;
+            }
+    
+            .alignRight {
+            text-align:right;
+            }
+    
+            .levDato {
+            font-size: 0.7em;
+            }
+    
+            .pasNavn {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-left:24px;
+            }
+    
+            .bold {
+            font-weight: bold;
+            }
+    
+                  .event {
+                margin:0px;
+                padding:8px;
+                padding-right:30px;
+                }
+                
+                /*.dateBlock {
+                text-align:right;
+                margin-top: 0 ; //-18px;
+                }
+                
+                .iconDate {
+                margin-bottom:-24px;
+                margin-right:60px;
+                }*/
+                
+                 .dateBlock {
+                text-align:left;
+                padding-left:2px;
+                margin-top: 0 ; //-18px;
+                }
+                
+                .iconDate {
+                //margin-bottom:-24px;
+                margin-right:60px;
+                }
+                
+                .dateBlock2 {
+                margin-top:-24px;
+                margin-left:28px;
+                }
+                
+                .infoBlock {
+                margin-bottom:-43px;
+                line-height: 2; //240125
+                }
+                
+                .infoText {
+                text-align:left;
+                margin-left:2px; //30px;
+                margin-top:14px;
+                }
+                
+                .prodAnsvarlig {
+                margin-top: -6px;
+                margin-left:2px;
+                }
+            
+
+        /*new css*/
+
+        .fc-event {
+            margin-left: 4px;
+            margin-right: 4px;
+            border-radius: 3px !important;
+        }
+
+        .nobs-event {
+            padding: 2px 4px;
+        }
+
+        .top, .bottom, .order-group {
+            display: flex;
+            flex-direction: row;
+
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-initials {
+            margin-left: auto;
+            padding: 2px 4px;
+
+            background-color: #F4B81D;
+            color: #000000;
+
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .summary {
+            margin-top: 8px;
+        }
+
+        .summary p {
+            margin: 0;
+        }
+
+        .order-group {
+            gap: 4px;
+        }
+
+        .order-group svg {
+            margin-top: 1px;
+        }
+
+        .coworker p{
+            margin: 0;
+            margin: 6px 0;
+        }
+
+        .bottom {
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+
+        .nobs-event button {
+            border: none;
+            background-color: transparent;
+            padding: 4px 4px 4px 0;
+        }
+
+        .nobs-event button:hover {
+            background-color: rgba(0, 0, 0, .2);
+        }
+
+        .nobs-event button:active {
+            background-color: rgba(0, 0, 0, .3);
+        }
+
+        .order-button {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .bottom p {
+            margin: 0;
+        }
+
+        .fc-daygrid thead * {
+            border-bottom: none !important;
+        }
+
+        .fc-daygrid table tbody, .fc-daygrid table td {
+            border-top: none !important;
+        }
+
+        .fc-daygrid tbody > tr > td > div {
+            padding-top: 10px;
+        }
+__styleInline__
+</style>
+__styleLink__
+
+</head>
+
+<body>
+    <div id='calendar-container'>
+        <div id='calendar'></div>
+    </div>
+    <script>
+
+        var dayclicked = null;
+        var clickstart = null;
+        var startCallbackView = false;
+        var startCallbackDate = false;
+        
+        //document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                schedulerLicenseKey: '__schedulerLicenseKey__',
+                locale: '__locale__',
+                initialView: '__initialView__',
+                initialDate: '__initialDate__',
+                fixedWeekCount: false,
+                //contentHeight: 600,
+                aspectRatio: ($(window).width()-20)/($(window).height()-65),
+                //expandRows: true,
+                buttonIcons: false,
+                headerToolbar: true,
+                headerToolbar: {
+                   //right: 'resourceDayGridDay,resourceDayGridWeek,resourceTimelineWeek timeGridDay,timeGridWeek,dayGridWeek,dayGridMonth prev,today,next',
+                   //right: 'resourceDayGridDay dayGridMonth prev,today,next',
+                   right: '',
+                   left: 'title',
+                },
+                views: {
+                    timeGridDay: {
+                        weekNumbers: true,
+                        slotLabelFormat: 'HH:mm',
+                        eventClassNames: 'fc-event-timeGridDay'
+                    },
+                    timeGridWeek: {
+                        weekNumbers: true,
+                        slotLabelFormat: 'HH:mm',
+                        eventClassNames: 'fc-event-timeGridWeek'
+                    },
+                    dayGridWeek: {
+                        weekNumbers: true,
+                        eventClassNames: 'fc-event-dayGridWeek'
+                    },
+                    dayGridMonth: {
+                        weekNumbers: true,
+                        dayMaxEventRows: true,
+                        showNonCurrentDates: false,
+                        eventClassNames: 'fc-event-dayGridMonth'
+                    },
+                    resourceTimelineWeek: {
+                        type: 'resourceTimelineWeek',
+                        duration: { weeks: 1 },
+                        slotDuration: {days: 1},
+                        slotLabelFormat: { weekday: 'short', day: 'numeric', month: 'numeric', 'omitCommas' : true }, // lower level of text
+                        resourceAreaWidth: "18%",
+                        resourceAreaHeaderContent: '__resourceAreaHeader__',
+                        displayEventTime: false,
+                        eventClassNames: 'fc-event-resourceTimelineWeek',
+                        resourceOrder: "start",
+                        buttonText: '__resourceTimelineWeekBtn__',
+			weekends: false
+
+                    },
+                    resourceDayGridDay: {
+                        type: 'resourceDayGrid',
+                        duration: { days: 1 },
+                        buttonText: 'Production Plan'
+                    },
+                    resourceDayGridWeek: {
+                        type: 'resourceDayGrid',
+                        duration: { days: 3 },
+                        weekends: false,
+                        datesAboveResources: true,
+                        buttonText: 'Vertical Resources'
+                    }
+                },
+                editable: true,
+                eventDurationEditable: false,
+                eventResourceEditable: true,
+                droppable: false,
+                eventTimeFormat: '__eventTimeFormat__',
+                eventDisplay: 'block',
+                displayEventTime: true,
+                slotEventOverlap: false,
+                allDaySlot: true,
+                scrollTime: '08:00',
+                slotMinTime: '00:00',
+                slotMaxTime: '24:00',
+                resourceGroupField: 'groupId',
+                filterResourcesWithEvents: false,
+                resourceOrder: 'title,id',
+                resources: __resources__,
+                events: __events__,
+
+                eventContent: function(arg) {
+                    //var innerHtml = arg.event.title + '<br>' + arg.event.extendedProps.description;
+                    var innerHtml = arg.event.extendedProps.description;
+                    return { html: innerHtml };
+                },
+
+                viewClassNames: function( info ) {    
+                    console.log('view: '+info.view.type);
+                    if(startCallbackView) {
+                        performFileMakerScript('__viewScript__',info.view.type);
+                    }
+                    startCallbackView = true;
+                    //alert(info);
+                },
+
+                datesSet: function( info ) {
+                    var datestr = formatDate(info.start);
+                    console.log('date: '+datestr);
+                    if(startCallbackDate) {
+                        performFileMakerScript('__dateScript__',datestr);
+                    }
+                    startCallbackDate = true;
+                    //alert(info);
+                },
+
+                dateClick: function (info) {
+                    // Ignores single clicks. Only responds to double clicks.
+                    if (__allowDoubleClick__) {
+                        var dayclickednew = new Date(info.date).getTime();
+                        var d = new Date();
+                        var clicktime = d.getTime();
+                        if (dayclicked == dayclickednew && (clicktime - clickstart) < 500) {
+                            clickstart = null;
+                            dayclicked = null;
+                            clickEventToFileMakerUrl(info, '__doubleclickScript__');
+                        } 
+                        else {
+                            dayclicked = dayclickednew;
+                            var d = new Date();
+                            clickstart = d.getTime();
+                        }
+                    }
+                    return false;
+                },
+
+                eventClick: function (info) {
+                    const parent = info.el;
+
+                        const patientButton = parent.querySelector('button.bottom');
+                        const orderButton = parent.querySelector('button.order-button');
+
+                        // If a button within the element was clicked, return
+                        const target = info.jsEvent.target;
+                        if (!(__alwaysOpenDelivery__) && (patientButton.contains(target) || orderButton.contains(target))) return;
+
+                        console.log('Running click event script')
+                        clickEventToFileMakerUrl(info, '[TRG] = ClickEvent');
+                },
+
+                eventDrop: function (info) {
+                    dropEventToFileMakerUrl(info, '__dropScript__');
+                },
+
+                eventResize: function (info) {
+                    //resizeEventToFileMakerUrl(info, '__resizeScript__');
+                },
+
+                //Tooltips
+                eventMouseEnter: function(mouseEnterInfo) {
+                    if(__showTooltip__){                  
+                        var event = mouseEnterInfo.event;
+                        var text = '';
+                        console.log('event: ',event);
+                        //console.log('tooltip: ' + typeof(event.extendedProps.tooltip));
+                        if(typeof(event.extendedProps.tooltip) != 'undefined') {
+                            text = event.extendedProps.tooltip;
+                            console.log('tooltip: ' + tooltip);
+                        }
+                        var tooltip = '<div id = "tooltip" class="tooltipevent">'+ text + '</div>';
+                        var $tooltip = $(tooltip);
+                        $tooltip.appendTo('body');
+
+                        var el = mouseEnterInfo.el;
+                        $(el).mouseover(function(e) {
+                            $(this).css('z-index', 10000);
+                            $tooltip.fadeIn('500');
+                            $tooltip.fadeTo('10', 1.9);
+                        }).mousemove(function(e) {
+                            if(e.pageX + 20 + $tooltip.width()+ 20 > $(window).width()){
+                                $tooltip.css('left', e.pageX - $tooltip.width() + 20);
+                            }
+                            else{
+                                $tooltip.css('left', e.pageX + 20);
+                            }
+                            if(e.pageY + 10 + $tooltip.height() + 10 > $(window).height()){
+                                $tooltip.css('top', e.pageY - $tooltip.height() + 10);
+                            }
+                            else{
+                                $tooltip.css('top', e.pageY + 10);
+                            }
+                        });
+                    }
+                },
+
+                eventMouseLeave: function(calEvent, jsEvent) {
+                   $(this).css('z-index', 8);
+                   $('.tooltipevent').remove();
+                },
+
+            });
+
+            calendar.render();
+        //});
+
+        function formatDate(date) {
+            return moment(date).format('YYYY-MM-DD');
+        }
+
+        function performFileMakerScript(script, param) {
+            FileMaker.PerformScript(script, param);
+            //alert(script+" "+param);
+        }
+
+        function clickEventToFileMakerUrl(info, script) {
+            var param = {};
+            param.date = info.dateStr;
+            if (info.resource) {
+                param.resourceId = info.resource.id;
+            }
+            if (info.event) {
+                param.eventId = info.event.id;
+            }
+            param.orderid = info.event.extendedProps.orderid;
+            param.orderTable = info.event.extendedProps.orderTable;
+            param.xclick = info.jsEvent.pageX;
+            param.yclick = info.jsEvent.pageY;
+            param.view = info.view.type;
+	//console.log('tooltip: ' + typeof(event.extendedProps.tooltip));
+            FileMaker.PerformScript(script,JSON.stringify(param));
+            //alert(param);
+            console.log(JSON.stringify(param));
+        }
+
+        function dropEventToFileMakerUrl(info, script) {
+            FileMaker.PerformScript(script,JSON.stringify(info));
+            //alert(info);
+            console.log(JSON.stringify(info));
+        }
+
+        function resizeEventToFileMakerUrl(info, script) {
+            FileMaker.PerformScript(script,JSON.stringify(info));
+            //alert(info);
+            console.log(JSON.stringify(info));
+        }
+
+        function updateEvent(param){
+            //alert("updateEvent: "+JSON.stringify(param));
+            console.log("updateEvent: "+JSON.stringify(param));
+
+            paramObj = JSON.parse(param);
+            //alert(paramObj.id);
+            console.log("updateEvent: "+JSON.stringify(paramObj.id));
+
+            var event = calendar.getEventById(paramObj.id);
+            //alert("updateEvent: "+JSON.stringify(event));
+            console.log("updateEvent: "+JSON.stringify(event));
+
+            event.setStart( paramObj.start );
+            if(paramObj.start != paramObj.end)
+            {
+                event.setEnd( paramObj.end );
+            }
+            event.setProp( "title", paramObj.title );
+            event.setProp( "textColor", paramObj.textColor );
+            event.setProp( "backgroundColor", paramObj.backgroundColor );
+            event.setProp( "borderColor", paramObj.borderColor );
+            event.setExtendedProp( "description", paramObj.description );
+            event.setExtendedProp( "tooltip", paramObj.tooltip );
+            event.setExtendedProp( "orderid", paramObj.orderid );
+            event.setExtendedProp( "orderTable", paramObj.orderTable );
+            event.setResources( paramObj.resourceIds );
+
+            //alert("updateEvent: "+JSON.stringify(event));
+            console.log("updateEvent: "+JSON.stringify(event));
+        }
+    </script>
+</body>
+
+</html>

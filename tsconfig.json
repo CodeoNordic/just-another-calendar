@@ -7,7 +7,6 @@
 		"esModuleInterop": true,
 		"experimentalDecorators": true,
 		"jsx": "react-jsx",
-		"jsxImportSource": "preact",
 		"module": "ESNext",
 		"moduleResolution": "node",
 		"outDir": "dist",

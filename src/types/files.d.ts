@@ -14,6 +14,6 @@ declare module '*.svg' {
 }
 
 declare module 'jsx:*.svg' {
-    const Icon: React.FC<import('preact').JSX.SVGAttributes<SVGElement>>;
+    const Icon: React.FC<React.HTMLAttributes<SVGElement>>;
     export default Icon;
 }

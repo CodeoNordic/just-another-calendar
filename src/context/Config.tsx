@@ -1,5 +1,4 @@
-import { createContext } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 import getRecordsFromObject from '@utils/getRecordsFromObject';
 import { loadCallbacks } from '@utils/performScript';
@@ -29,8 +28,8 @@ window.init = cfg => {
     runLoadCallbacks();
 };
 
-const ConfigContext = createContext<React.State<NOBS.Config|null>>([null, () => {}]);
-const ConfigProvider: React.FC = ({ children }) => {
+const ConfigContext = createContext<State<NOBS.Config|null>>([null, () => {}]);
+const ConfigProvider: FC = ({ children }) => {
     const [config, setConfig] = useState<NOBS.Config|null>(null);
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useState } from 'react';
 import { useConfig } from '@context/Config';
 
 import searchArray from '@utils/searchArray';
@@ -18,7 +18,7 @@ import searchArray from '@utils/searchArray';
  * ```
  */
 export default function useContactSearch<T = {}>(search?: null|string|Partial<FM.Record<T>>) {
-    const [records, setRecords] = useState<FM.ContactRecord[]>([]);
+    const [records, setRecords] = useState<FM.DeliveryRecord[]>([]);
     const config = useConfig();
 
     useEffect(() => {
