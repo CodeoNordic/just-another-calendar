@@ -7,17 +7,17 @@ import searchArray from '@utils/searchArray';
  * Perform a search with similar functionality to that of FileMaker
  * @example
  * ```tsx
- * const records = useContactSearch({ FirstName: 'Joakim' });
+ * const records = useDeliverySearch({ FirstName: 'Joakim' });
  * 
  * return <>
- *     {records.map((r, k) => <Contact
+ *     {records.map((r, k) => <Delivery
  *         key={k}
  *         {...r}
  *     >)}
  * </>
  * ```
  */
-export default function useContactSearch<T = {}>(search?: null|string|Partial<FM.Record<T>>) {
+export default function useDeliverySearch<T = {}>(search?: null|string|Partial<FM.Record<T>>) {
     const [records, setRecords] = useState<FM.DeliveryRecord[]>([]);
     const config = useConfig();
 

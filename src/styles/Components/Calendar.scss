@@ -1,0 +1,40 @@
+.calendar {
+    $margin: 10px;
+    margin: $margin;
+
+    >.fc {
+        max-height: calc(100vh - ($margin * 2));
+    }
+    
+    .fc-event {
+        margin-left: 4px;
+        margin-right: 4px;
+        border-radius: 3px !important;
+    }
+
+    .fc-event-time,
+    .fc-event-title {
+        font-size: 13px !important;
+    }
+
+    .fc-daygrid table thead th {
+        vertical-align: top !important;
+
+        div span {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+    }
+
+    .fc-daygrid table thead div * {
+        border-bottom: none !important;
+    }
+
+    .fc-daygrid table tbody, .fc-daygrid table td {
+        border-top: none !important;
+    }
+
+    .fc-daygrid tbody > tr > td > div {
+        padding-top: 10px;
+    }
+}

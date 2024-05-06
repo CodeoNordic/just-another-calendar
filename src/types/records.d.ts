@@ -18,7 +18,9 @@ declare global {
             responsibleNextTaskInitials?: string;
 
             tooltip?: string;
-            isUrgent?: boolean;
+
+            // FileMaker does not have native booleans
+            isUrgent?: number;
 
             patientFullName: string;
             patientId: string;
@@ -35,8 +37,12 @@ declare global {
 
                 buttonHover?: string;
                 buttonClick?: string;
+
+                tooltipBackground?: string;
+                tooltipText?: string;
+                tooltipBorder?: string;
             }
-        }>
+        }>;
     }
 }
 

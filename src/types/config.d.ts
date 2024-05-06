@@ -19,12 +19,12 @@ declare global {
             // Define valid script names here
             scriptNames: {
                 onJsRequest: string;
-                view: string;
-                date: string;
-                drop: string;
-                resize: string;
+                
+                openDelivery: string;
                 openPatient: string;
                 openOrder: string;
+
+                onDrag: string;
             };
         }
     }

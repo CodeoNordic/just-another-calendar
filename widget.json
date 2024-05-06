@@ -1,5 +1,5 @@
 {
-    "name": "ModuleBase",
+    "name": "ProductionChart",
     "server": "$",
     "file": "Dev",
     "uploadScript": "UploadHTML"

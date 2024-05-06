@@ -4,7 +4,7 @@ import App from './App';
 import ConfigProvider from '@context/Config';
 import MethodsProvider from '@context/Methods';
 
-const root = createRoot(document.body);
+const root = createRoot(document.querySelector('#app') as HTMLElement);
 root.render(
     <ConfigProvider>
         <MethodsProvider>
