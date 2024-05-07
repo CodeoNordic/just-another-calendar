@@ -1,6 +1,6 @@
 {
     "name": "ProductionPlan",
     "server": "$",
-    "file": "NOBS_GUI",
-    "uploadScript": "[SCR] = Upload HTML"
+    "file": "Dev",
+    "uploadScript": "UploadHTML"
 }
