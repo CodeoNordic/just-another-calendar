@@ -49,7 +49,7 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
                 document.body.appendChild(el);
 
                 el.id = 'tooltip';
-                el.innerText = props.tooltip!;
+                el.innerHTML = props.tooltip!;
                 
                 const maxX = window.innerWidth - el.offsetWidth - tooltipPadding;
                 const maxY = window.innerHeight - el.offsetHeight - tooltipPadding;
@@ -110,9 +110,9 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
             <p>{props.orderCategory}</p>
         </div>
         
-        <div className="coworker">
+        {props.responsibleNextTask && <div className="coworker">
             <p>{props.responsibleNextTask}</p>
-        </div>
+        </div>}
         
         <button
             className="patient"
