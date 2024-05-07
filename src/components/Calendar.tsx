@@ -1,9 +1,7 @@
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-//import timeGridPlugin from '@fullcalendar/timegrid';
 import momentPlugin from '@fullcalendar/moment';
 import resourcePlugin from '@fullcalendar/resource'
-//import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import resourceDayGridPlugin from '@fullcalendar/resource-daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
@@ -11,6 +9,7 @@ import { useConfig } from '@context/Config';
 
 import Delivery from './Delivery';
 import performScript from '@utils/performScript';
+import dateFromEuropean from '@utils/dateFromEuropean';
 
 const Calendar: FC = () => {
     const config = useConfig();
@@ -23,7 +22,7 @@ const Calendar: FC = () => {
             locale={config.locale ?? 'nb'}
 
             initialView={config.initialView ?? 'resourceDayGridWeek'}
-            initialDate={config.initialDate}
+            initialDate={dateFromEuropean(config.initialDate) || new Date(new Date(config.initialDate).valueOf() || new Date())}
 
             editable
             eventResourceEditable
