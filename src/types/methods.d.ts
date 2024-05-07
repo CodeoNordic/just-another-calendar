@@ -12,6 +12,9 @@ declare global {
             limit?: number
         ): void;
 
+        /** Overwrite the record list */
+        setRecords: Window['addRecords'];
+
         updateRecord(find: Partial<FM.DeliveryRecord>, data: FM.DeliveryRecord): void;
     }
 }
