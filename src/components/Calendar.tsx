@@ -22,7 +22,7 @@ const Calendar: FC = () => {
             locale={config.locale ?? 'nb'}
 
             initialView={config.initialView ?? 'resourceDayGridWeek'}
-            initialDate={dateFromEuropean(config.initialDate) || new Date(new Date(config.initialDate).valueOf() || new Date())}
+            initialDate={dateFromEuropean(config.initialDate) ?? new Date(new Date(config.initialDate).valueOf() || new Date())}
 
             editable
             eventResourceEditable
