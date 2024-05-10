@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 export default function createMethod<Name extends string & keyof Constrain<Window, Function>>(name: Name, cb: Window[Name]) {
     window[name] = (...params: string[]) => {
         try {
@@ -17,6 +19,13 @@ export default function createMethod<Name extends string & keyof Constrain<Windo
 
     // Return cleanup function
     return () => {
-        window[name] = undefined;
+        delete window[name];
     }
+}
+
+export function useCreateMethod<Name extends string & keyof Constrain<Window, Function>>(name: Name, cb: Window[Name], dependencies?: any[]) {
+    useEffect(() => {
+        const cleanup = createMethod(name, cb);
+        return cleanup;
+    }, dependencies ?? []);
 }

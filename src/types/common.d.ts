@@ -27,6 +27,8 @@ declare global {
     type Constrain<T, C> = Pick<T, {
         [K in keyof T]: T[K] extends C? K: never
     }[keyof T]>;
+
+    type WithFilter<T> = T & { _filter?: Partial<T> };
 }
 
 export {}

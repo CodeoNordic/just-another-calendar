@@ -16,9 +16,16 @@ declare global {
             initialDate: string;
             eventTimeFormat: string;
 
+            //minDate?: string;
+            days?: number;
+
+            showWeekends?: boolean;
+            selectableTooltips?: boolean;
+
             // Define valid script names here
             scriptNames: {
                 onJsRequest: string;
+                onJsError: string;
                 
                 openDelivery: string;
                 openPatient: string;

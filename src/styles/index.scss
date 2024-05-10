@@ -21,4 +21,6 @@ body {
     font-family: var(--nobs-font);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    user-select: none;
 }

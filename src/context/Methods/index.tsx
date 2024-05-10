@@ -3,6 +3,7 @@ import useRemoveRecords from './removeRecords';
 import useSetRecords from './setRecords';
 
 import useUpdateRecord from './updateRecord';
+import useSetMinDate from './setMinDate';
 
 // The purpose of applying the window methods in a react component is to be able to access e.g the config context
 const MethodsProvider: FC = ({ children }) => {
@@ -11,6 +12,8 @@ const MethodsProvider: FC = ({ children }) => {
     useSetRecords();
 
     useUpdateRecord();
+
+    useSetMinDate();    
 
     return <>{children}</>;
 }

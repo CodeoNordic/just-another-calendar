@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useConfig } from '@context/Config';
+
 import performScript from '@utils/performScript';
 
 // Import SVG icons
@@ -12,6 +14,9 @@ import clamp from '@utils/clamp';
 const tooltipPadding = 20;
 
 const Delivery: FC<FM.DeliveryRecord> = props => {
+    const config = useConfig();
+    const selectable = config?.selectableTooltips;
+
     const [hoverPos, setHoverPos] = useState<{ x: number; y: number }|null>(null);
     const [tooltipHover, setTooltipHover] = useState<boolean>(false);
 
@@ -49,7 +54,14 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
                 document.body.appendChild(el);
 
                 el.id = 'tooltip';
-                el.innerHTML = props.tooltip!;
+
+                // Sanitize the input
+                el.innerHTML = props.tooltip!
+                    .trim()
+                    .replace(/^<br>/, '')
+                    .split(/<br>/)
+                    .map(str => str.replace('<', '&lt;').replace('>', '&gt;'))
+                    .join('<br>')
                 
                 const maxX = window.innerWidth - el.offsetWidth - tooltipPadding;
                 const maxY = window.innerHeight - el.offsetHeight - tooltipPadding;
@@ -58,9 +70,16 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
                 el.style.left = `${clamp(hoverPos.x + 1, tooltipPadding, maxX)}px`
                 el.style.top = `${clamp(hoverPos.y - el.clientHeight - 1, tooltipPadding, maxY)}px`;
 
-                el.style.color = props.colors?.tooltipText ?? '#000';
-                el.style.backgroundColor = props.colors?.tooltipBackground ?? '#FFF';
-                el.style.borderColor = props.colors?.tooltipBorder ?? '#000';
+                el.style.color = props.colors?.tooltipText || '#000';
+                el.style.backgroundColor = props.colors?.tooltipBackground || '#FFF';
+                el.style.borderColor = props.colors?.tooltipBorder || props.colors?.border || '#000';
+                el.style.userSelect = selectable? 'text': 'none';
+
+                // Default colors in case text is invisible
+                if (el.style.color === el.style.backgroundColor) {
+                    el.style.color = '#000';
+                    el.style.backgroundColor = '#fff';
+                }
 
                 el.addEventListener('mouseenter', () => setTooltipHover(true));
                 el.addEventListener('mouseleave', () => setTooltipHover(false));
@@ -72,6 +91,7 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
             return null;
         });
     }, [
+        selectable,
         tooltipHover,
         buttonHover,
         props.tooltip,

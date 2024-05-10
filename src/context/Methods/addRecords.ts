@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useConfigState } from '@context/Config';
 
 import createMethod from '@utils/createMethod';
+import searchArray from '@utils/searchArray';
 
 export default function useAddRecords() {
     const [, setConfig] = useConfigState();
@@ -14,7 +15,10 @@ export default function useAddRecords() {
             ...rest,
             records: [
                 ...(records instanceof Array? records: []),
-                ...(param instanceof Array? param: [param])
+                // If _filter is defined, the record should only be included if no existing records match it
+                ...(param instanceof Array? param: [param]).filter(record => !Boolean(
+                    searchArray(records, record._filter).length
+                ))
             ]
         }
     })), []);

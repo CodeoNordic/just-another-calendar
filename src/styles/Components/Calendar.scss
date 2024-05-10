@@ -5,6 +5,10 @@
     >.fc {
         max-height: calc(100vh - ($margin * 2));
     }
+
+    .fc-toolbar {
+        margin-bottom: 12px !important;
+    }
     
     .fc-event {
         margin-left: 4px;
@@ -23,6 +27,8 @@
         div span {
             padding-top: 8px;
             padding-bottom: 8px;
+            
+            font-size: 14px;
         }
     }
 
