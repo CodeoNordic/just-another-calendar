@@ -33,6 +33,16 @@ declare global {
 
                 onDrag: string;
             };
+
+            fontSizes?: {
+                base?: string;
+                delivery?: string;
+
+                resourceHeader?: string;
+                
+                dateHeader?: string;
+                dayHeader?: string;
+            }
         }
     }
 

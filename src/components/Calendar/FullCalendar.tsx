@@ -162,7 +162,7 @@ const FullCalendar: FC<Props> = props => {
         }}
         
         // Additional config values
-        resourceAreaHeaderContent={() => resourcesTitle}
+        resourceAreaHeaderContent={() => <div className="date-header">{resourcesTitle}</div>}
         filterResourcesWithEvents={false}
         fixedWeekCount={false}
         slotEventOverlap={false}

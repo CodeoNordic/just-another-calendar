@@ -1,5 +1,3 @@
-import { useConfig } from '@context/Config';
-
 import useTooltip from '@hooks/useTooltip';
 import performScript from '@utils/performScript';
 
@@ -10,8 +8,6 @@ import ArrowIcon from 'jsx:@svg/arrow.svg';
 import LightningIcon from 'jsx:@svg/lightning.svg';
 
 const Delivery: FC<FM.DeliveryRecord> = props => {
-    const config = useConfig();
-
     const {
         onPointerMove,
         onPointerLeave,
