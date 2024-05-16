@@ -18,6 +18,7 @@ declare global {
             responsibleNextTaskInitials?: string;
 
             tooltip?: string;
+            statusText?: string;
 
             // FileMaker does not have native booleans
             isUrgent?: number;

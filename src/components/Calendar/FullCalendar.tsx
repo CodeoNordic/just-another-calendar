@@ -3,6 +3,7 @@ import { useConfig } from '@context/Config';
 
 // Import components
 import Delivery from '@components/Delivery';
+import DeliveryWithStatus from '@components/DeliveryWithStatus';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
@@ -32,11 +33,15 @@ const FullCalendar: FC<Props> = props => {
     const config = useConfig()!;
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.initialDate) || new Date());
+    const [resourcesTitle, setResourcesTitle] = useState<string>('');
+
     const cur = currentDate.valueOf();
 
     useEffect(() => {
         if (!calendarRef.current) return;
         const api = calendarRef.current.getApi();
+
+        window.debug = api;
 
         const cleanupSetView = createMethod('setView', view => api.changeView(view));
         const cleanupSetCurrentDate = createMethod('setCurrentDate', str => {
@@ -52,6 +57,8 @@ const FullCalendar: FC<Props> = props => {
     }, [calendarRef]);
 
     const eventsBase: EventSourceInput = (props.records ?? []).map(record => {
+        if (!record.resourceId) console.warn(`The following record does not have a resource ID`, record);
+
         const eventStart = dateFromString(record.dateStart)?.valueOf() || Infinity;
         const eventEnd = dateFromString(record.dateFinishedDisplay)?.valueOf() || 0;
         
@@ -117,8 +124,13 @@ const FullCalendar: FC<Props> = props => {
                 resourceLabelContent: () => null,
                 slotDuration: { days: 1 },
                 slotLabelFormat: { day: '2-digit', weekday: 'long' },
-                resourceAreaWidth: '15%',
-                resourceAreaHeaderContent: () => null
+                resourceAreaWidth: '11rem',
+                //resourceAreaHeaderContent: () => null
+            },
+
+            resourceTimelineWeekWithStatus: {
+                type: 'resourceTimelineWeek',
+                eventContent: props => <DeliveryWithStatus {...props.event.extendedProps.record as FM.DeliveryRecord} />
             }
         }}
 
@@ -150,6 +162,7 @@ const FullCalendar: FC<Props> = props => {
         }}
         
         // Additional config values
+        resourceAreaHeaderContent={() => resourcesTitle}
         filterResourcesWithEvents={false}
         fixedWeekCount={false}
         slotEventOverlap={false}
@@ -158,7 +171,7 @@ const FullCalendar: FC<Props> = props => {
         
         buttonIcons={false}
         headerToolbar={{
-            left: 'title',
+            left: '',//'title',
             right: ''
         }}
         
@@ -197,6 +210,10 @@ const FullCalendar: FC<Props> = props => {
                 oldResource: info.oldResource?.toJSON(),
                 newResource: info.newResource?.toJSON()
             })
+        }}
+
+        datesSet={info => {
+            setResourcesTitle(info.view.title);
         }}
     />
 }

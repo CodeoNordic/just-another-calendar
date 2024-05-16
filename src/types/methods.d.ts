@@ -1,5 +1,7 @@
 declare global {
     interface Window {
+        debug?: RSAny;
+
         init(data: string): void;
         onScriptResult(uuid: string, data: string): void;
 
@@ -17,6 +19,9 @@ declare global {
 
         /** Update a specific record */
         updateRecord(find: Partial<FM.DeliveryRecord>, data: FM.DeliveryRecord): void;
+
+        /** Set a specific value in the config */
+        setConfigProp<K extends string & keyof NOBS.Config>(k: K, prop: NOBS.Config[K]): void;
 
         /** Set the current date to show. */
         setCurrentDate(date?: string): void;

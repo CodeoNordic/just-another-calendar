@@ -1,7 +1,7 @@
 import { useConfig } from '@context/Config';
 
-import useTooltip from '@hooks/useTooltip';
 import performScript from '@utils/performScript';
+import useTooltip from '@hooks/useTooltip';
 
 // Import SVG icons
 import ProfileIcon from 'jsx:@svg/profile.svg';
@@ -9,16 +9,14 @@ import ClockIcon from 'jsx:@svg/clock.svg';
 import ArrowIcon from 'jsx:@svg/arrow.svg';
 import LightningIcon from 'jsx:@svg/lightning.svg';
 
-const Delivery: FC<FM.DeliveryRecord> = props => {
-    const config = useConfig();
-
+const DeliveryWithStatus: FC<FM.DeliveryRecord> = props => {
     const {
         onPointerMove,
         onPointerLeave,
 
         onButtonEnter,
         onButtonLeave
-    } = useTooltip(props.tooltip, props.colors);
+    } = useTooltip(props.tooltip);
 
     return <div
         className="delivery"
@@ -37,7 +35,7 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
             <button
                 className="order-button"
                 onClick={() => {performScript('openOrder', props.orderId)}}
-                onPointerMove={onButtonEnter}
+                onPointerMove={onButtonLeave}
                 onPointerLeave={onButtonLeave}
             >
                 <p className="order-text">
@@ -48,9 +46,9 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
             </button>
             <p>{props.orderCategory}</p>
         </div>
-        
-        {props.responsibleNextTask && <div className="coworker">
-            <p>{props.responsibleNextTask}</p>
+
+        {props.statusText && <div className="status-text">
+            <p>{props.statusText}</p>
         </div>}
         
         <button
@@ -67,4 +65,4 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
     </div>
 }
 
-export default Delivery;
+export default DeliveryWithStatus;
