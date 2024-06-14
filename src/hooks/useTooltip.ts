@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, PointerEvent } from 'react';
 import clamp from '@utils/clamp';
 const tooltipPadding = 20;
 
-export default function useTooltip(tooltip?: string, colors?: FM.DeliveryRecord['colors']) {
+export default function useTooltip(tooltip?: string, colors?: FM.EventRecord['colors']) {
     const config = useConfig();
     const selectable = config?.selectableTooltips;
 

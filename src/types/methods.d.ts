@@ -6,19 +6,19 @@ declare global {
         onScriptResult(uuid: string, data: string): void;
 
         /** Add one or more records */
-        addRecords(data: WithFilter<FM.DeliveryRecord>|WithFilter<FM.DeliveryRecord>[]): void;
+        addRecords(data: WithFilter<FM.EventRecord>|WithFilter<FM.EventRecord>[]): void;
 
         /** Remove one, more or all records. Limit should be set to 1 when removing a specific record */
         removeRecords(
-            search?: Partial<FM.DeliveryRecord>|Partial<FM.DeliveryRecord>[],
+            search?: Partial<FM.EventRecord>|Partial<FM.EventRecord>[],
             limit?: number
         ): void;
 
         /** Overwrite the record list */
-        setRecords(data: FM.DeliveryRecord|FM.DeliveryRecord[]): void;
+        setRecords(data: FM.EventRecord|FM.EventRecord[]): void;
 
         /** Update a specific record */
-        updateRecord(find: Partial<FM.DeliveryRecord>, data: FM.DeliveryRecord): void;
+        updateRecord(find: Partial<FM.EventRecord>, data: FM.EventRecord): void;
 
         /** Set a specific value in the config */
         setConfigProp<K extends string & keyof NOBS.Config>(k: K, prop: NOBS.Config[K]): void;
@@ -31,6 +31,9 @@ declare global {
 
         /** Changes the calendar view */
         setView(view: string): void;
+
+        /** Revert changes to an event */
+        revert(id: string): void;
     }
 }
 

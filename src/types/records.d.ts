@@ -1,9 +1,11 @@
 declare global {
     namespace FM {
         // Define all record interfaces here
-        type DeliveryRecord = FM.Record<{
+        type EventRecord = FM.Record<{
+            type?: 'event'|'backgroundEvent';
+
             id: string;
-            resourceId: string;
+            resourceId: string|string[];
 
             dateStart: string;
             dateFinishedDisplay: string;
@@ -13,19 +15,19 @@ declare global {
             orderCategory: string;
 
             nomenklatur: string;
-
+            
             responsibleNextTask?: string;
             responsibleNextTaskInitials?: string;
-
+            
             tooltip?: string;
             statusText?: string;
-
-            // FileMaker does not have native booleans
-            isUrgent?: number;
-
+            
+            isUrgent?: boolean;
+            
             patientFullName: string;
             patientId: string;
-
+            patientReference: string;
+            
             colors?: {
                 text?: string;
                 background?: string;
@@ -43,7 +45,11 @@ declare global {
                 tooltipText?: string;
                 tooltipBorder?: string;
             }
-        }>;
+        }> & ({
+            type: 'backgroundEvent';
+            backgroundColor?: string;
+            backgroundText?: string;
+        }|{});
     }
 }
 

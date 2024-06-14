@@ -1,4 +1,8 @@
+import { Fragment } from 'react';
+
+import { useConfig } from '@context/Config';
 import useTooltip from '@hooks/useTooltip';
+
 import performScript from '@utils/performScript';
 
 // Import SVG icons
@@ -7,7 +11,9 @@ import ClockIcon from 'jsx:@svg/clock.svg';
 import ArrowIcon from 'jsx:@svg/arrow.svg';
 import LightningIcon from 'jsx:@svg/lightning.svg';
 
-const Delivery: FC<FM.DeliveryRecord> = props => {
+const StandardEvent: FC<FM.EventRecord> = props => {
+    const config = useConfig();
+
     const {
         onPointerMove,
         onPointerLeave,
@@ -16,8 +22,10 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
         onButtonLeave
     } = useTooltip(props.tooltip, props.colors);
 
+    const patientFullName = !config?.privacyMode && props.patientFullName;
+
     return <div
-        className="delivery"
+        className="nobs-event"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
     >
@@ -25,8 +33,13 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
             <ClockIcon />
             <span className='date'>{props.dateFinishedDisplay}</span>
 
-            {Boolean(props.isUrgent) && <LightningIcon style={{ color: props.colors?.urgentIcon ?? '#D90B00' }} />}
-            {props.responsibleNextTaskInitials && <span className="user-initials">{props.responsibleNextTaskInitials}</span>}
+            {Boolean(props.isUrgent) && <LightningIcon className="urgent-icon" style={{ color: props.colors?.urgentIcon ?? '#D90B00' }} />}
+            {props.responsibleNextTaskInitials && <span className="user-initials">
+                {props.responsibleNextTaskInitials.split('\n').map((initials, i) => <Fragment key={i}>
+                    {i !== 0 && <br />}
+                    {initials}
+                </Fragment>)}
+            </span>}
         </div>
         
         <div className="summary"> 
@@ -57,10 +70,10 @@ const Delivery: FC<FM.DeliveryRecord> = props => {
             onPointerLeave={onButtonLeave}
         >
             <ProfileIcon />
-
-            <p>{props.patientFullName}</p>
+            <p>{props.patientReference}{Boolean(props.patientReference && patientFullName) && ' - '}</p>
+            {Boolean(props.patientReference && patientFullName) && <p>{patientFullName}</p>}
         </button>
     </div>
 }
 
-export default Delivery;
+export default StandardEvent;

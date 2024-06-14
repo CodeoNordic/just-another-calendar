@@ -13,9 +13,14 @@
     }
     
     .fc-event {
-        margin-left: 4px;
-        margin-right: 4px;
+        margin-left: 4px !important;
+        margin-right: 4px !important;
         border-radius: 3px !important;
+
+        // Date "extender"
+        /*&::before, &::after {
+            content: none !important;
+        }*/
     }
 
     .fc-daygrid table thead th {
@@ -49,9 +54,13 @@
     .fc-datagrid-cell-frame {
         justify-content: center !important;
     }
+    
+    div.fc-datagrid-cell-cushion.fc-scrollgrid-sync-inner {
+        background-color: transparent !important;
+    }
 
     // Left of resources title
-    .fc-datagrid-expander {
+    /*.fc-datagrid-expander {
         display: none;
-    }
+    }*/
 }

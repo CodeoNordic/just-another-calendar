@@ -4,7 +4,7 @@ import { useConfig } from '@context/Config';
 import FullCalendar from './FullCalendar';
 
 import dateFromString from '@utils/dateFromString';
-import stylesFromFontSizes from '@utils/styleFromFontSizes';
+import stylesFromFontSizes from '@utils/stylesFromConfig';
 
 const Calendar: FC = () => {
     const config = useConfig();
@@ -13,16 +13,19 @@ const Calendar: FC = () => {
     const initialDate = dateFromString(config?.initialDate)?.valueOf();
 
     const fontSizes = config?.fontSizes;
+    const fontStyles = config?.styles;
 
     useEffect(() => {
-        if (!fontSizes) return;
+        if (!fontStyles) return;
+        document.querySelector('style#injected-calendar-styles')?.remove();
 
         const style = document.createElement('style');
-        style.innerHTML = stylesFromFontSizes(fontSizes);
+        style.innerHTML = stylesFromFontSizes(fontStyles);
+        style.id = 'injected-calendar-styles';
 
         document.head.appendChild(style);
         return () => style.remove();
-    }, [fontSizes]);
+    }, [fontSizes, fontStyles]);
 
     if (!config) return null;
 

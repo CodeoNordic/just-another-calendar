@@ -18,7 +18,7 @@ import searchArray from '@utils/searchArray';
  * ```
  */
 export default function useDeliverySearch<T = {}>(search?: null|string|Partial<FM.Record<T>>) {
-    const [records, setRecords] = useState<FM.DeliveryRecord[]>([]);
+    const [records, setRecords] = useState<FM.EventRecord[]>([]);
     const config = useConfig();
 
     useEffect(() => {

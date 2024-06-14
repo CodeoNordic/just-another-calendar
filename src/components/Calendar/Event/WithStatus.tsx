@@ -9,7 +9,9 @@ import ClockIcon from 'jsx:@svg/clock.svg';
 import ArrowIcon from 'jsx:@svg/arrow.svg';
 import LightningIcon from 'jsx:@svg/lightning.svg';
 
-const DeliveryWithStatus: FC<FM.DeliveryRecord> = props => {
+const EventWithStatus: FC<FM.EventRecord> = props => {
+    const config = useConfig();
+    
     const {
         onPointerMove,
         onPointerLeave,
@@ -18,8 +20,10 @@ const DeliveryWithStatus: FC<FM.DeliveryRecord> = props => {
         onButtonLeave
     } = useTooltip(props.tooltip);
 
+    const patientFullName = !config?.privacyMode && props.patientFullName;
+
     return <div
-        className="delivery"
+        className="nobs-event"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
     >
@@ -27,7 +31,7 @@ const DeliveryWithStatus: FC<FM.DeliveryRecord> = props => {
             <ClockIcon />
             <span className='date'>{props.dateFinishedDisplay}</span>
 
-            {Boolean(props.isUrgent) && <LightningIcon style={{ color: props.colors?.urgentIcon ?? '#D90B00' }} />}
+            {Boolean(props.isUrgent) && <LightningIcon className="urgent-icon" style={{ color: props.colors?.urgentIcon ?? '#D90B00' }} />}
             {props.responsibleNextTaskInitials && <span className="user-initials">{props.responsibleNextTaskInitials}</span>}
         </div>
         
@@ -59,10 +63,10 @@ const DeliveryWithStatus: FC<FM.DeliveryRecord> = props => {
             onPointerLeave={onButtonLeave}
         >
             <ProfileIcon />
-
-            <p>{props.patientFullName}</p>
+            <p>{props.patientReference}{Boolean(props.patientReference && patientFullName) && ' - '}</p>
+            {Boolean(props.patientReference && patientFullName) && <p>{patientFullName}</p>}
         </button>
     </div>
 }
 
-export default DeliveryWithStatus;
+export default EventWithStatus;

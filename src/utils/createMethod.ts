@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 export default function createMethod<Name extends string & keyof Constrain<Window, Function>>(name: Name, cb: Window[Name]) {
     window[name] = (...params: string[]) => {
-        console.log(params);
         try {
             const parsedParams = params.map(p => {
                 try {

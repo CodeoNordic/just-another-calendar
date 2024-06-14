@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { useConfig } from '@context/Config';
 
+import { useCreateMethod } from '@utils/createMethod';
+import { v4 as randomUUID } from 'uuid';
+
 // Import components
-import Delivery from '@components/Delivery';
-import DeliveryWithStatus from '@components/DeliveryWithStatus';
+import Event from '@components/Calendar/Event';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
@@ -13,7 +15,7 @@ import { DateInput, EventSourceInput } from '@fullcalendar/core';
 import momentPlugin from '@fullcalendar/moment';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import resourcePlugin from '@fullcalendar/resource'
+import resourcePlugin, { ResourceApi } from '@fullcalendar/resource'
 import resourceDayGridPlugin from '@fullcalendar/resource-daygrid';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
@@ -24,7 +26,7 @@ import dateFromString from '@utils/dateFromString';
 import performScript from '@utils/performScript';
 
 interface Props {
-    records?: FM.DeliveryRecord[];
+    records?: FM.EventRecord[];
     initialDate?: DateInput;
 }
 
@@ -34,6 +36,7 @@ const FullCalendar: FC<Props> = props => {
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.initialDate) || new Date());
     const [resourcesTitle, setResourcesTitle] = useState<string>('');
+    const [,setRevertFunctions] = useState<Record<string, Function>>({});
 
     const cur = currentDate.valueOf();
 
@@ -50,14 +53,37 @@ const FullCalendar: FC<Props> = props => {
             setCurrentDate(date);
         });
 
+        // Automatically open/close resource groups on update
+        const resourceListener = (resources: ResourceApi[]) => {
+            resources.forEach(resource => {
+                const parent = document.querySelector(`.resource-group-label-${resource.id}`);
+                const noEvents = !resource.getEvents()?.length;
+
+                const collapsed = Boolean(resource.extendedProps.initiallyCollapsed) || noEvents;
+
+                const expander = parent?.querySelector(`.fc-datagrid-expander:has(.fc-icon-${collapsed? 'minus':'plus'}-square)`) as HTMLButtonElement;
+                expander?.click();
+            })
+        }
+        
+        api.on('resourcesSet', resourceListener);
         return () => {
             cleanupSetView();
             cleanupSetCurrentDate();
+            api.off('resourcesSet', resourceListener);
         }
     }, [calendarRef]);
 
-    const eventsBase: EventSourceInput = (props.records ?? []).map(record => {
-        if (!record.resourceId) console.warn(`The following record does not have a resource ID`, record);
+    useCreateMethod('revert', id => {
+        setRevertFunctions(prev => {
+            const { [id]: func, ...funcs } = prev;
+            func?.();
+            return funcs;
+        });
+    });
+
+    const eventsBase: EventSourceInput = useMemo(() => (props.records ?? []).map(record => {
+        if (!record.resourceId && record.type !== 'backgroundEvent') console.warn(`The following record does not have a resource ID`, record);
 
         const eventStart = dateFromString(record.dateStart)?.valueOf() || Infinity;
         const eventEnd = dateFromString(record.dateFinishedDisplay)?.valueOf() || 0;
@@ -67,9 +93,21 @@ const FullCalendar: FC<Props> = props => {
         const start = /*overdue? new Date(cur).setHours(0, 0, 0, 0): */eventStart;
         const end = overdue? new Date(cur.valueOf() + (1000 * 60 * 60 * 24)).setHours(23, 59, 59): eventEnd;
 
+        if (record.type === 'backgroundEvent') return {
+            start,
+            end,
+            allDay: true,
+            display: 'background',
+            backgroundColor: record.backgroundColor ?? '#eaa',
+            extendedProps: { record }
+        }
+
+        const resourceIds = record.resourceId instanceof Array? record.resourceId: (record.resourceId? [record.resourceId]: []);
+
         return {
             id: record.id,
-            resourceId: record.resourceId,
+            resourceId: resourceIds[0],
+            resourceIds,
             backgroundColor: record.colors?.background,
             borderColor: record.colors?.border,
             textColor: record.colors?.text,
@@ -78,7 +116,7 @@ const FullCalendar: FC<Props> = props => {
             extendedProps: { record },
             allDay: true
         }
-    });
+    }), [props.records]);
 
     return <FullCalendarReact
         ref={cal => calendarRef.current = cal}
@@ -115,22 +153,18 @@ const FullCalendar: FC<Props> = props => {
             },
 
             resourceTimelineWeek: {
-                duration: { days: config.days },
                 resourceGroupField: 'id',
+                duration: { days: config.days },
                 resourceGroupLabelContent: props => {
                     const resource = config.resources.find(r => r.id === props.groupValue);
-                    return resource?.title ?? 'Uten navn';
+                    const eventCount = eventsBase.filter(ev => ev.resourceId === resource?.id);
+
+                    return `${resource?.title ?? 'Uten navn'}${/*eventCount.length? */` (${eventCount.length})`/*:''*/}`;
                 },
                 resourceLabelContent: () => null,
                 slotDuration: { days: 1 },
                 slotLabelFormat: { day: '2-digit', weekday: 'long' },
-                resourceAreaWidth: '11rem',
-                //resourceAreaHeaderContent: () => null
-            },
-
-            resourceTimelineWeekWithStatus: {
-                type: 'resourceTimelineWeek',
-                eventContent: props => <DeliveryWithStatus {...props.event.extendedProps.record as FM.DeliveryRecord} />
+                resourceAreaHeaderContent: () => resourcesTitle
             }
         }}
 
@@ -138,16 +172,30 @@ const FullCalendar: FC<Props> = props => {
         resources={config.resources}
         events={eventsBase}
 
-        // Renderer for each delivery
-        eventContent={props => <Delivery
-            {...props.event.extendedProps.record as FM.DeliveryRecord}
+        // Renderer for each event
+        eventContent={props => <Event
+            component={config.eventComponent}
+            {...(props.event.extendedProps.record ?? {}) as FM.EventRecord}
         />}
+
+        resourceGroupLabelClassNames={info => `resource-group-label-${info.groupValue}`}
+
+        // Automatically open/close resource groups on first load
+        resourceGroupLabelDidMount={info => {
+            const resource = config.resources.find(r => r.id === info.groupValue);
+            
+            const noEvents = !eventsBase.some(e => e.resourceId === info.groupValue);
+            const collapsed = resource?.initiallyCollapsed !== undefined? resource.initiallyCollapsed: noEvents;
+
+            const expander = info.el.querySelector(`.fc-datagrid-expander:has(.fc-icon-${collapsed? 'minus':'plus'}-square)`) as HTMLButtonElement;
+            expander?.click();
+        }}
 
         // Sorting
         resourceOrder="title"
         eventOrder={(a, b) => {
-            const recordA = (a as { record: FM.DeliveryRecord }).record;
-            const recordB = (b as { record: FM.DeliveryRecord }).record;
+            const recordA = (a as { record: FM.EventRecord }).record;
+            const recordB = (b as { record: FM.EventRecord }).record;
 
             // If both records have the same 'isUrgent' value, sort by dateFinishedDisplay
             if (recordA.isUrgent === recordB.isUrgent) {
@@ -163,6 +211,7 @@ const FullCalendar: FC<Props> = props => {
         
         // Additional config values
         resourceAreaHeaderContent={() => <div className="date-header">{resourcesTitle}</div>}
+        resourceAreaWidth={config.resourcesWidth || '17.5rem'}
         filterResourcesWithEvents={false}
         fixedWeekCount={false}
         slotEventOverlap={false}
@@ -204,12 +253,17 @@ const FullCalendar: FC<Props> = props => {
         }}
 
         eventDrop={info => {
-            console.log(info);
+            const revertId = randomUUID();
+            setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
+
             performScript('onDrag', {
                 record: info.event.extendedProps.record,
+                start: info.event.start,
+                end: info.event.end,
                 oldResource: info.oldResource?.toJSON(),
-                newResource: info.newResource?.toJSON()
-            })
+                newResource: info.newResource?.toJSON(),
+                revertId
+            });
         }}
 
         datesSet={info => {
