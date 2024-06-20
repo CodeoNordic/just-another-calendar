@@ -6,7 +6,7 @@ Boilerplate benyttet: [benevolarX/parcel-preact-typescript-boilerplate](https://
 Det anbefales å sjekke [React Docs](https://react.dev/reference/react), spesielt området om [Hooks](https://react.dev/reference/react/hooks) for å sørge for riktig praktisk bruk av React.
 
 ## Installasjon
-**Sørg for at du har [NodeJS](https://nodejs.org/en/) [Bun](https://bun.sh) installert**
+**Sørg for at du har [NodeJS](https://nodejs.org/en/) eller [Bun](https://bun.sh) installert**
 
 Det anbefales sterkt å bruke [VsCode](https://code.visualstudio.com)
 
