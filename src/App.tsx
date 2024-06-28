@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useConfig } from '@context/Config';
 
+import EventDropdownProvider from '@components/Calendar/Event/Dropdown';
+
+import SideMenu from '@components/SideMenu';
 import Calendar from '@components/Calendar';
 
 const App: React.FC = () => {
@@ -19,7 +22,12 @@ const App: React.FC = () => {
         return () => elem.remove();
     }, [css]);
 
-    return <Calendar />
+    return <EventDropdownProvider>
+        <div className="app-wrapper">
+            <SideMenu />
+            <Calendar />
+        </div>
+    </EventDropdownProvider>
 }
 
 export default App;

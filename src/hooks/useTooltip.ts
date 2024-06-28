@@ -19,7 +19,7 @@ export default function useTooltip(tooltip?: string, colors?: FM.EventRecord['co
     }, [buttonHover]);
 
     useEffect(() => {
-        if (!tooltip || tooltipHover) return;
+        if (!tooltip || tooltip === '\\r' || /^\s+$/.test(tooltip) || tooltipHover) return;
         if (!hoverPos || buttonHover) {
             document.querySelector('#tooltip')?.remove();
             hoverTimeout.current && clearTimeout(hoverTimeout.current);

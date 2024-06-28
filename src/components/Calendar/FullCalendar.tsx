@@ -6,15 +6,18 @@ import { v4 as randomUUID } from 'uuid';
 
 // Import components
 import Event from '@components/Calendar/Event';
+import { DropdownButton, useEventDropdown } from './Event/Dropdown';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
-import { DateInput, EventSourceInput } from '@fullcalendar/core';
+import { DateInput, EventDropArg, EventSourceInput } from '@fullcalendar/core';
 
 // Import Calendar plugins
 import momentPlugin from '@fullcalendar/moment';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+
 import resourcePlugin, { ResourceApi } from '@fullcalendar/resource'
 import resourceDayGridPlugin from '@fullcalendar/resource-daygrid';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
@@ -24,10 +27,53 @@ import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import createMethod from '@utils/createMethod';
 import dateFromString from '@utils/dateFromString';
 import performScript from '@utils/performScript';
+import capitalize from '@utils/capitalize';
 
 interface Props {
     records?: FM.EventRecord[];
     initialDate?: DateInput;
+}
+
+// Determine status buttons for record
+const statusButtons = (r: FM.EventRecord) => {
+    const buttons: DropdownButton[] = [];
+    if (!r.showButtons || r.isRepetition || r.hasCheckedOut || r.didNotArrive) return buttons;
+
+    if (r.isLate) {
+        // Show the arrived and did not arrive buttons
+        buttons.push({
+            icon: 'arrived',
+            onClick: () => performScript('patientHasArrived', r.id)
+        }, {
+            icon: 'didNotArrive',
+            onClick: () => performScript('patientDidNotArrive', r.id)
+        });
+
+        return buttons;
+    }
+
+    if (r.hasArrived) {
+        // Only show the checkout button
+        buttons.push({
+            icon: 'checkout',
+            onClick: () => performScript('eventCheckout', r.id)
+        });
+
+        return buttons;
+    }
+    
+    buttons.push({
+        icon: 'arrived',
+        onClick: () => performScript('patientHasArrived', r.id)
+    }, {
+        icon: 'late',
+        onClick: () => performScript('patientIsLate', r.id)
+    }, {
+        icon: 'didNotArrive',
+        onClick: () => performScript('patientDidNotArrive', r.id)
+    })
+
+    return buttons;
 }
 
 const FullCalendar: FC<Props> = props => {
@@ -38,6 +84,7 @@ const FullCalendar: FC<Props> = props => {
     const [resourcesTitle, setResourcesTitle] = useState<string>('');
     const [,setRevertFunctions] = useState<Record<string, Function>>({});
 
+    const [,setDropdown] = useEventDropdown();
     const cur = currentDate.valueOf();
 
     useEffect(() => {
@@ -85,17 +132,22 @@ const FullCalendar: FC<Props> = props => {
     const eventsBase: EventSourceInput = useMemo(() => (props.records ?? []).map(record => {
         if (!record.resourceId && record.type !== 'backgroundEvent') console.warn(`The following record does not have a resource ID`, record);
 
-        const eventStart = dateFromString(record.dateStart)?.valueOf() || Infinity;
-        const eventEnd = dateFromString(record.dateFinishedDisplay)?.valueOf() || 0;
-        
-        const overdue = cur > eventEnd;
+        const eventStart = dateFromString(record.dateStart);
+        const eventEnd = dateFromString(record.dateFinishedDisplay);
 
-        const start = /*overdue? new Date(cur).setHours(0, 0, 0, 0): */eventStart;
-        const end = overdue? new Date(cur.valueOf() + (1000 * 60 * 60 * 24)).setHours(23, 59, 59): eventEnd;
+        if (record.timeStart) {
+            const match = record.timeStart.match(/^(\d{2}):(\d{2})/);
+            match && eventStart?.setHours(Number(match[1]), Number(match[2]));
+        }
+
+        if (record.timeEnd) {
+            const match = record.timeEnd.match(/^(\d{2}):(\d{2})/);
+            match && eventEnd?.setHours(Number(match[1]), Number(match[2]));
+        }
 
         if (record.type === 'backgroundEvent') return {
-            start,
-            end,
+            start: eventStart,
+            end: eventEnd,
             allDay: true,
             display: 'background',
             backgroundColor: record.backgroundColor ?? '#eaa',
@@ -111,10 +163,10 @@ const FullCalendar: FC<Props> = props => {
             backgroundColor: record.colors?.background,
             borderColor: record.colors?.border,
             textColor: record.colors?.text,
-            start,
-            end,
+            start: eventStart,
+            end: eventEnd,
             extendedProps: { record },
-            allDay: true
+            allDay: Boolean(record.allDay)
         }
     }), [props.records]);
 
@@ -123,14 +175,16 @@ const FullCalendar: FC<Props> = props => {
 
         // Base config
         schedulerLicenseKey={config.licenseKey}
-        locale={config.locale ?? 'nb'}
+        locale={config.locale ?? 'no-nb'}
 
-        initialView={config.initialView ?? 'resourceDayGridWeek'}
+        initialView={/*config.initialView ?? */'resourceTimeGrid'}
         initialDate={currentDate}
 
         editable
-        eventResourceEditable
-        eventDurationEditable={false}
+        eventResourceEditable={false}
+        eventStartEditable
+        eventDurationEditable
+        nowIndicator
 
         weekends={new Date(currentDate).getDay() > 5? true: (config.showWeekends || false)}
 
@@ -139,6 +193,8 @@ const FullCalendar: FC<Props> = props => {
             momentPlugin,
             interactionPlugin,
             dayGridPlugin,
+            timeGridPlugin,
+
             resourcePlugin,
             resourceDayGridPlugin,
             resourceTimeGridPlugin,
@@ -147,24 +203,47 @@ const FullCalendar: FC<Props> = props => {
 
         // Set up views
         views={{
-            resourceDayGridWeek: {
-                duration: { days: /*config.days ??*/ 1 },
-                dayHeaderContent: () => null,
-            },
+            resourceTimeGrid: {
+                dayHeaderContent: info => {
+                    const base = capitalize(info.date.toLocaleDateString(config.locale, {
+                        weekday: 'long',
+                        day: '2-digit',
+                        month: 'long'
+                    }), true);
+                    
+                    const bgEvents = config.records?.filter(ev => ev.type === 'backgroundEvent');
+                    if (!bgEvents?.length) return base;
 
-            resourceTimelineWeek: {
-                resourceGroupField: 'id',
-                duration: { days: config.days },
-                resourceGroupLabelContent: props => {
-                    const resource = config.resources.find(r => r.id === props.groupValue);
-                    const eventCount = eventsBase.filter(ev => ev.resourceId === resource?.id);
-
-                    return `${resource?.title ?? 'Uten navn'}${/*eventCount.length? */` (${eventCount.length})`/*:''*/}`;
+                    const firstColor = bgEvents[0].backgroundColor;
+                    return <span style={{ color: firstColor }}>
+                        {base}
+                        <br />
+                        ({bgEvents.map(ev => ev.backgroundText).join(', ')})
+                    </span>
                 },
-                resourceLabelContent: () => null,
-                slotDuration: { days: 1 },
-                slotLabelFormat: { day: '2-digit', weekday: 'long' },
-                resourceAreaHeaderContent: () => resourcesTitle
+
+                slotLabelContent: info => {
+                    const str = info.date.toLocaleTimeString(
+                        config.locale,
+                        {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }
+                    );
+
+                    const isHourly = str.endsWith('00');
+
+                    return <span className={isHourly? 'timeslot-large': 'timeslot-small'}>
+                        {isHourly? str: str.substring(3)}
+                    </span>
+                },
+
+                duration: { days: config.days },
+                dayHeaders: true,
+                datesAboveResources: true,
+
+                allDayContent: 'Hele dagen',
+                allDaySlot: true//eventsBase.some(ev => ev.allDay)
             }
         }}
 
@@ -182,9 +261,9 @@ const FullCalendar: FC<Props> = props => {
 
         // Automatically open/close resource groups on first load
         resourceGroupLabelDidMount={info => {
-            const resource = config.resources.find(r => r.id === info.groupValue);
+            const resource = config.resources?.find(r => r.id === info.groupValue);
             
-            const noEvents = !eventsBase.some(e => e.resourceId === info.groupValue);
+            const noEvents = !eventsBase.some(e => e.resourceIds?.includes(info.groupValue));
             const collapsed = resource?.initiallyCollapsed !== undefined? resource.initiallyCollapsed: noEvents;
 
             const expander = info.el.querySelector(`.fc-datagrid-expander:has(.fc-icon-${collapsed? 'minus':'plus'}-square)`) as HTMLButtonElement;
@@ -215,8 +294,6 @@ const FullCalendar: FC<Props> = props => {
         filterResourcesWithEvents={false}
         fixedWeekCount={false}
         slotEventOverlap={false}
-
-        allDaySlot={false}
         
         buttonIcons={false}
         headerToolbar={{
@@ -226,33 +303,30 @@ const FullCalendar: FC<Props> = props => {
         
         eventTimeFormat={config.eventTimeFormat ?? 'HH:mm'}
         
-        scrollTime="08:00"
-        slotMinTime="00:00"
-        slotMaxTime="24:00"
+        // These will be switched out for config values in the future
+        slotMinTime="08:00"
+        slotMaxTime="21:15"
+
+        slotLabelFormat="HH:mm"
+        slotDuration="00:15"
+        slotLabelInterval={15}
 
         // Event handlers
         eventClick={info => {
             const root = info.el;
 
             // Return if the element clicked was a button
-            const patientButton = root.querySelector('button.patient');
-            const orderButton = root.querySelector('button.order-button');
+            const buttons = root.querySelectorAll('button');
 
             const target = info.jsEvent.target as HTMLElement;
-            if (
-                // Patient button
-                target === patientButton ||
-                patientButton?.contains(target) ||
+            for (const button of buttons) {
+                if (target === button || button.contains(target)) return;
+            }
 
-                // Order button
-                target === orderButton ||
-                orderButton?.contains(target)
-            ) return;
-
-            performScript('openDelivery', info.event.id);
+            performScript('openEvent', info.event.id);
         }}
 
-        eventDrop={info => {
+        eventChange={info => {
             const revertId = randomUUID();
             setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
 
@@ -260,10 +334,34 @@ const FullCalendar: FC<Props> = props => {
                 record: info.event.extendedProps.record,
                 start: info.event.start,
                 end: info.event.end,
-                oldResource: info.oldResource?.toJSON(),
-                newResource: info.newResource?.toJSON(),
+                oldResource: (info as EventDropArg).oldResource?.toJSON(),
+                newResource: (info as EventDropArg).newResource?.toJSON(),
                 revertId
             });
+        }}
+
+        eventMouseEnter={info => {
+            const rect = info.el.getBoundingClientRect();
+            const record = info.event.extendedProps.record as FM.EventRecord;
+
+            const buttons = statusButtons(record);
+
+            setDropdown(prev => ({
+                ...prev,
+                x: rect.left + rect.width,
+                // Move the dropdown up slightly if there's space for it
+                y: rect.top + rect.height - (
+                (
+                    Math.min(rect.width, rect.height) >= (50) ||
+                    (rect.height >= 100)
+                )? 34: 2),
+                buttons,
+                visible: true
+            }))
+        }}
+
+        eventMouseLeave={() => {
+            setDropdown(prev => ({ ...prev, visible: false }))
         }}
 
         datesSet={info => {

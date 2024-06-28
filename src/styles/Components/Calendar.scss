@@ -1,4 +1,5 @@
 .calendar {
+    width: 100%;
     font-size: 1em;
 
     $margin: 0px;//10px;
@@ -6,6 +7,14 @@
 
     >.fc {
         max-height: calc(100vh - ($margin * 2));
+    }
+
+    .fc-day {
+        background-color: rgba(0, 0, 0, .04) !important;
+
+        &.fc-day-today {
+            background-color: transparent !important;
+        }
     }
 
     .fc-toolbar {
@@ -21,6 +30,14 @@
         /*&::before, &::after {
             content: none !important;
         }*/
+
+        .fc-event-main {
+            overflow: hidden;
+        }
+    }
+
+    .fc-col-header-cell {
+        vertical-align: bottom !important;
     }
 
     .fc-daygrid table thead th {
@@ -59,8 +76,42 @@
         background-color: transparent !important;
     }
 
-    // Left of resources title
-    /*.fc-datagrid-expander {
-        display: none;
-    }*/
+    .fc-timegrid-slot-label-frame {
+        text-align: center;
+    }
+
+    .timeslot-small, .timeslot-large {
+        display: block;
+        text-align: center;
+        margin: 0 auto;
+
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    td:has(.timeslot-small) {
+        border-top: none;
+        border-bottom: none;
+    }
+
+    .timeslot-small {
+        opacity: .7;
+    }
+
+    // All day header
+    .fc-timegrid-axis-frame.fc-timegrid-axis-frame-liquid {
+        justify-content: center;
+        text-align: center;
+    }
+
+    // Top left borders
+    .fc-col-header thead {
+        :first-child .fc-timegrid-axis {
+            border-bottom-width: 0;
+        }
+
+        :nth-child(2) .fc-timegrid-axis {
+            border-top-width: 0;
+        }
+    }
 }

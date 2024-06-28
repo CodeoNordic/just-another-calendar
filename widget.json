@@ -1,6 +1,6 @@
 {
-    "name": "ProductionPlan",
-    "server": "devmaster.codeo.no",
+    "name": "Calendar",
+    "server": "custmaster.codeo.no",
     "file": "NOBS_GUI",
     "uploadScript": "UploadHTML"
 }

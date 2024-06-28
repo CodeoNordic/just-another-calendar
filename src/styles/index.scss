@@ -9,6 +9,7 @@
     --nobs-background-gray: #D9D9D9;
 
     --nobs-blue: #009CC6;
+    --nobs-dark-blue: #007494;
 
     --button-hover: rgba(0, 0, 0, .2);
     --button-active: rgba(0, 0, 0, .3);
@@ -24,4 +25,15 @@ body {
 
     user-select: none;
     font-size: 0.9em;
+}
+
+.app-wrapper {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 0% 1fr;
+
+    &:has(.side-menu.open) {
+        grid-template-columns: 1fr 6fr;
+    }
 }

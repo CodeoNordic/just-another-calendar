@@ -11,8 +11,6 @@ const Calendar: FC = () => {
     const records = config?.records;
 
     const initialDate = dateFromString(config?.initialDate)?.valueOf();
-
-    const fontSizes = config?.fontSizes;
     const fontStyles = config?.styles;
 
     useEffect(() => {
@@ -25,7 +23,7 @@ const Calendar: FC = () => {
 
         document.head.appendChild(style);
         return () => style.remove();
-    }, [fontSizes, fontStyles]);
+    }, [fontStyles]);
 
     if (!config) return null;
 

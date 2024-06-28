@@ -1,0 +1,35 @@
+.collapse {
+    .top {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        column-gap: 8px;
+    }
+
+    .collapse-toggle {
+        background-color: transparent;
+        border: none;
+
+        padding: 2px;
+
+        svg {
+            stroke: black;
+            scale: 1.25;
+            stroke-width: .125em;
+        }
+
+        @include buttonEffects;
+    }
+
+    &.collapsed {
+        .collapse-toggle svg {
+            transform: rotate(-90deg);
+        }
+
+        .collapse-container {
+            height: 0;
+            overflow: hidden;
+        }
+    }
+}

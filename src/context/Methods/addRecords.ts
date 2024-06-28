@@ -9,7 +9,9 @@ export default function useAddRecords() {
 
     useEffect(() => createMethod('addRecords', param => setConfig(prev => {
         if (!prev) return null;
+        
         const { records, ...rest } = prev;
+        if (!records?.length) return prev;
 
         return {
             ...rest,

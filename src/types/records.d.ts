@@ -6,27 +6,33 @@ declare global {
 
             id: string;
             resourceId: string|string[];
+            sourceId: string|string[];
 
             dateStart: string;
             dateFinishedDisplay: string;
+            allDay?: boolean;
 
-            orderNumber: string;
-            orderId: string;
-            orderCategory: string;
+            timeStart?: string;
+            timeEnd?: string;
 
-            nomenklatur: string;
-            
-            responsibleNextTask?: string;
-            responsibleNextTaskInitials?: string;
-            
             tooltip?: string;
-            statusText?: string;
-            
-            isUrgent?: boolean;
+
+            title?: string;
+            description?: string;
             
             patientFullName: string;
             patientId: string;
             patientReference: string;
+
+            statusId?: string;
+            statusText?: string;
+
+            showButtons?: boolean;
+            isLate?: boolean;
+            didNotArrive?: boolean;
+            hasArrived?: boolean;
+            hasCheckedOut?: boolean;
+            isRepetition?: boolean;
             
             colors?: {
                 text?: string;

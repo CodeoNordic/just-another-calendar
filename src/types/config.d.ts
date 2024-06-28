@@ -6,6 +6,13 @@ declare global {
             initiallyCollapsed?: boolean;
         }
 
+        interface EventSource {
+            id: string;
+            title: string;
+            color: string;
+            defaultDisabled?: boolean;
+        }
+
         interface TextStyle {
             font?: string;
             size?: string;
@@ -26,16 +33,16 @@ declare global {
         interface Config {
             records: FM.EventRecord[];
 
-            resources: Resource[];
+            resources?: Resource[];
             resourcesWidth?: string;
 
-            licenseKey: string;
-            locale: string;
-            initialView: string;
-            initialDate: string;
-            eventTimeFormat: string;
+            licenseKey?: string;
+            locale?: string;
+            initialView?: string;
+            initialDate?: string;
+            eventTimeFormat?: string;
 
-            eventComponent?: 'withStatus'|'compact'; // 'withStatus'
+            eventComponent?: 'compact';
             compactFields?: (string & keyof FM.EventRecord)[];
 
             //minDate?: string;
@@ -49,9 +56,15 @@ declare global {
                 onJsRequest: string;
                 onJsError: string;
                 
-                openDelivery: string;
+                selectDate: string;
+
+                openEvent: string;
                 openPatient: string;
-                openOrder: string;
+
+                patientHasArrived: string;
+                patientIsLate: string;
+                patientDidNotArrive: string;
+                eventCheckout: string;
 
                 onDrag: string;
             };
@@ -69,17 +82,6 @@ declare global {
 
                 dateHeader?: TextStyle;
                 dayHeader?: TextStyle;
-            }
-
-            /** @deprecated use config.styles instead */
-            fontSizes?: {
-                base?: string;
-                delivery?: string;
-
-                resourceHeader?: string;
-                
-                dateHeader?: string;
-                dayHeader?: string;
             }
         }
     }

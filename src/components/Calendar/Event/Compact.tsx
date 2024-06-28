@@ -9,12 +9,9 @@ import combineClasses from '@utils/combineClasses';
 // Import SVG Icons
 import ProfileIcon from 'jsx:@svg/profile.svg';
 import ClockIcon from 'jsx:@svg/clock.svg';
-import ArrowIcon from 'jsx:@svg/arrow.svg';
 import LightningIcon from 'jsx:@svg/lightning.svg';
 
 const fixedFields: (string & keyof FM.EventRecord)[] = [
-    'orderNumber',
-    'responsibleNextTaskInitials',
     'dateFinishedDisplay',
     'patientReference'
 ];
@@ -34,7 +31,7 @@ const CompactEvent: FC<FM.EventRecord> = props => {
     const fields: Required<NOBS.Config['compactFields']> = useMemo(() =>
         (config?.compactFields instanceof Array)
             ? config.compactFields
-            : [config?.compactFields ?? 'orderNumber', 'dateFinishedDisplay'],
+            : [config?.compactFields ?? 'patientReference', 'dateFinishedDisplay'],
         [config?.compactFields]
     );
 
@@ -53,26 +50,6 @@ const CompactEvent: FC<FM.EventRecord> = props => {
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
     >
-        {fields.includes('orderNumber') && <button
-            className="order-button"
-            onClick={() => {performScript('openOrder', props.orderId)}}
-            onPointerMove={onButtonEnter}
-            onPointerLeave={onButtonLeave}
-        >
-            <p className="order-text">
-                <strong>{props.orderNumber}</strong>
-            </p>
-            
-            <ArrowIcon />
-        </button>}
-
-        {fields.includes('responsibleNextTaskInitials') && props.responsibleNextTaskInitials && <span className="user-initials">
-            {props.responsibleNextTaskInitials.split('\n').map((initials, i) => <Fragment key={i}>
-                {i !== 0 && <br />}
-                {initials}
-            </Fragment>)}
-        </span>}
-
         {fields.includes('dateFinishedDisplay') && <div className="top" style={{ color: props.colors?.date }}>
             <ClockIcon className="clock-icon" />
             <span className='date'>{props.dateFinishedDisplay?.replace(/\d{2}(\d{2})$/, '$1')}</span>
