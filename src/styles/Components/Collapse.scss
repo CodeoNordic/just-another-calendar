@@ -11,12 +11,12 @@
         background-color: transparent;
         border: none;
 
-        padding: 2px;
+        padding: 8px 8px 6px 8px;
 
         svg {
             stroke: black;
             scale: 1.25;
-            stroke-width: .125em;
+            stroke-width: .145em;
         }
 
         @include buttonEffects;

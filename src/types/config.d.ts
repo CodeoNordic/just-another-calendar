@@ -10,7 +10,7 @@ declare global {
             id: string;
             title: string;
             color: string;
-            defaultDisabled?: boolean;
+            enabled?: boolean;
         }
 
         interface TextStyle {

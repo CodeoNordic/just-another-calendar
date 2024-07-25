@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react';
 import { useConfig } from '@context/Config';
 
 import Collapse from './Collapse';
-
 import performScript from '@utils/performScript';
+
+import getCalendarDates from '@utils/calendarDates';
 import weekNumber from '@utils/weekNumber';
 import dateFromString from '@utils/dateFromString';
 
@@ -39,74 +40,13 @@ const DatePicker: FC = () => {
     }, [selectedMonth]);
 
     // Calculate the dates of the current month
-    const dates = useMemo(() => {
-        const maxDate = new Date(selectedMonth);
-        maxDate.setMonth(maxDate.getMonth() + 1);
-        maxDate.setDate(0);
-
-        const year = maxDate.getFullYear();
-        const month = maxDate.getMonth() + 1; // 0 indexed months
-
-        const max = maxDate.getDate();
-
-        const dates: string[] = [];
-        for (let i = 1; i <= max; i++) {
-            dates.push(`${year}/${month}/${i}`);
-        }
-
-        return dates;
-    }, [selectedMonth]);
-
-    // Calculate additional dates to fill the date picker
-    const extraDates = useMemo(() => {
-        const start = new Date(selectedMonth);
-        start.setDate(1);
-
-        const end = new Date(selectedMonth);
-        end.setMonth(end.getMonth() + 1);
-
-        const nextMonthBase = `${end.getFullYear()}/${end.getMonth() + 1}`;
-        end.setDate(0);
-
-        const startWeekday = start.toLocaleDateString('en', { weekday: 'short' }).toLowerCase();
-        const endWeekday = end.toLocaleDateString('en', { weekday: 'short' }).toLowerCase();
-
-        const extraStart = weekMap[startWeekday as keyof typeof weekMap] ?? 0;
-        let extraEnd = 6 - (weekMap[endWeekday as keyof typeof weekMap] ?? 0);
-
-        const year = selectedMonth.getFullYear();
-        const monthStart = start.getMonth() + 1; // 0 indexed months
-
-        const firstStartDate = new Date(start);
-        firstStartDate.setDate(-(extraStart - 1));
-        
-        const extraDatesStart: string[] = [];
-        // Add start dates
-        for (let i = 0; i < extraStart; i++) {
-            extraDatesStart.push(`${year}/${monthStart}/${firstStartDate.getDate() + i}`);
-        }
-
-        // Ensure that 6 weeks will be shown
-        if ((dates.length + extraDatesStart.length + extraEnd) <= 35) extraEnd += 7;
-
-        const extraDatesEnd: string[] = [];
-        // Add end dates
-
-        for (let i = 1; i <= extraEnd; i++) {
-            extraDatesEnd.push(`${nextMonthBase}/${i}`);
-        }
-
-        return {
-            start: extraDatesStart,
-            end: extraDatesEnd
-        }
-    }, [dates, selectedMonth]);
+    const dates = useMemo(() => getCalendarDates(selectedMonth), [selectedMonth]);
 
     const weekNumbers = useMemo(() => {
         const nums: number[] = [];
 
         // Could be optimized, but for simplicities sake, loop through each date
-        [...dates, ...extraDates.start, ...extraDates.end].forEach(date => {
+        [...dates.middle, ...dates.start, ...dates.end].forEach(date => {
             const num = weekNumber(new Date(date));
             if (nums.includes(num)) return;
 
@@ -115,9 +55,8 @@ const DatePicker: FC = () => {
 
         // Remove excess
         while (nums.length > 6) nums.pop();
-
         return nums;
-    }, [dates, extraDates]);
+    }, [dates]);
 
     return <div className="date-picker">
         <Collapse top={<>
@@ -150,11 +89,11 @@ const DatePicker: FC = () => {
                     <span>Lø</span>
                     <span>Sø</span>
 
-                    {extraDates.start.map((date, i) => <button disabled key={i} className="extra-date">
+                    {dates.start.map((date, i) => <button disabled key={i} className="extra-date">
                         {new Date(date).getDate()}
                     </button>)}
 
-                    {dates.map((date, i) => <button
+                    {dates.middle.map((date, i) => <button
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
                         onClick={() => {
@@ -169,7 +108,7 @@ const DatePicker: FC = () => {
                         {new Date(date).getDate()}
                     </button>)}
 
-                    {extraDates.end.map((date, i) => <button disabled key={i} className="extra-date">
+                    {dates.end.map((date, i) => <button disabled key={i} className="extra-date">
                         {new Date(date).getDate()}
                     </button>)}
                 </div>

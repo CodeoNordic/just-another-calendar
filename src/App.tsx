@@ -6,6 +6,8 @@ import EventDropdownProvider from '@components/Calendar/Event/Dropdown';
 import SideMenu from '@components/SideMenu';
 import Calendar from '@components/Calendar';
 
+import '@utils/calendarDates';
+
 const App: React.FC = () => {
     const config = useConfig();
 

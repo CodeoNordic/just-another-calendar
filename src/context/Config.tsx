@@ -24,7 +24,10 @@ const runLoadCallbacks = () => loadCallbacks.length && loadCallbacks.forEach(cb 
 // FileMaker may call init before useEffect can assign the function
 // This acts as a failsafe
 window.init = cfg => {
-    window._config = parseConfig(cfg);
+    const parsedConfig = parseConfig(cfg);
+    if (!parsedConfig) return;
+
+    window._config = parsedConfig;
     runLoadCallbacks();
 };
 
@@ -37,7 +40,9 @@ const ConfigProvider: FC = ({ children }) => {
 
         window.init = cfg => {
             const parsedConfig = parseConfig(cfg);
-            parsedConfig && setConfig(parsedConfig);
+            if (!parsedConfig) return;
+
+            setConfig(parsedConfig);
 
             window._config = parsedConfig;
             runLoadCallbacks();
@@ -49,6 +54,7 @@ const ConfigProvider: FC = ({ children }) => {
         window._config = config || undefined;
     }, [config]);
 
+    //if (!config) return null;
     return <ConfigContext.Provider value={[config, setConfig]}>
         {children}
     </ConfigContext.Provider>

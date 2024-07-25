@@ -6,7 +6,7 @@ declare global {
 
             id: string;
             resourceId: string|string[];
-            sourceId: string|string[];
+            //sourceId: string|string[];
 
             dateStart: string;
             dateFinishedDisplay: string;

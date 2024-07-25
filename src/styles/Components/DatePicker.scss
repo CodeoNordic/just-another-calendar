@@ -1,4 +1,6 @@
 .date-picker {
+    min-width: 240px;
+
     .top {
         font-size: 1.3em;
 
@@ -35,6 +37,7 @@
     }
 
     .week-numbers {
+        min-width: 28px;
         display: grid;
         grid-template-columns: 1fr;
         border-right: 1px solid black;
