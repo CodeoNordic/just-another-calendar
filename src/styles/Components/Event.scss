@@ -1,6 +1,6 @@
 @import 'CompactEvent';
 
-.nobs-event {
+.jac-event {
     padding: 2px;
     user-select: none;
     -ms-user-select: none;
@@ -39,11 +39,11 @@
     column-gap: 4px;
 }
 
-.fc-timegrid-event-short .nobs-event {
+.fc-timegrid-event-short .jac-event {
     flex-direction: row;
 }
 
-.nobs-background-event {
+.jac-background-event {
     padding: 4px 8px;
 }
 

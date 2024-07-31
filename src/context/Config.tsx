@@ -6,8 +6,23 @@ import { loadCallbacks } from '@utils/performScript';
 // Parses the JSON from FileMaker into a readable config
 const parseConfig = (cfg: string) => {
     try {
-        const config = JSON.parse(cfg) as NOBS.Config;
-        config.records = getRecordsFromObject(config.records) || [];
+        const config = JSON.parse(cfg) as JAC.Config;
+        const records = getRecordsFromObject(config.records) || [];
+
+        let _configWarned = false;
+        config.records = records.map(record => {
+            if (record._config !== undefined) {
+                if (!_configWarned) {
+                    console.warn(`One or more records passed include a _config key. This key is reserved, so the original value is available in __config`);
+                    _configWarned = true;
+                }
+                
+                record.__config = record._config;
+            }
+
+            record._config = config;
+            return record;
+        });
 
         return config;
     } catch(err) {
@@ -31,9 +46,9 @@ window.init = cfg => {
     runLoadCallbacks();
 };
 
-const ConfigContext = createContext<State<NOBS.Config|null>>([null, () => {}]);
+const ConfigContext = createContext<State<JAC.Config|null>>([null, () => {}]);
 const ConfigProvider: FC = ({ children }) => {
-    const [config, setConfig] = useState<NOBS.Config|null>(null);
+    const [config, setConfig] = useState<JAC.Config|null>(null);
 
     useEffect(() => {
         if (window._config !== undefined) setConfig(window._config);

@@ -11,12 +11,12 @@ import ProfileIcon from 'jsx:@svg/profile.svg';
 import ClockIcon from 'jsx:@svg/clock.svg';
 import LightningIcon from 'jsx:@svg/lightning.svg';
 
-const fixedFields: (string & keyof FM.EventRecord)[] = [
+const fixedFields: (string & keyof JAC.Event)[] = [
     'dateFinishedDisplay',
     'patientReference'
 ];
 
-const CompactEvent: FC<FM.EventRecord> = props => {
+const CompactEvent: FC<JAC.Event> = props => {
     const config = useConfig();
 
     const {
@@ -28,7 +28,7 @@ const CompactEvent: FC<FM.EventRecord> = props => {
     } = useTooltip(props.tooltip, props.colors);
 
     const patientFullName = !config?.privacyMode && props.patientFullName;
-    const fields: Required<NOBS.Config['compactFields']> = useMemo(() =>
+    const fields: Required<JAC.Config['compactFields']> = useMemo(() =>
         (config?.compactFields instanceof Array)
             ? config.compactFields
             : [config?.compactFields ?? 'patientReference', 'dateFinishedDisplay'],
@@ -43,7 +43,7 @@ const CompactEvent: FC<FM.EventRecord> = props => {
 
     return <div
         className={combineClasses(
-            'nobs-event compact',
+            'jac-event compact',
             !!extraFields.length && 'extra-fields',
             ...fields.map(f => `includes-${f}`)
         )}
@@ -69,7 +69,7 @@ const CompactEvent: FC<FM.EventRecord> = props => {
         {fields.includes('patientReference') && <button
             className="patient"
             onClick={() => performScript('openPatient', props.patientId)}
-            style={{ color: props.colors?.patient }}
+            style={{ color: props.colors?.text }}
             onPointerMove={onButtonEnter}
             onPointerLeave={onButtonLeave}
         >

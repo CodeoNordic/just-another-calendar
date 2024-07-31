@@ -1,24 +1,17 @@
-import { useEffect, useRef, createContext, useContext, useState, useCallback } from 'react'
+import { useRef, createContext, useContext, useState } from 'react'
 
-// Import icons
-import ArrivedIcon from 'jsx:@svg/checkmark.svg';
-import LateIcon from 'jsx:@svg/clock.svg';
-import DidNotArriveIcon from 'jsx:@svg/minus.svg';
-import CheckoutIcon from 'jsx:@svg/checkout.svg';
+import { useConfig } from '@context/Config';
+import performScript from '@utils/performScript';
 
 import combineClasses from '@utils/combineClasses';
-
-export interface DropdownButton {
-    icon: 'arrived'|'late'|'didNotArrive'|'checkout',
-    onClick: () => void;
-}
+import Icon from '@components/Icon';
 
 interface Dropdown {
     eventId: string|null;
     visible: boolean;
     x: number;
     y: number;
-    buttons: DropdownButton[];
+    buttons: JAC.EventButton[];
 }
 
 const defaultState: Dropdown = {
@@ -33,6 +26,8 @@ const DropdownContext = createContext<State<Dropdown>>([defaultState, ()=> {}]);
 export const useEventDropdown = () => useContext(DropdownContext);
 
 const EventDropdownProvider: FC = props => {
+    const config = useConfig();
+
     const [dropdown, setDropdown] = useState<Dropdown>(defaultState);
     const [dropdownHover, setDropdownHover] = useState<boolean>(false);
 
@@ -40,20 +35,22 @@ const EventDropdownProvider: FC = props => {
 
     return <>
         <div className="event-dropdown" ref={divRef} style={{
+            // Do not display if no buttons are defined
             display: ((dropdown.visible || dropdownHover) && !!dropdown.buttons?.length)? 'block': 'none',
             position: 'fixed',
             top: dropdown.y,
             left: dropdown.x
         }} onPointerEnter={() => setDropdownHover(true)} onPointerLeave={() => setDropdownHover(false)}>
             <div className={combineClasses('dropdown-buttons', `child-count-${dropdown.buttons?.length ?? 0}`)}>
-                {dropdown.buttons.map((btn, i) => <button key={i} onClick={btn.onClick}>
-                    {btn.icon === 'arrived'
-                        ? <ArrivedIcon />
-                    :btn.icon === 'late'
-                        ? <LateIcon />
-                    :btn.icon === 'didNotArrive'
-                        ? <DidNotArriveIcon />
-                    : <CheckoutIcon />}
+                {dropdown.buttons.map((btn, i) => <button key={i} onClick={btn.script? () => {
+                    performScript(
+                        btn.script!,
+                        config?.records?.find(r => r.id === dropdown.eventId),
+                        undefined,
+                        true
+                    );
+                }: undefined}>
+                    {btn.icon && <Icon src={btn.icon} />}
                 </button>)}
             </div>
         </div>

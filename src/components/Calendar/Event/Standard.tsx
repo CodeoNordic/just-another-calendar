@@ -1,7 +1,7 @@
 import { useConfig } from '@context/Config';
 import useTooltip from '@hooks/useTooltip';
 
-const StandardEvent: FC<FM.EventRecord> = props => {
+const StandardEvent: FC<JAC.Event> = props => {
     const config = useConfig();
 
     const {
@@ -17,7 +17,7 @@ const StandardEvent: FC<FM.EventRecord> = props => {
         : (props.patientFullName || props.patientReference)) || props.title;
 
     return <div
-        className="nobs-event"
+        className="jac-event"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
     >

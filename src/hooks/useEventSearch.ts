@@ -4,7 +4,7 @@ import { useConfig } from '@context/Config';
 import searchArray from '@utils/searchArray';
 
 /** 
- * Perform a search with similar functionality to that of FileMaker
+ * Perform a search using a partial record
  * @example
  * ```tsx
  * const records = useEventSearch({ FirstName: 'Joakim' });
@@ -17,13 +17,13 @@ import searchArray from '@utils/searchArray';
  * </>
  * ```
  */
-export default function useEventSearch<T = {}>(search?: null|string|Partial<FM.Record<T>>) {
-    const [records, setRecords] = useState<FM.EventRecord[]>([]);
+export default function useEventSearch(search?: null|string|Partial<JAC.Event>, negativeSearch?: boolean) {
+    const [records, setRecords] = useState<JAC.Event[]>([]);
     const config = useConfig();
 
     useEffect(() => {
         if (!config?.records?.length) return setRecords([]);
-        setRecords(searchArray(config.records, search));
+        setRecords(searchArray(config.records, search, negativeSearch));
     }, [config, search]);
 
     return records;

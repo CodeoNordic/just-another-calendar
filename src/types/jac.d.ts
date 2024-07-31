@@ -1,0 +1,115 @@
+declare global {    
+    namespace JAC {
+        interface Resource {
+            id: string;
+            title?: string;
+            collapsed?: boolean;
+            disabled?: boolean;
+        }
+    
+        /**
+         * Use clientOnly and _filter if the filter should be handled only in the web component.
+         * Otherwise, 'onFilterChange' will be ran.
+        */
+        type EventFilter = WithFilter<{
+            id: string;
+            title?: string;
+            color?: string;
+
+            /** Whether the filter is currently being used or not */
+            enabled?: boolean;
+
+            /** Whether the filter's on/off state can be changed by the user */
+            locked?: boolean;
+    
+            /** If the filter is client only, _filter must be defined, as it will filter locally */
+            clientOnly?: boolean;
+        }>;
+    
+        interface TextStyle {
+            font?: string;
+            size?: string;
+    
+            weight?: string;
+            boldness?: string; // alias for weight
+    
+            margin?: string;
+            padding?: string;
+    
+            color?: string;
+            textColor?: string; // alias for color
+    
+            background?: string;
+            backgroundColor?: string; // alias for background
+    
+            alignment?: 'left'|'center'|'right';
+        }
+    
+        type EventButton = WithFilter<{
+            /** Either a key of config.icons, or <svg> code */
+            icon?: string;
+    
+            /** Either a script name key, or a direct script name */
+            script?: string;
+        }>;
+
+        interface EventDropdown {
+            eventId: string|null;
+            visible: boolean;
+            x: number;
+            y: number;
+            buttons: EventButton[];
+        }
+
+        type EventField = WithFilter<{
+            /** The field type. Defaults to 'text' */
+            type: 'text'|'button'|'time'|'date';
+
+            /** An icon to be used alongside the field value. If the icon starts with < it is assumed to be injectable HTML */
+            icon?: string;
+
+            /** The key of the value to display, E.G "FirstName". Supports lodash.get syntax such as "NestedObject.FirstName" or "NestedArray[0]" */
+            value: string;
+
+            /**
+             * Optional value template. Will be prioritized over "value"
+             * @example
+             * ```js
+             * template: '{FirstName} {LastName}'
+             * template: '{Date:timestampStart} - {Date:timestampEnd}'
+             * template: '{Time:timestampStart} - {Time:timestampEnd}'
+             * ```
+            */
+            template?: string;
+
+            /**
+             * Optional JS function to return a value. Will be prioritized over 'template' and 'value'
+             * 
+             * undefined, null or an empty string is considered an empty value
+             * @example
+             * ```js
+             * eval: 'record => `${record.FirstName} ${record.LastName}`'
+             * eval: 'function(record) { return record.FirstName + ' ' + record.LastName }'
+             * eval: 'record => record.Arrived? "ARRIVED": null'
+             * ```
+            */
+            eval?: string;
+
+            /** By default, the field will not be displayed if the value is empty */
+            showIfEmpty?: boolean;
+
+            /** Optional CSS class for custom styling */
+            cssClass?: string;
+
+            /** Should be defined if type is 'button' */
+            script?: string;
+        }>;
+
+        interface EventComponent {
+            name: string;
+            fields: EventField[];
+        }
+    }
+}
+
+export {};

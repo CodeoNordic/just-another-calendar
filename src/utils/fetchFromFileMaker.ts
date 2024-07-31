@@ -1,7 +1,7 @@
 import { v4 as randomUUID } from 'uuid';
 import performScript, { loadCallbacks } from './performScript';
 
-const promises = new Map<string, (data: any) => any>();
+const promises = new Map<string, { resolve: (data: any) => void; reject: (err?: any) => void}>();
 
 window.onScriptResult = (uuid, data) => {
     const promise = promises.get(uuid);
@@ -9,10 +9,10 @@ window.onScriptResult = (uuid, data) => {
 
     try {
         const parsedData = JSON.parse(data);
-        promise(parsedData);
+        promise.resolve(parsedData);
     } catch(err) {
         console.error(err);
-        promise(err);
+        promise.reject(err);
     }
 
     promises.delete(uuid);
@@ -20,7 +20,7 @@ window.onScriptResult = (uuid, data) => {
 
 /**
  * Asynchronously waits for FileMaker to send a response to JS
- * @param scriptKey The key of the script as per `NOBS.Config`
+ * @param scriptKey The key of the script as per `JAC.Config`
  * @example
  * ```ts
  * fetchFromFileMaker('getContacts', { FirstName: 'Joakim' }).then(contacts => {
@@ -29,7 +29,7 @@ window.onScriptResult = (uuid, data) => {
  * ```
  */
 export default async function fetchFromFileMaker<T = RSAny>(
-    scriptKey: string & keyof NOBS.Config['scriptNames'],
+    scriptKey: string & keyof JAC.Config['scriptNames'],
     param?: any,
     timeoutInMs: number = 30_000,
     option?: Parameters<typeof window['FileMaker']['PerformScriptWithOption']>[2]
@@ -67,11 +67,17 @@ export default async function fetchFromFileMaker<T = RSAny>(
         }, timeoutInMs);
 
         // Add a callback to the promise map
-        promises.set(uuid, data => {
-            clearTimeout(timeout);
-
-            if (data instanceof Error) rej(data);
-            else res(data);
+        promises.set(uuid, {
+            resolve: data => {
+                clearTimeout(timeout);
+    
+                if (data instanceof Error) rej(data);
+                else res(data);
+            },
+            reject: err => {
+                clearTimeout(timeout);
+                rej(err);
+            }
         });
 
         const status = performScript('onJsRequest', {

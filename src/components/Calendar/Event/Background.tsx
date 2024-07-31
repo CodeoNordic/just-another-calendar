@@ -1,7 +1,8 @@
-const BackgroundEvent: FC<FM.EventRecord> = props => {
+const BackgroundEvent: FC<JAC.Event> = props => {
     if (props.type !== 'backgroundEvent') return null;
 
-    return <div className="nobs-background-event">
+    // Background color is controlled in fullcalendar
+    return <div className="jac-background-event">
         {props.backgroundText}
     </div>
 }

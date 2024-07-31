@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useConfig } from '@context/Config';
 
 import { useCreateMethod } from '@utils/createMethod';
@@ -6,7 +6,7 @@ import { v4 as randomUUID } from 'uuid';
 
 // Import components
 import Event from '@components/Calendar/Event';
-import { DropdownButton, useEventDropdown } from './Event/Dropdown';
+import { useEventDropdown } from './Event/Dropdown';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
@@ -28,64 +28,43 @@ import createMethod from '@utils/createMethod';
 import dateFromString from '@utils/dateFromString';
 import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
+import searchObject from '@utils/searchObject';
 
 interface Props {
-    records?: FM.EventRecord[];
-    initialDate?: DateInput;
-}
-
-// Determine status buttons for record
-const statusButtons = (r: FM.EventRecord) => {
-    const buttons: DropdownButton[] = [];
-    if (!r.showButtons || r.isRepetition || r.hasCheckedOut || r.didNotArrive) return buttons;
-
-    if (r.isLate) {
-        // Show the arrived and did not arrive buttons
-        buttons.push({
-            icon: 'arrived',
-            onClick: () => performScript('patientHasArrived', r.id)
-        }, {
-            icon: 'didNotArrive',
-            onClick: () => performScript('patientDidNotArrive', r.id)
-        });
-
-        return buttons;
-    }
-
-    if (r.hasArrived) {
-        // Only show the checkout button
-        buttons.push({
-            icon: 'checkout',
-            onClick: () => performScript('eventCheckout', r.id)
-        });
-
-        return buttons;
-    }
-    
-    buttons.push({
-        icon: 'arrived',
-        onClick: () => performScript('patientHasArrived', r.id)
-    }, {
-        icon: 'late',
-        onClick: () => performScript('patientIsLate', r.id)
-    }, {
-        icon: 'didNotArrive',
-        onClick: () => performScript('patientDidNotArrive', r.id)
-    })
-
-    return buttons;
+    records?: JAC.Event[];
+    date?: DateInput;
 }
 
 const FullCalendar: FC<Props> = props => {
     const calendarRef = useRef<FullCalendarReact|null>(null);
     const config = useConfig()!;
 
-    const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.initialDate) || new Date());
+    const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
     const [resourcesTitle, setResourcesTitle] = useState<string>('');
     const [,setRevertFunctions] = useState<Record<string, Function>>({});
 
     const [,setDropdown] = useEventDropdown();
-    const cur = currentDate.valueOf();
+
+    // Determine dropdown buttons for each record
+    const eventButtons = useCallback((r: JAC.Event) => {
+        if (!config.eventButtons) return [];
+        return config.eventButtons?.filter(btn => !btn._filter || searchObject(r, btn._filter));
+    }, [config.eventButtons]);
+    
+    // Automatically change date
+    useEffect(() => {
+        const date = config.date && dateFromString(config.date);
+        if (!calendarRef.current || !date) return;
+
+        calendarRef.current.getApi().gotoDate(date);
+        setCurrentDate(date);
+    }, [calendarRef, config!.date]);
+
+    // Automatically change view
+    useEffect(() => {
+        if (!calendarRef.current || !config.view) return;
+        calendarRef.current.getApi().changeView(config.view);
+    }, [calendarRef, config!.view]);
 
     useEffect(() => {
         if (!calendarRef.current) return;
@@ -129,11 +108,15 @@ const FullCalendar: FC<Props> = props => {
         });
     });
 
-    const eventsBase: EventSourceInput = useMemo(() => (props.records ?? []).map(record => {
-        if (!record.resourceId && record.type !== 'backgroundEvent') console.warn(`The following record does not have a resource ID`, record);
+    const eventsBase: EventSourceInput = useMemo(() => (props.records ?? []).map((record, i) => {
+        if (!record.id) {
+            console.warn(`The following record does not have an associated ID, and will instead use its array index`, record);
+            record.id = String(i);
+        }
+        //if (!record.resourceId && record.type !== 'backgroundEvent') console.warn(`The following record does not have a resource ID`, record);
 
-        const eventStart = dateFromString(record.dateStart);
-        const eventEnd = dateFromString(record.dateFinishedDisplay);
+        const eventStart = dateFromString(record.timestampStart);
+        const eventEnd = dateFromString(record.timestampEnd);
 
         if (record.timeStart) {
             const match = record.timeStart.match(/^(\d{2}):(\d{2})/);
@@ -174,10 +157,10 @@ const FullCalendar: FC<Props> = props => {
         ref={cal => calendarRef.current = cal}
 
         // Base config
-        schedulerLicenseKey={config.licenseKey}
+        schedulerLicenseKey={config.fullCalendarLicense}
         locale={config.locale ?? 'no-nb'}
 
-        initialView={/*config.initialView ?? */'resourceTimeGrid'}
+        //initialView={/*config.initialView ?? */'resourceTimeGrid'}
         initialDate={currentDate}
 
         editable
@@ -254,7 +237,7 @@ const FullCalendar: FC<Props> = props => {
         // Renderer for each event
         eventContent={props => <Event
             component={config.eventComponent}
-            {...(props.event.extendedProps.record ?? {}) as FM.EventRecord}
+            {...(props.event.extendedProps.record ?? {}) as JAC.Event}
         />}
 
         resourceGroupLabelClassNames={info => `resource-group-label-${info.groupValue}`}
@@ -264,7 +247,7 @@ const FullCalendar: FC<Props> = props => {
             const resource = config.resources?.find(r => r.id === info.groupValue);
             
             const noEvents = !eventsBase.some(e => e.resourceIds?.includes(info.groupValue));
-            const collapsed = resource?.initiallyCollapsed !== undefined? resource.initiallyCollapsed: noEvents;
+            const collapsed = resource?.collapsed !== undefined? resource.collapsed: noEvents;
 
             const expander = info.el.querySelector(`.fc-datagrid-expander:has(.fc-icon-${collapsed? 'minus':'plus'}-square)`) as HTMLButtonElement;
             expander?.click();
@@ -273,8 +256,8 @@ const FullCalendar: FC<Props> = props => {
         // Sorting
         resourceOrder="title"
         eventOrder={(a, b) => {
-            const recordA = (a as { record: FM.EventRecord }).record;
-            const recordB = (b as { record: FM.EventRecord }).record;
+            const recordA = (a as { record: JAC.Event }).record;
+            const recordB = (b as { record: JAC.Event }).record;
 
             // If both records have the same 'isUrgent' value, sort by dateFinishedDisplay
             if (recordA.isUrgent === recordB.isUrgent) {
@@ -323,14 +306,14 @@ const FullCalendar: FC<Props> = props => {
                 if (target === button || button.contains(target)) return;
             }
 
-            performScript('openEvent', info.event.id);
+            performScript('editEvent', info.event.id);
         }}
 
         eventChange={info => {
             const revertId = randomUUID();
             setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
 
-            performScript('onDrag', {
+            performScript('onEventChange', {
                 record: info.event.extendedProps.record,
                 start: info.event.start,
                 end: info.event.end,
@@ -342,9 +325,9 @@ const FullCalendar: FC<Props> = props => {
 
         eventMouseEnter={info => {
             const rect = info.el.getBoundingClientRect();
-            const record = info.event.extendedProps.record as FM.EventRecord;
+            const record = info.event.extendedProps.record as JAC.Event;
 
-            const buttons = statusButtons(record);
+            const buttons = eventButtons(record);
 
             setDropdown(prev => ({
                 ...prev,

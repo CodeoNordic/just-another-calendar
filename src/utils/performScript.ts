@@ -2,14 +2,15 @@ export const loadCallbacks: VoidFunction[] = [];
 
 /**
  * Performs a FileMaker script
- * @param key The key of the script as per `NOBS.Config`
+ * @param key The key of the script as per `JAC.Config`
  */
 export default function performScript(
-    key: string & keyof NOBS.Config['scriptNames'],
+    key: string & keyof JAC.Config['scriptNames'] | (string & {}),
     param?: any,
-    option?: Parameters<typeof window['FileMaker']['PerformScriptWithOption']>[2]
+    option?: Parameters<typeof window['FileMaker']['PerformScriptWithOption']>[2],
+    directScriptName: boolean = false
 ): string|boolean {
-    if (!window._config) {
+    if (!window._config && !directScriptName) {
         loadCallbacks.push(() => {
             performScript(key, param, option);
         });
@@ -21,14 +22,14 @@ export default function performScript(
     try {
         const parsedParam = typeof param === 'undefined'? param:JSON.stringify(param);
         
-        const scriptName = window._config.scriptNames?.[key];
+        const scriptName = directScriptName? key: window._config?.scriptNames?.[key as keyof JAC.Config['scriptNames']];
         if (typeof scriptName !== 'string') {
             const msg = `Script name of the key '${key}' was not found in the config`;
-            console.warn(msg);
+            (key !== 'onJsError') && console.warn(msg);
             return msg;
         }
 
-        if (typeof option === 'undefined')
+        if (Number.isInteger(Number(option ?? NaN)))
             window.FileMaker.PerformScript(
                 scriptName,
                 typeof parsedParam === 'undefined'? '':parsedParam
@@ -37,7 +38,7 @@ export default function performScript(
             window.FileMaker.PerformScriptWithOption(
                 scriptName,
                 typeof parsedParam === 'undefined'? '':parsedParam,
-                option
+                option!
             );
 
         return true;

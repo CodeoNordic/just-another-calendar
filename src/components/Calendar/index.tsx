@@ -10,7 +10,7 @@ const Calendar: FC = () => {
     const config = useConfig();
     const records = config?.records;
 
-    const initialDate = dateFromString(config?.initialDate)?.valueOf();
+    const date = dateFromString(config?.date)?.valueOf();
     const fontStyles = config?.styles;
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const Calendar: FC = () => {
     return <div className="calendar">
         <FullCalendar
             records={records}
-            initialDate={initialDate}
+            date={date}
         />
     </div>
 }

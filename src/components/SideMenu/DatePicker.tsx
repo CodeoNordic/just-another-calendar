@@ -12,27 +12,16 @@ import ArrowUp from 'jsx:@svg/arrow-up.svg';
 import ArrowDown from 'jsx:@svg/arrow-down.svg';
 import combineClasses from '@utils/combineClasses';
 
-// Used to determine extra days to fill the date picker
-const weekMap = {
-    mon: 0,
-    tue: 1,
-    wed: 2,
-    thu: 3,
-    fri: 4,
-    sat: 5,
-    sun: 6
-} as const;
-
 const DatePicker: FC = () => {
     const config = useConfig();
 
     const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
     const selectedDate = useMemo(() => {
-        const d = dateFromString(config?.initialDate) || new Date();
+        const d = dateFromString(config?.date) || new Date();
 
         setSelectedMonth(new Date(d));
         return d;
-    }, [config?.initialDate]);
+    }, [config?.date]);
 
     const monthTitle = useMemo(() => {
         const name = selectedMonth.toLocaleDateString(config?.locale ?? 'nb', { month: 'long' });
@@ -98,9 +87,9 @@ const DatePicker: FC = () => {
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
                         onClick={() => {
                             const d = new Date(date);
-                            performScript('selectDate', {
+                            performScript('onDateSelected', {
                                 year: d.getFullYear(),
-                                month: d.getMonth() + 1,
+                                month: d.getMonth() + 1, // 0 indexed months
                                 day: d.getDate()
                             });
                         }}

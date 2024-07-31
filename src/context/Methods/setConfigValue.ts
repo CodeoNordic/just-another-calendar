@@ -1,13 +1,13 @@
 import { useCreateMethod } from '@utils/createMethod';
 import { useConfigState } from '@context/Config';
 
-const useSetConfigProp = () => {
+const useSetConfigValue = () => {
     const [, setConfig] = useConfigState();
 
-    useCreateMethod('setConfigProp', (k, v) => setConfig(prev => prev && ({
+    useCreateMethod('setConfigValue', (k, v) => setConfig(prev => prev && ({
         ...prev,
         [k]: v
     })));
 }
 
-export default useSetConfigProp;
+export default useSetConfigValue;

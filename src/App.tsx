@@ -14,16 +14,17 @@ const App: React.FC = () => {
     const css = config?.customCSS;
     useEffect(() => {
         if (!css) return;
-        document.querySelector('style#nobs-custom-css')?.remove();
+        document.querySelector('style#jac-custom-css')?.remove();
 
         const elem = document.createElement('style');
-        elem.id = 'nobs-custom-css';
+        elem.id = 'jac-custom-css';
         elem.innerHTML = css;
 
         document.head.appendChild(elem);
         return () => elem.remove();
     }, [css]);
 
+    if (!config) return null;
     return <EventDropdownProvider>
         <div className="app-wrapper">
             <SideMenu />

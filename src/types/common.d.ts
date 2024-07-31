@@ -1,6 +1,12 @@
 declare global {
+    interface Window { debug?: RSAny; }
+    
     type RSAny = Record<string, any>;
-    type FC<T = {}> = React.FC<React.PropsWithChildren<T>>;
+    type RSS = Record<string, string>;
+
+
+    /** Shortcut to React.FC<React.PropsWithChildren<Props & { className?: string }>> */
+    type FC<T = {}> = React.FC<React.PropsWithChildren<T & { className?: string }>>;
 
     /**
          * Custom state shortcut. Provides autocomplete for react states.

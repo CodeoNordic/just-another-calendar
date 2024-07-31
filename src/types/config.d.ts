@@ -1,51 +1,25 @@
 declare global {
-    namespace NOBS {
-        interface Resource {
-            id: string;
-            title: string;
-            initiallyCollapsed?: boolean;
-        }
-
-        interface EventSource {
-            id: string;
-            title: string;
-            color: string;
-            enabled?: boolean;
-        }
-
-        interface TextStyle {
-            font?: string;
-            size?: string;
-
-            weight?: string;
-            boldness?: string; // alias for weight
-
-            padding?: string;
-
-            color?: string;
-            background?: string;
-
-            verticalAlignment?: 'top'|'center'|'bottom';
-            horizontalAlignment?: 'left'|'center'|'right';
-        }
-
+    namespace JAC {
         // Define the web config here
         interface Config {
-            records: FM.EventRecord[];
+            records: JAC.Event[];
 
             resources?: Resource[];
             resourcesWidth?: string;
 
-            licenseKey?: string;
+            fullCalendarLicense?: string;
             locale?: string;
-            initialView?: string;
-            initialDate?: string;
+            
+            view?: string;
+            date?: string;
+            
             eventTimeFormat?: string;
 
-            eventComponent?: 'compact';
-            compactFields?: (string & keyof FM.EventRecord)[];
+            eventComponent?: string;
+            eventComponents: EventComponent[];
 
-            //minDate?: string;
+            compactFields?: (string & keyof JAC.Event)[];
+
             days?: number;
 
             showWeekends?: boolean;
@@ -53,20 +27,16 @@ declare global {
 
             // Define valid script names here
             scriptNames: {
+                /** Only used if the script result shall be returned to JS */
                 onJsRequest: string;
                 onJsError: string;
                 
-                selectDate: string;
-
-                openEvent: string;
-                openPatient: string;
-
-                patientHasArrived: string;
-                patientIsLate: string;
-                patientDidNotArrive: string;
-                eventCheckout: string;
-
-                onDrag: string;
+                editEvent: string;
+                createEvent: string;
+                
+                onDateSelected: string;
+                onEventChange: string;
+                onFilterChange: string;
             };
 
             privacyMode?: boolean;
@@ -82,13 +52,20 @@ declare global {
 
                 dateHeader?: TextStyle;
                 dayHeader?: TextStyle;
-            }
+            };
+
+            icons?: {
+                name: string;
+                html: string;
+            }[];
+
+            eventButtons?: EventButton[];
         }
     }
 
     // Make values accessible via window
     interface Window {
-        _config?: NOBS.Config;
+        _config?: JAC.Config;
     }
 }
 

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, PointerEvent } from 'react';
 import clamp from '@utils/clamp';
 const tooltipPadding = 20;
 
-export default function useTooltip(tooltip?: string, colors?: FM.EventRecord['colors']) {
+export default function useTooltip(tooltip?: string, colors?: JAC.Event['colors']) {
     const config = useConfig();
     const selectable = config?.selectableTooltips;
 
@@ -19,7 +19,7 @@ export default function useTooltip(tooltip?: string, colors?: FM.EventRecord['co
     }, [buttonHover]);
 
     useEffect(() => {
-        if (!tooltip || tooltip === '\\r' || /^\s+$/.test(tooltip) || tooltipHover) return;
+        if (!tooltip || (tooltip === '\\r') || /^\s+$/.test(tooltip) || tooltipHover) return;
         if (!hoverPos || buttonHover) {
             document.querySelector('#tooltip')?.remove();
             hoverTimeout.current && clearTimeout(hoverTimeout.current);
