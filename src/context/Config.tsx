@@ -9,7 +9,8 @@ const parseConfig = (cfg: string) => {
         const config = JSON.parse(cfg) as JAC.Config;
         const records = getRecordsFromObject(config.records) || [];
 
-        let _configWarned = false;
+        // JSON.stringify can't resolve circular references
+        /*let _configWarned = false;
         config.records = records.map(record => {
             if (record._config !== undefined) {
                 if (!_configWarned) {
@@ -22,8 +23,9 @@ const parseConfig = (cfg: string) => {
 
             record._config = config;
             return record;
-        });
+        });*/
 
+        config.records = records;
         return config;
     } catch(err) {
         console.error(err);
