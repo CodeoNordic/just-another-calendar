@@ -10,8 +10,22 @@ declare global {
             resourceId: string|string[];
             //sourceId: string|string[];
 
-            timestampStart: string;
-            timestampEnd: string;
+            // Various keys for defining date and time
+            startDate?: string;
+            endDate?: string;
+            dateStart?: string;
+            dateEnd?: string
+
+            startTime?: string;
+            endTime?: string;
+            timeStart?: string;
+            timeEnd?: string;
+            
+            start?: string;
+            end?: string;
+            timestampStart?: string;
+            timestampEnd?: string;
+
             allDay?: boolean;
 
             tooltip?: string;

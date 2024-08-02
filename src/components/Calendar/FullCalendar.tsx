@@ -115,16 +115,21 @@ const FullCalendar: FC<Props> = props => {
         }
         //if (!record.resourceId && record.type !== 'backgroundEvent') console.warn(`The following record does not have a resource ID`, record);
 
-        const eventStart = dateFromString(record.timestampStart);
-        const eventEnd = dateFromString(record.timestampEnd);
+        const eventStart = dateFromString(record.timestampStart ?? record.start ?? record.startDate ?? record.dateStart);
+        const eventEnd = dateFromString(record.timestampEnd ?? record.end ?? record.endDate ?? record.dateEnd);
 
-        if (record.timeStart) {
-            const match = record.timeStart.match(/^(\d{2}):(\d{2})/);
+        console.log(record.id, eventStart, eventEnd)
+
+        const timeStart = record.startTime ?? record.timeStart;
+        const timeEnd = record.endTime ?? record.timeEnd;
+
+        if (timeStart) {
+            const match = timeStart.match(/^(\d{2}):(\d{2})/);
             match && eventStart?.setHours(Number(match[1]), Number(match[2]));
         }
 
-        if (record.timeEnd) {
-            const match = record.timeEnd.match(/^(\d{2}):(\d{2})/);
+        if (timeEnd) {
+            const match = timeEnd.match(/^(\d{2}):(\d{2})/);
             match && eventEnd?.setHours(Number(match[1]), Number(match[2]));
         }
 

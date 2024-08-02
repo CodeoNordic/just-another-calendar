@@ -1,13 +1,26 @@
 export default function dateFromString(str?: string) {
     if (!str) return;
-    const parts = str.split('.');
+    str = str.trim();
+
+    const [strDate, strTime] = str.split('T');
+    const parts = strDate.split('.');
 
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10) - 1;
     const year = parseInt(parts[2], 10);
 
-    if ([day, month, year].includes(NaN)) return new Date(str.replaceAll('-', '/') || NaN) || undefined;
-    const result = new Date(year, month, day);
+    let result: Date|undefined;
 
-    return result || new Date(str.replaceAll('-', '/') || NaN) || undefined;
+    if ([day, month, year].includes(NaN)) result = new Date(strDate.replaceAll('-', '/') || NaN) || undefined;
+    else result = new Date(year, month, day) || new Date(strDate.replaceAll('-', '/') || NaN);
+
+    const time = strTime?.match(/(\d{1,2}):(\d{1,2}):?(\d{1,2})?\.?(\d{1,3})?Z?$/);
+    if (time) result.setHours(
+        Number(time[1]) || 0,
+        Number(time[2]) || 0,
+        Number(time[3]) || 0,
+        Number(time[4]) || 0
+    );
+
+    return result || new Date(0);
 }
