@@ -118,8 +118,6 @@ const FullCalendar: FC<Props> = props => {
         const eventStart = dateFromString(record.timestampStart ?? record.start ?? record.startDate ?? record.dateStart);
         const eventEnd = dateFromString(record.timestampEnd ?? record.end ?? record.endDate ?? record.dateEnd);
 
-        console.log(record.id, eventStart, eventEnd)
-
         const timeStart = record.startTime ?? record.timeStart;
         const timeEnd = record.endTime ?? record.timeEnd;
 

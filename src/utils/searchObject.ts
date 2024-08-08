@@ -16,7 +16,7 @@ export default function searchObject(obj: RSAny, searchParam: string|RSAny): boo
     return Object.keys(searchParam)
         .every(k => {
             const searchValue = searchParam[k];
-            const value = obj[k];
+            const value = (k === '_config')? window._config: obj[k];
 
             if (searchValue === '*') return ![undefined, null].includes(value);
             if (typeof searchValue === 'string' && typeof value === 'string')

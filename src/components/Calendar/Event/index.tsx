@@ -3,6 +3,7 @@ import useTooltip from '@hooks/useTooltip';
 
 import BackgroundEvent from './Background';
 import Field from './Field';
+import { templateKey } from '@utils/getFieldValue';
 
 const Event: FC<JAC.Event> = props => {
     // An event does not render without the config being present
@@ -28,6 +29,26 @@ const Event: FC<JAC.Event> = props => {
     }
 
     if (!component) return null;
+    if (component.htmlTemplate) {
+        const parsedHtml = component.htmlTemplate
+            .replaceAll(
+                /\{([^{}]*?(?:\\\{|\\\}|[^{}])*)\}/g,
+                (_, key: string) => templateKey(
+                    props,
+                    key.replaceAll('\\{', '{')
+                        .replaceAll('\\}', '}')
+                )
+            ).replaceAll('\\{', '{')
+                .replaceAll('\\}', '}');
+
+        return <div
+            className="jac-event"
+            onPointerMove={onPointerMove}
+            onPointerLeave={onPointerLeave}
+            dangerouslySetInnerHTML={{ __html: parsedHtml ?? '' }}
+        />
+    }
+
     return <div
         className="jac-event"
         onPointerMove={onPointerMove}

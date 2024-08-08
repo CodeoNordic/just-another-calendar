@@ -78,6 +78,10 @@ declare global {
              * template: '{FirstName} {LastName}'
              * template: '{Date:timestampStart} - {Date:timestampEnd}'
              * template: '{Time:timestampStart} - {Time:timestampEnd}'
+             * 
+             * // eval can also be used, but curly brackets in the code must be preceded by a double backslash
+             * template: '{Date:timestampStart} - {Eval:(record, config) => new Date(record.timestampStart).toLocaleTimeString(config.locale)}'
+             * templace: '{Eval:record => \\{ if (record.arrived) return "ARRIVED"; \\}}'
              * ```
             */
             template?: string;
@@ -98,6 +102,9 @@ declare global {
             /** By default, the field will not be displayed if the value is empty */
             showIfEmpty?: boolean;
 
+            /** Whether the field should take up as much horizontal space as possible */
+            fullWidth?: boolean;
+
             /** Optional CSS class for custom styling */
             cssClass?: string;
 
@@ -107,7 +114,8 @@ declare global {
 
         interface EventComponent {
             name: string;
-            fields: EventField[];
+            fields?: EventField[];
+            htmlTemplate?: string;
         }
     }
 }

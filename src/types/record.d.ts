@@ -4,7 +4,6 @@ declare global {
         type Event = FM.Record<{
             type?: 'event'|'backgroundEvent';
             _component?: string;
-            _config: JAC.Config;
 
             id: string;
             resourceId: string|string[];

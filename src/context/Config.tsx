@@ -9,21 +9,20 @@ const parseConfig = (cfg: string) => {
         const config = JSON.parse(cfg) as JAC.Config;
         const records = getRecordsFromObject(config.records) || [];
 
-        // JSON.stringify can't resolve circular references
-        /*let _configWarned = false;
+        let configWarned = false;
         config.records = records.map(record => {
             if (record._config !== undefined) {
-                if (!_configWarned) {
-                    console.warn(`One or more records passed include a _config key. This key is reserved, so the original value is available in __config`);
-                    _configWarned = true;
-                }
-                
                 record.__config = record._config;
+                delete record._config;
+
+                if (!configWarned) {
+                    console.warn('One or more records has the _config key defined. This was automatically remapped to __config due to the initial key being used by JAC');
+                    configWarned = true;
+                }
             }
 
-            record._config = config;
             return record;
-        });*/
+        });
 
         config.records = records;
         return config;

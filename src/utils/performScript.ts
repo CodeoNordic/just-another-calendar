@@ -1,3 +1,4 @@
+import isDevMode from './isDevMode';
 export const loadCallbacks: VoidFunction[] = [];
 
 /**
@@ -27,6 +28,11 @@ export default function performScript(
             const msg = `Script name of the key '${key}' was not found in the config`;
             (key !== 'onJsError') && console.warn(msg);
             return msg;
+        }
+
+        if (!window.FileMaker && isDevMode()) {
+            console.log(`[DEV]: Running script '${scriptName}'`);
+            return true;
         }
 
         if (Number.isInteger(Number(option ?? NaN)))

@@ -42,8 +42,8 @@ export default function useTooltip(tooltip?: string, colors?: JAC.Event['colors'
                 // Sanitize the input
                 el.innerHTML = tooltip!
                     .trim()
-                    .replace(/^<br>/, '')
-                    .split(/<br>/)
+                    .replace(/^<br\/?>/, '')
+                    .split(/<br\/?>/)
                     .map(str => str.replace('<', '&lt;').replace('>', '&gt;'))
                     .join('<br>')
                 

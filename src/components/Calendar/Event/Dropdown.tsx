@@ -42,14 +42,14 @@ const EventDropdownProvider: FC = props => {
             left: dropdown.x
         }} onPointerEnter={() => setDropdownHover(true)} onPointerLeave={() => setDropdownHover(false)}>
             <div className={combineClasses('dropdown-buttons', `child-count-${dropdown.buttons?.length ?? 0}`)}>
-                {dropdown.buttons.map((btn, i) => <button key={i} onClick={btn.script? () => {
+                {dropdown.buttons.map((btn, i) => <button key={i} onClick={btn.script? (() => {
                     performScript(
                         btn.script!,
                         config?.records?.find(r => r.id === dropdown.eventId),
                         undefined,
                         true
                     );
-                }: undefined}>
+                }): undefined}>
                     {btn.icon && <Icon src={btn.icon} />}
                 </button>)}
             </div>
