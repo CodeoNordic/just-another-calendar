@@ -11,10 +11,12 @@
     .toggle-button {
         position: absolute;
         top: 3px;
-        right: -38px;
+        right: -15px;
 
-        width: 38px;
-        height: 38px;
+        width: 32px;
+        height: 32px;
+
+        padding: 4px 4px;
 
         z-index: 999;
 
@@ -29,7 +31,12 @@
 
         @include buttonEffects;
 
+        padding-inline: 0;
+
         svg {
+            width: 100%;
+            height: 100%;
+
             stroke: var(--nobs-dark-blue);
             stroke-width: .04em;
         }
@@ -41,7 +48,7 @@
     &.open {
         .toggle-button {
             transform: scaleX(-1);
-            right: -21px;
+            right: -18px;
         }
 
         .wrapper {

@@ -114,4 +114,22 @@
             border-top-width: 0;
         }
     }
+
+    // Solid borders
+    .fc-timegrid-slots>table>tbody>tr {
+        &:has(.timeslot-large) td {
+            border-top: 1px solid rgba(0, 0, 0, .3);
+        }
+    }
+
+    td.fc-day {
+        border-right: 1px solid rgba(0, 0, 0, .3);
+    }
+
+    // Remove margin and borders on background events
+    .fc-bg-event {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-radius: 0 !important;
+    }
 }

@@ -1,4 +1,10 @@
 init(JSON.stringify({
+    view: 'resourceTimeGridDay',
+    resources: [
+        { id: '1F', title: 'Ressurs 1' },
+        { id: '2F', title: 'Ressurs 2' },
+        { id: '3F', title: 'Ressurs 3' },
+    ],
     date: '2024-07-16',
     icons: [
         {
@@ -14,8 +20,9 @@ init(JSON.stringify({
             ButtonText: "BUTTON",
             start: '2024-07-17T12:00',
             end: '2024-07-17T13:00',
-            allDay: true,
-            tooltip: 'TEST TOOLTIP JOAKIM'
+            allDay: false,
+            tooltip: 'TEST TOOLTIP JOAKIM',
+            resourceId: '1'
         },
 
         {
@@ -25,7 +32,8 @@ init(JSON.stringify({
             ButtonText: "BUTTON 2",
             start: '2024-07-18',
             end: '2024-07-18',
-            allDay: true
+            allDay: false,
+            resourceId: '2'
         },
 
         {
@@ -35,8 +43,9 @@ init(JSON.stringify({
             ButtonText: "BUTTON 3",
             start: '2024-07-18',
             end: '2024-07-18',
-            allDay: true,
-            _component: "compact"
+            allDay: false,
+            _component: "compact",
+            resourceId: '2'
         }
     ],
 

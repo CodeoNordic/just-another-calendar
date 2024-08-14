@@ -28,3 +28,24 @@ export default function searchObject(obj: RSAny, searchParam: string|RSAny): boo
             return value == searchValue;
         });
 }
+
+// TODO
+/**
+ * ```
+ * {
+ *  "FirstName": "Joakim",
+ *  "SubObject": {
+ *      "value": false
+ * }
+ * }
+ * 
+ * {
+ *      "SubObject.value": false
+ * }
+ * 
+ * {
+ *      "SubObject": {
+ *          "value": false
+ *      }
+ * }
+ */

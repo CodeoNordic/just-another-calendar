@@ -50,17 +50,23 @@ const Event: FC<JAC.Event> = props => {
     }
 
     return <div
-        className="jac-event"
+        className="jac-event-wrapper"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
     >
-        {component.fields?.map((field, i) => <Field
-            key={i}
-            record={props}
-            onButtonEnter={onButtonEnter}
-            onButtonLeave={onButtonLeave}
-            {...field}
-        />)}
+        <div
+            className="jac-event"
+            onPointerMove={onPointerMove}
+            onPointerLeave={onPointerLeave}
+        >
+            {component.fields?.map((field, i) => <Field
+                key={i}
+                record={props}
+                onButtonEnter={onButtonEnter}
+                onButtonLeave={onButtonLeave}
+                {...field}
+            />)}
+        </div>
     </div>
 }
 

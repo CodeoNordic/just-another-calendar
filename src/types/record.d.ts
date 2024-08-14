@@ -47,6 +47,7 @@ declare global {
         }> & ({
             type: 'backgroundEvent';
             backgroundColor?: string;
+            backgroundTextColor?: string;
             backgroundText?: string;
         }|{});
     }

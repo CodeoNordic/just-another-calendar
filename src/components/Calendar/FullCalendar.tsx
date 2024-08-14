@@ -40,9 +40,10 @@ const FullCalendar: FC<Props> = props => {
     const config = useConfig()!;
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
+    const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
     const [resourcesTitle, setResourcesTitle] = useState<string>('');
-    const [,setRevertFunctions] = useState<Record<string, Function>>({});
 
+    const [,setRevertFunctions] = useState<Record<string, Function>>({});
     const [,setDropdown] = useEventDropdown();
 
     // Determine dropdown buttons for each record
@@ -55,15 +56,17 @@ const FullCalendar: FC<Props> = props => {
     useEffect(() => {
         const date = config.date && dateFromString(config.date);
         if (!calendarRef.current || !date) return;
+        const api = calendarRef.current.getApi();
 
-        calendarRef.current.getApi().gotoDate(date);
-        setCurrentDate(date);
+        (date !== api.getDate()) && api.gotoDate(date);
+        config.date && setCurrentDate(date);
     }, [calendarRef, config!.date]);
 
     // Automatically change view
     useEffect(() => {
         if (!calendarRef.current || !config.view) return;
-        calendarRef.current.getApi().changeView(config.view);
+        const api = calendarRef.current.getApi();
+        config.view && (config.view !== api.view.type) && api.changeView(config.view);
     }, [calendarRef, config!.view]);
 
     useEffect(() => {
@@ -154,16 +157,32 @@ const FullCalendar: FC<Props> = props => {
             extendedProps: { record },
             allDay: Boolean(record.allDay)
         }
-    }), [props.records]);
+    }).filter(ev => {
+        if (!ev.start || !ev.end) {
+            console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.record);
+            return false;
+        }
+
+        // Return if the event is outside the date range
+        if (dateRange) {
+            if (
+                (ev.start.valueOf() > dateRange.end.valueOf())
+                || ev.end.valueOf() < dateRange.start.valueOf()
+            ) return false;
+        }
+
+        return true;
+    }), [props.records, dateRange]);
 
     return <FullCalendarReact
         ref={cal => calendarRef.current = cal}
+        height={'100vh'}
 
         // Base config
         schedulerLicenseKey={config.fullCalendarLicense}
         locale={config.locale ?? 'no-nb'}
 
-        //initialView={/*config.initialView ?? */'resourceTimeGrid'}
+        initialView={config.view}
         initialDate={currentDate}
 
         editable
@@ -197,14 +216,25 @@ const FullCalendar: FC<Props> = props => {
                         month: 'long'
                     }), true);
                     
-                    const bgEvents = config.records?.filter(ev => ev.type === 'backgroundEvent');
-                    if (!bgEvents?.length) return base;
+                    const bgEvents = eventsBase.filter(ev => {
+                        if (ev.extendedProps!.record.type !== 'backgroundEvent') return false;
 
-                    const firstColor = bgEvents[0].backgroundColor;
+                        const start = new Date(ev.start as number);
+                        const current = new Date(info.date);
+
+                        start.setHours(0, 0, 0, 0);
+                        current.setHours(0, 0, 0, 0);
+
+                        return start.valueOf() === current.valueOf();
+                    });
+
+                    const firstColor = bgEvents[0]?.backgroundColor;
                     return <span style={{ color: firstColor }}>
                         {base}
-                        <br />
-                        ({bgEvents.map(ev => ev.backgroundText).join(', ')})
+                        {!!bgEvents.length && <>
+                            <br />
+                            ({bgEvents.map(ev => ev.extendedProps!.record!.backgroundText).join(', ')})
+                        </>}
                     </span>
                 },
 
@@ -224,7 +254,7 @@ const FullCalendar: FC<Props> = props => {
                     </span>
                 },
 
-                duration: { days: config.days },
+                duration: { days: config.days ?? 7 },
                 dayHeaders: true,
                 datesAboveResources: true,
 
@@ -330,6 +360,8 @@ const FullCalendar: FC<Props> = props => {
             const rect = info.el.getBoundingClientRect();
             const record = info.event.extendedProps.record as JAC.Event;
 
+            if (record.type === 'backgroundEvent') return;
+
             const buttons = eventButtons(record);
 
             setDropdown(prev => ({
@@ -351,6 +383,7 @@ const FullCalendar: FC<Props> = props => {
         }}
 
         datesSet={info => {
+            
             setResourcesTitle(info.view.title);
         }}
     />
