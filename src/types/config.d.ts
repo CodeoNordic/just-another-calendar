@@ -39,8 +39,6 @@ declare global {
                 onFilterChange: string;
             };
 
-            privacyMode?: boolean;
-
             customCSS?: string;
             styles?: {
                 tooltip?: TextStyle;
