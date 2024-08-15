@@ -4,6 +4,7 @@ import DatePicker from './DatePicker';
 import ChevronIcon from 'jsx:@svg/menu-toggle.svg';
 
 import combineClasses from '@utils/combineClasses';
+import EventFilters from './EventFilters';
 
 
 const SideMenu: FC = () => {
@@ -19,6 +20,7 @@ const SideMenu: FC = () => {
 
         <div className="wrapper">
             <DatePicker />
+            <EventFilters />
         </div>
     </div>
 }

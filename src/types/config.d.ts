@@ -4,6 +4,8 @@ declare global {
         interface Config {
             records: JAC.Event[];
 
+            eventFilters?: EventFilter[];
+
             resources?: Resource[];
             resourcesWidth?: string;
 

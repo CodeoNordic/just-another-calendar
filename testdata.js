@@ -22,7 +22,7 @@ init(JSON.stringify({
             end: '2024-07-17T13:00',
             allDay: false,
             tooltip: 'TEST TOOLTIP JOAKIM',
-            resourceId: '1'
+            resourceId: '1F'
         },
 
         {
@@ -30,10 +30,10 @@ init(JSON.stringify({
             FirstName: "Joakim Isaksen",
             Test: "TEST VALUE 2",
             ButtonText: "BUTTON 2",
-            start: '2024-07-18',
-            end: '2024-07-18',
+            start: '2024-07-18T12:00',
+            end: '2024-07-18T13:00',
             allDay: false,
-            resourceId: '2'
+            resourceId: '2F'
         },
 
         {
@@ -41,11 +41,11 @@ init(JSON.stringify({
             FirstName: "Joakim Isaksen +",
             Test: "TEST VALUE 3",
             ButtonText: "BUTTON 3",
-            start: '2024-07-18',
-            end: '2024-07-18',
+            start: '2024-07-18T12:00',
+            end: '2024-07-18T13:00',
             allDay: false,
             _component: "compact",
-            resourceId: '2'
+            resourceId: '2F'
         }
     ],
 
