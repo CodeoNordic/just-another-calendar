@@ -7,6 +7,8 @@ declare global {
 
         /** Set a specific value in the config */
         setConfigValue<K extends string & keyof JAC.Config>(k: K, prop: JAC.Config[K]): void;
+        setConfigProp<K extends string & keyof JAC.Config>(k: K, prop: JAC.Config[K]): void;
+
 
         /** Add one or more records */
         addRecords(data: WithFilter<JAC.Event>|WithFilter<JAC.Event>[]): void;

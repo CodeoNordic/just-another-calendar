@@ -13,7 +13,14 @@ const Field: FC<JAC.EventField & { record: JAC.Event; onButtonEnter?: () => void
     if (!props.showIfEmpty && fieldValue === null) return null;
     const fieldType = props.type || 'text';
 
-    return <div className={combineClasses('jac-field', `type-${props.type}`, props.value && `field-${props.value.replace(/\s/g, '_')}`, props.cssClass)}>
+    return <div 
+        className={combineClasses(
+            'jac-field', `type-${props.type}`, 
+            props.value && `field-${props.value.replace(/\s/g, '_')}`, 
+            props.cssClass
+        )}
+        style={{width: props.fullWidth? '100%': undefined}}
+    >
         {fieldType === 'text' && <>
             {fieldIcon}
             <span>{fieldValue}</span>

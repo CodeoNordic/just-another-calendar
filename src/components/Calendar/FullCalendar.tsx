@@ -119,7 +119,7 @@ const FullCalendar: FC<Props> = props => {
         //if (!record.resourceId && record.type !== 'backgroundEvent') console.warn(`The following record does not have a resource ID`, record);
 
         const eventStart = dateFromString(record.timestampStart ?? record.start ?? record.startDate ?? record.dateStart);
-        const eventEnd = dateFromString(record.timestampEnd ?? record.end ?? record.endDate ?? record.dateEnd);
+        const eventEnd = dateFromString(record.timestampEnd ?? record.end ?? record.endDate ?? record.dateEnd ?? record.dateFinishedDisplay);
 
         const timeStart = record.startTime ?? record.timeStart;
         const timeEnd = record.endTime ?? record.timeEnd;

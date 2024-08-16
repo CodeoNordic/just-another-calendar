@@ -10,13 +10,20 @@ export function templateKey(record: JAC.Event, key: string) {
         ))) || ''
     ).toLocaleDateString(window._config?.locale, { day: '2-digit', month: 'long' });
 
+    // {Time:dateStart+timeStart}
     // If the key starts with 'Time:' return a formatted time
-    if (key.toLowerCase().startsWith('time:')) return new Date(
-        dateFromString(String(get(
-            record,
-            key.substring(5)
-        ))) || ''
-    ).toLocaleTimeString(window._config?.locale, { hour: '2-digit', minute: '2-digit' });
+    if (key.toLowerCase().startsWith('time:')) {
+        const pair = key.substring(5).split('+');    
+        
+        const date = dateFromString(String(get(record, pair[0])));
+
+        if (pair[1] && date) {
+            const time = String(get(record, pair[1])).split(':');
+            date.setHours(Number(time[0]), Number(time[1]));
+        }
+
+        return date?.toLocaleTimeString(window._config?.locale, { hour: '2-digit', minute: '2-digit' }) || '';
+    }
 
     // If the key starts with 'Eval:' call the function
     if (key.toLowerCase().startsWith('eval:')) {
@@ -30,7 +37,7 @@ export function templateKey(record: JAC.Event, key: string) {
     }
 
     // Else, return the value as a string
-    return String(get(record, key));
+    return String(get(record, key) || '');
 }
 
 /**
@@ -73,7 +80,7 @@ export default function getFieldValue(record: JAC.Event, field: JAC.EventField) 
 
     // Warn and return null if none of the keys are defined
     if (typeof field.value !== 'string') {
-        console.warn("The following field definition has no key to determine its value. One of three keys must be defined: 'value', 'template', 'eval'", field);
+        typeof field.template !== 'string' && typeof field.eval !== 'string' && console.warn("The following field definition has no key to determine its value. One of three keys must be defined: 'value', 'template', 'eval'", field);
         return null;
     }
 
