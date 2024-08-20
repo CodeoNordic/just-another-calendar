@@ -1,6 +1,5 @@
-import { useConfig, useConfigState } from "@context/Config";
+import { useConfigState } from "@context/Config";
 import Collapse from "./Collapse";
-import { useState } from "react";
 import performScript from "@utils/performScript";
 
 const EventFilters: FC = () => {
@@ -25,7 +24,7 @@ const EventFilters: FC = () => {
 
         performScript("onFilterChange", {
             ...filter,
-            enabled: !filter.enabled
+            enabled: !filter.enabled || false
         });
     }
 
