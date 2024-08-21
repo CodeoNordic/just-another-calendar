@@ -21,6 +21,9 @@ declare global {
 
             /** Whether the filter's on/off state can be changed by the user */
             locked?: boolean;
+
+            /** The order in which the filters should be displayed */
+            sort?: number;
     
             /** If the filter is client only, _filter must be defined, as it will filter locally */
             clientOnly?: boolean;

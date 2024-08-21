@@ -28,6 +28,10 @@ const EventFilters: FC = () => {
         });
     }
 
+    if (config?.eventFilters && config.eventFilters[0]?.sort !== undefined) {
+        config.eventFilters.sort((a, b) => (a.sort !== undefined && b.sort !== undefined) ? a.sort - b.sort : 0);
+    }
+
     return <div>
         <Collapse top={<>
             <div>Filtre</div>
