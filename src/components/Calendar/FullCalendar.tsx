@@ -158,6 +158,15 @@ const FullCalendar: FC<Props> = props => {
             allDay: Boolean(record.allDay)
         }
     }).filter(ev => {
+        const filteredOut = config.eventFilters?.some(filter => {
+            if (!filter.enabled && filter.id == ev.extendedProps.record.statusId) {
+                return true;
+            }
+            return false;
+        });
+
+        if (filteredOut) return false;
+
         if (!ev.start || !ev.end) {
             console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.record);
             return false;

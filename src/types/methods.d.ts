@@ -23,7 +23,7 @@ declare global {
         setRecords(data: JAC.Event|JAC.Event[]): void;
 
         /** Update a specific record */
-        updateRecord(find: Partial<JAC.Event>, data: JAC.Event): void;
+        updateRecord(find: Partial<JAC.Event>, data: JAC.Event, id?: JAC.Event["id"]): void;
 
         /** Set the current date to show. */
         /** @deprecated use setConfigValue('date', value) */

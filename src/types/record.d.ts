@@ -25,6 +25,9 @@ declare global {
             timestampStart?: string;
             timestampEnd?: string;
 
+            // for filtering
+            statusId?: string;
+
             allDay?: boolean;
 
             tooltip?: string;

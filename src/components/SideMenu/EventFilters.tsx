@@ -7,7 +7,7 @@ const EventFilters: FC = () => {
 
     const toggleFilter = (filter: JAC.EventFilter) => {
         if (filter.clientOnly) {
-            return setConfig(prev => {
+            setConfig(prev => {
                 const newFilters = prev?.eventFilters?.map(f => {
                     if (f.id === filter.id) {
                         f.enabled = !f.enabled;
@@ -20,6 +20,14 @@ const EventFilters: FC = () => {
                     eventFilters: newFilters
                 } as JAC.Config;
             });
+
+            config?.records.map((record => {
+                if (record.statusId === filter.id) {
+                    window.updateRecord(record, record, record.id);
+                }
+            }))
+
+            return;
         }
 
         performScript("onFilterChange", {

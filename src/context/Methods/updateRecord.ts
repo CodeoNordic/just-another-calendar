@@ -7,9 +7,26 @@ import searchArray from '@utils/searchArray';
 export default function useUpdateRecord() {
     const [, setConfig] = useConfigState();
 
-    useEffect(createMethod('updateRecord', (find, data) => setConfig(config => {
+    useEffect(createMethod('updateRecord', (find, data, id?) => setConfig(config => {
         if (!config || !config.records) return null;
         const copy = [...config.records];
+
+        if (id) {
+            const record = copy.find(r => r.id === id);
+            if (!record) {
+                console.warn(`updateRecord id ${id} not found`);
+                return config;
+            }
+
+            for (const k in data) {
+                record[k] = data[k];
+            }
+
+            return {
+                ...config,
+                records: [...copy]
+            }
+        }
 
         const records = searchArray(copy, find);
         if (!records.length) {
