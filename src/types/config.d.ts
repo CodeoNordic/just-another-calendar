@@ -27,6 +27,8 @@ declare global {
             showWeekends?: boolean;
             selectableTooltips?: boolean;
 
+            // fields in event that should be searched
+            searchBy?: string[];
             search?: string;
 
             // Define valid script names here

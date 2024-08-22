@@ -4,6 +4,7 @@ import Collapse from "./Collapse";
 const Search: FC = () => {
     const [config, setConfig] = useConfigState();
 
+    if (!config?.searchBy) return null;
 
     return <div>
         <Collapse top={<>
@@ -14,9 +15,7 @@ const Search: FC = () => {
                 onChange={e => {
                     setConfig((prev: JAC.Config | null) => ({...prev, search: e.target.value}) as JAC.Config)
                     config?.records.map((record => {
-                        if (record.patientFullName && !record.patientFullName.toLowerCase().includes(config?.search?.toLowerCase())) {
-                            window.updateRecord(record, record, record.id);
-                        }
+                        window.updateRecord(record, record, record.id);
                     }))                    
                 }}
             />

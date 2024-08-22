@@ -13,7 +13,7 @@ export default function useUpdateRecord() {
 
         let record;
         if (id) {
-            record = copy.find(r => r.id === id);
+            record = copy.find(r => r.id == id);
             if (!record) {
                 console.warn(`updateRecord id ${id} not found`);
                 return config;

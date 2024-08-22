@@ -165,9 +165,15 @@ const FullCalendar: FC<Props> = props => {
             return false;
         });
 
-        if (config.search && !ev.extendedProps.record.patientFullName.toLowerCase().includes(config.search)) return false;
+        const filteredSearch = (config?.searchBy ?? []).every((field) => {
+            if (config.search && !ev.extendedProps.record[field].toLowerCase().includes(config.search)) {
+                return true;
+            }
+            return false;
+        });
 
-        if (filteredOut) return false;
+
+        if (filteredOut || filteredSearch) return false;
 
         if (!ev.start || !ev.end) {
             console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.record);
