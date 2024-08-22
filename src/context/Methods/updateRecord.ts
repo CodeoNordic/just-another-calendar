@@ -11,35 +11,27 @@ export default function useUpdateRecord() {
         if (!config || !config.records) return null;
         const copy = [...config.records];
 
+        let record;
         if (id) {
-            const record = copy.find(r => r.id === id);
+            record = copy.find(r => r.id === id);
             if (!record) {
                 console.warn(`updateRecord id ${id} not found`);
                 return config;
             }
-
-            for (const k in data) {
-                record[k] = data[k];
+        } else {
+            const records = searchArray(copy, find);
+            if (!records.length) {
+                console.warn(`updateRecord find returned no results`);
+                return config;
             }
-
-            return {
-                ...config,
-                records: [...copy]
+    
+            if (records.length > 1) {
+                console.warn(`updateRecord find returned more than 1 result`);
+                return config;
             }
+    
+            [record] = records;
         }
-
-        const records = searchArray(copy, find);
-        if (!records.length) {
-            console.warn(`updateRecord find returned no results`);
-            return config;
-        }
-
-        if (records.length > 1) {
-            console.warn(`updateRecord find returned more than 1 result`);
-            return config;
-        }
-        
-        const [record] = records;
 
         for (const k in data) {
             record[k] = data[k];
