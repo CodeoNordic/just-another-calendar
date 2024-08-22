@@ -27,6 +27,8 @@ declare global {
             showWeekends?: boolean;
             selectableTooltips?: boolean;
 
+            search?: string;
+
             // Define valid script names here
             scriptNames: {
                 /** Only used if the script result shall be returned to JS */

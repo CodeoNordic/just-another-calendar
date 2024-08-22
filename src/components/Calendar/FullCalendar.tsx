@@ -165,6 +165,8 @@ const FullCalendar: FC<Props> = props => {
             return false;
         });
 
+        if (config.search && !ev.extendedProps.record.patientFullName.toLowerCase().includes(config.search)) return false;
+
         if (filteredOut) return false;
 
         if (!ev.start || !ev.end) {
