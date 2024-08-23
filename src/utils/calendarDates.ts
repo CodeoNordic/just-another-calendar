@@ -9,7 +9,7 @@ const weekDays: string[] = [
 ];
 
 /** Get all the dates that should be displayed on a calendar for a particular month */
-export default function getCalendarDates(date: Date, firstDay: string|number = 'thu'): ({ middle: Date[]; start: Date[]; end: Date[] }) {
+export default function getCalendarDates(date: Date, firstDay: string|number = 'mon'): ({ middle: Date[]; start: Date[]; end: Date[] }) {
     // Splicing from index and down, insert prev
     const weekDayOrder: string[] = [...weekDays];
 
