@@ -8,9 +8,9 @@ const Search: FC = () => {
 
     return <div>
         <Collapse top={<>
-            <div>Søk</div>
+            <div>{config?.translations?.searchHeader ?? "Search"}</div>
         </>}>
-            <input type="text" placeholder="Søk"
+            <input type="text" placeholder={config?.translations?.searchPlaceholder ?? "Search"}
                 value={config?.search || ""}
                 onChange={e => {
                     setConfig((prev: JAC.Config | null) => ({...prev, search: e.target.value, records: [...config.records]}) as JAC.Config)

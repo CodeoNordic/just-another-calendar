@@ -11,6 +11,7 @@ declare global {
 
             fullCalendarLicense?: string;
             locale?: string;
+            translations?: Translations;
             
             view?: string;
             date?: string;

@@ -166,8 +166,6 @@ const FullCalendar: FC<Props> = props => {
             return config.search && !ev.extendedProps.record[field].toLowerCase().includes(config.search);
         });
 
-        console.log(filteredOut, filteredSearch);
-
         if (filteredOut || filteredSearch) return false;
 
         if (!ev.start || !ev.end) {

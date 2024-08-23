@@ -35,7 +35,7 @@ const EventFilters: FC = () => {
 
     return <div>
         <Collapse top={<>
-            <div>Filtre</div>
+            <div>{config?.translations?.filtersHeader ?? "Filters"}</div>
         </>}>
             {
                 config?.eventFilters?.map((filter) => (
