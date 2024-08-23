@@ -1,4 +1,4 @@
-const weekDayOrder: string[] = [
+const weekDays: string[] = [
     'mon',
     'tue',
     'wed',
@@ -9,7 +9,21 @@ const weekDayOrder: string[] = [
 ];
 
 /** Get all the dates that should be displayed on a calendar for a particular month */
-export default function getCalendarDates(date: Date): ({ middle: Date[]; start: Date[]; end: Date[] }) {
+export default function getCalendarDates(date: Date, firstDay: string|number = 'thu'): ({ middle: Date[]; start: Date[]; end: Date[] }) {
+    // Splicing from index and down, insert prev
+    const weekDayOrder: string[] = [...weekDays];
+
+    const firstDayIndex = typeof firstDay === 'string'
+        ? weekDays.findIndex(day => day === firstDay.toLowerCase().substring(0, 3)) || 0
+        : firstDay;
+    
+    if (firstDayIndex > 0) {
+        for (let i = 0; i < firstDayIndex; i++) {
+            const day = weekDayOrder.splice(0, 1)[0];
+            weekDayOrder.push(day);
+        }
+    }
+    
     const startDate = new Date(date);
     startDate.setDate(1);
 

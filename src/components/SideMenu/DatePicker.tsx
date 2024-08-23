@@ -29,13 +29,14 @@ const DatePicker: FC = () => {
     }, [selectedMonth]);
 
     // Calculate the dates of the current month
-    const dates = useMemo(() => getCalendarDates(selectedMonth), [selectedMonth]);
+    const dates = useMemo(() => getCalendarDates(selectedMonth, config?.firstDayOfWeek), [selectedMonth]);
+    const allDates = [...dates.start, ...dates.middle, ...dates.end]
 
     const weekNumbers = useMemo(() => {
         const nums: number[] = [];
 
         // Could be optimized, but for simplicities sake, loop through each date
-        [...dates.middle, ...dates.start, ...dates.end].forEach(date => {
+        allDates.forEach(date => {
             const num = weekNumber(new Date(date));
             if (nums.includes(num)) return;
 
@@ -70,13 +71,9 @@ const DatePicker: FC = () => {
                 </div>
 
                 <div className="days">
-                    <span>Ma</span>
-                    <span>Ti</span>
-                    <span>On</span>
-                    <span>To</span>
-                    <span>Fr</span>
-                    <span>Lø</span>
-                    <span>Sø</span>
+                    {Array.from(new Array(7)).map((_, i) => <span key={i}>
+                        {new Date(allDates[i]).toLocaleDateString(config?.locale || 'en', { weekday: 'short' }).substring(0, 2)}
+                    </span>)}
 
                     {dates.start.map((date, i) => <button disabled key={i} className="extra-date">
                         {new Date(date).getDate()}

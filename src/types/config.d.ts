@@ -24,6 +24,7 @@ declare global {
             compactFields?: (string & keyof JAC.Event)[];
 
             days?: number;
+            firstDayOfWeek?: string|number;
 
             showWeekends?: boolean;
             selectableTooltips?: boolean;

@@ -9,5 +9,5 @@ moment.locale('no', {
 // Source: https://www.w3resource.com/javascript-exercises/javascript-date-exercise-24.php
 export default function weekNumber(dt: Date) 
 {
-    return moment(dt).week();
+    return moment(dt).locale(window._config?.locale ?? 'en').week();
 }
