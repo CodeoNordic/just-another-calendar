@@ -77,5 +77,47 @@ init(JSON.stringify({
             icon: 'clock',
             script: '[BTN] Test'
         }
-    ]
+    ],
+    eventFilters: [
+        {
+          id: "xxxx-xxxx-xxxx-xxxx",
+          title: "Avtaler",
+          color: "#AAEEAA",
+          
+          enabled: true, // Whether the filter is in use or not
+          locked: false, // Set to true to make it unchangeable
+          
+          clientOnly: false // If clientOnly is set to true, a _filter must be included
+        },
+        {
+          id: "xxxx-xxxx-xxxx-xxx1",
+          title: "Avtaler2",
+          color: "#AAEEAA",
+          
+          enabled: true, // Whether the filter is in use or not
+          locked: false, // Set to true to make it unchangeable
+          
+          clientOnly: false // If clientOnly is set to true, a _filter must be included
+        },
+        {
+          id: "xxxx-xxxx-xxxx-xxx2",
+          title: "Avtaler3",
+          color: "#0000ff",
+          
+          enabled: true, // Whether the filter is in use or not
+          locked: false, // Set to true to make it unchangeable
+          
+          clientOnly: false // If clientOnly is set to true, a _filter must be included
+        }
+      ],
+    searchBy: ["FirstName", "start"],
+    calendarStartTime: "08:00",
+    calendarEndTime: "16:15",
+    locale: "no",
+    translations: {
+        searchHeader: "Søk",
+        searchPlaceholder: "Søk",
+        filtersHeader: "Filtre",
+        allDaySlot: "Hele dagen"
+    }
 }))
