@@ -159,14 +159,16 @@ const FullCalendar: FC<Props> = props => {
         }
     }).filter(ev => {
         const filteredOut = config.eventFilters?.some(filter => {
-            return !(!filter.enabled && filter.id == ev.extendedProps.record.filterId);
+            return !filter.enabled && filter.id == ev.extendedProps.record.filterId;
         });
 
         const filteredSearch = (config?.searchBy ?? []).every((field) => {
-            return !config.search || ev.extendedProps.record[field].toLowerCase().includes(config.search);
+            return config.search && !ev.extendedProps.record[field].toLowerCase().includes(config.search);
         });
 
-        if (!filteredOut || !filteredSearch) return false;
+        console.log(filteredOut, filteredSearch);
+
+        if (filteredOut || filteredSearch) return false;
 
         if (!ev.start || !ev.end) {
             console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.record);
