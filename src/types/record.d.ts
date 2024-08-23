@@ -26,7 +26,7 @@ declare global {
             timestampEnd?: string;
 
             // for filtering
-            statusId?: string;
+            filterId?: string;
 
             allDay?: boolean;
 

@@ -11,12 +11,9 @@ const Search: FC = () => {
             <div>Søk</div>
         </>}>
             <input type="text" placeholder="Søk"
-                value={config?.search}
+                value={config?.search || ""}
                 onChange={e => {
-                    setConfig((prev: JAC.Config | null) => ({...prev, search: e.target.value}) as JAC.Config)
-                    config?.records.map((record => {
-                        window.updateRecord(record, record, record.id);
-                    }))                    
+                    setConfig((prev: JAC.Config | null) => ({...prev, search: e.target.value, records: [...config.records]}) as JAC.Config)
                 }}
             />
         </Collapse>

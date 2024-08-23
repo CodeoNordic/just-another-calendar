@@ -159,21 +159,14 @@ const FullCalendar: FC<Props> = props => {
         }
     }).filter(ev => {
         const filteredOut = config.eventFilters?.some(filter => {
-            if (!filter.enabled && filter.id == ev.extendedProps.record.statusId) {
-                return true;
-            }
-            return false;
+            return !(!filter.enabled && filter.id == ev.extendedProps.record.statusId);
         });
 
         const filteredSearch = (config?.searchBy ?? []).every((field) => {
-            if (config.search && !ev.extendedProps.record[field].toLowerCase().includes(config.search)) {
-                return true;
-            }
-            return false;
+            return !(config.search && !ev.extendedProps.record[field].toLowerCase().includes(config.search));
         });
 
-
-        if (filteredOut || filteredSearch) return false;
+        if (!filteredOut || !filteredSearch) return false;
 
         if (!ev.start || !ev.end) {
             console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.record);
@@ -337,8 +330,8 @@ const FullCalendar: FC<Props> = props => {
         eventTimeFormat={config.eventTimeFormat ?? 'HH:mm'}
         
         // These will be switched out for config values in the future
-        slotMinTime="08:00"
-        slotMaxTime="21:15"
+        slotMinTime={config.calendarStartTime || "08:00"} 
+        slotMaxTime={config.calendarEndTime || "21:15"}
 
         slotLabelFormat="HH:mm"
         slotDuration="00:15"

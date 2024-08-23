@@ -27,6 +27,9 @@ declare global {
             showWeekends?: boolean;
             selectableTooltips?: boolean;
 
+            calendarStartTime?: string;
+            calendarEndTime?: string;
+
             // fields in event that should be searched
             searchBy?: string[];
             search?: string;
