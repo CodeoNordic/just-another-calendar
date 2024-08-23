@@ -26,5 +26,5 @@ export default function fileMakerFindEquivalent(value: any, search: string): boo
         case '>': return stringValue > trimmed;
     }
 
-    return stringValue == search;
+    return stringValue == search.toLowerCase();
 }
