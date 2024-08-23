@@ -159,11 +159,11 @@ const FullCalendar: FC<Props> = props => {
         }
     }).filter(ev => {
         const filteredOut = config.eventFilters?.some(filter => {
-            return !(!filter.enabled && filter.id == ev.extendedProps.record.statusId);
+            return filter.enabled && filter.id == ev.extendedProps.record.filterId;
         });
 
         const filteredSearch = (config?.searchBy ?? []).every((field) => {
-            return !(config.search && !ev.extendedProps.record[field].toLowerCase().includes(config.search));
+            return !config.search || ev.extendedProps.record[field].toLowerCase().includes(config.search);
         });
 
         if (!filteredOut || !filteredSearch) return false;
