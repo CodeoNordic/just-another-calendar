@@ -257,10 +257,10 @@ const FullCalendar: FC<Props> = props => {
                         }
                     );
 
-                    const isHourly = str.endsWith('00');
+                    const isHourly = str.toLowerCase().match(/00 *(am|pm)?$/);
 
                     return <span className={isHourly? 'timeslot-large': 'timeslot-small'}>
-                        {isHourly? str: str.substring(3)}
+                        {isHourly? str: str.substring(3, 5)}
                     </span>
                 },
 

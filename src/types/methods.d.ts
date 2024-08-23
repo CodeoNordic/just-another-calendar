@@ -22,8 +22,16 @@ declare global {
         /** Overwrite the record list */
         setRecords(data: JAC.Event|JAC.Event[]): void;
 
-        /** Update a specific record */
-        updateRecord(find: Partial<JAC.Event>, data: JAC.Event, id?: JAC.Event["id"]): void;
+        /**
+         * Update a specific record
+         * @param find JSON filter to find the record
+         * @param data Partial or full data to update the record with
+         * @param autocreate Whether to create the record if it doesn't exist
+         * @example ```ts
+         * updateRecord(JSON.stringify({id: '123'}), JSON.stringify({title: 'New title'}), true);
+         * ```
+        */
+        updateRecord(find: Partial<JAC.Event>, data: JAC.Event, autocreate?: boolean): void;
 
         /** Set the current date to show. */
         /** @deprecated use setConfigValue('date', value) */
