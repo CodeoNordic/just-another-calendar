@@ -10,11 +10,34 @@
     }
 
     .fc-day {
-        background-color: rgba(0, 0, 0, .04) !important;
+        background-color: transparent !important;
 
         &.fc-day-today {
             background-color: transparent !important;
         }
+
+        &.fc-col-header-cell {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 20px 0 !important;
+        }
+    }
+
+    .fc-scrollgrid-section.fc-scrollgrid-section-body:has(.jac-all-day) {
+        background: #F5F5F5;
+        border-bottom: 100px solid rgba(0, 0, 0, .3) !important;
+    }
+
+    .fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink {
+        background: #F5F5F5;
+    }
+
+    .fc-timegrid-divider.fc-cell-shaded {
+        background-color: white;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, .3);
+        height: 0px;
+        padding: 0px;
     }
 
     .fc-toolbar {
@@ -96,6 +119,18 @@
 
     .timeslot-small {
         opacity: .7;
+    }
+
+    .fc-col-header-cell.fc-resource {
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, .3);
+        font-weight: 500;
+        font-size: small;
+    }
+
+    .fc-timegrid-axis {
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, .3);
     }
 
     // All day header

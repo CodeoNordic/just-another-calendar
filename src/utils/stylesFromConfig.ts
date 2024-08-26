@@ -4,7 +4,7 @@ const map: { [k in keyof Styles]: string } = {
     event: '.jac-event, .jac-event button',
     resourceHeader: '.fc-resource-group, .fc-resource .fc-scrollgrid-sync-inner',
     dateHeader: '.date-header',
-    dayHeader: '.fc-timeline-slot',
+    dayHeader: '.fc-timeline-slot, .fc-day.fc-col-header-cell',
     tooltip: '#tooltip'
 }
 

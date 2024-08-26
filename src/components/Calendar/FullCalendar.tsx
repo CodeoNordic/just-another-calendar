@@ -272,7 +272,7 @@ const FullCalendar: FC<Props> = props => {
                 dayHeaders: true,
                 datesAboveResources: true,
 
-                allDayContent: config.translations?.allDaySlot ?? 'All day',
+                allDayContent: <div className='jac-all-day'>{config.translations?.allDaySlot ?? 'All day'}</div>,
                 allDaySlot: true//eventsBase.some(ev => ev.allDay)
             }
         }}
