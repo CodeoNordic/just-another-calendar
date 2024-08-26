@@ -66,7 +66,7 @@ const DatePicker: FC = () => {
         </>}>
             <div className="date-picker-wrapper">
                 <div className="week-numbers">
-                    <span>U</span>
+                    <span>{config?.translations?.weekNumberHeader || "W"}</span>
                     {weekNumbers.map((num, i) => <span key={i}>{String(num)}</span>)}
                 </div>
 

@@ -48,8 +48,8 @@ export function contrast(rgb1: [number, number, number], rgb2: [number, number, 
 
 /**
  * @param color color to check contrast (any valid css color)
- * @param bg background color (any valid css color)
- * @returns true if the contrast is greater than 1.5
+ * @param bg background color (any valid css color), default is white
+ * @returns true if the contrast is greater than 2
  * @example
  * ```ts
  * calculateContrast("#000", "white"); // true
@@ -68,5 +68,5 @@ export default function calculateContrast(color: string, bg: string = "#fff") {
     const rgbObj = tinycolor(rgb).toRgb();
 
     const contrastValue = contrast([rgbObj.r, rgbObj.g, rgbObj.b], [bgRGBObj.r, bgRGBObj.g, bgRGBObj.b]);
-    return contrastValue > 1.5;
+    return contrastValue > 2;
 };

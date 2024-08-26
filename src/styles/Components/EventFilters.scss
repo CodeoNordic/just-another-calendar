@@ -17,4 +17,16 @@
 .filter-checkbox {
     border-radius: 100%;
     box-sizing: border-box;
+    width: 1.7em;
+    height: 1.7em;
+    min-width: 1.7em;
+    min-height: 1.7em;
+}
+
+.filter-lock {
+    width: 1.7em;
+    height: 1.7em;
+    min-width: 1.7em;
+    min-height: 1.7em;
+    margin-left: auto;
 }

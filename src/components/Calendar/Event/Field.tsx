@@ -8,8 +8,12 @@ const Field: FC<JAC.EventField & { record: JAC.Event; onButtonEnter?: () => void
     if (props._filter && !searchObject(props.record, props._filter)) return null;
     
     const fieldIcon = props.icon && <Icon src={props.icon} />
-    const fieldValue = props.record && getFieldValue(props.record, props);
+    let fieldValue: JSX.Element | string | null = props.record && getFieldValue(props.record, props);
     
+    if (typeof props.htmlTemplate === 'string' && props.htmlTemplate[0] === '<' && fieldValue !== null) {
+        fieldValue = <div dangerouslySetInnerHTML={{__html: fieldValue}}/>
+    }
+
     if (!props.showIfEmpty && fieldValue === null) return null;
     const fieldType = props.type || 'text';
 
@@ -19,7 +23,10 @@ const Field: FC<JAC.EventField & { record: JAC.Event; onButtonEnter?: () => void
             props.value && `field-${props.value.replace(/\s/g, '_')}`, 
             props.cssClass
         )}
-        style={{width: props.fullWidth? '100%': undefined}}
+        style={{
+            width: props.fullWidth? '100%': undefined,
+            color: props.color
+        }}
     >
         {fieldType === 'text' && <>
             {fieldIcon}

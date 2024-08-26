@@ -74,6 +74,9 @@ declare global {
             /** The key of the value to display, E.G "FirstName". Supports lodash.get syntax such as "NestedObject.FirstName" or "NestedArray[0]" */
             value: string;
 
+            /** Optional HTML template. Will be prioritized over "template" and "value" */
+            htmlTemplate?: string;
+
             /**
              * Optional value template. Will be prioritized over "value"
              * @example
@@ -107,6 +110,9 @@ declare global {
 
             /** Whether the field should take up as much horizontal space as possible */
             fullWidth?: boolean;
+
+            /** Optional color for the field */
+            color?: string;
 
             /** Optional CSS class for custom styling */
             cssClass?: string;

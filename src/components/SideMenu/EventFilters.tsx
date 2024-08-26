@@ -3,6 +3,7 @@ import Collapse from "./Collapse";
 import performScript from "@utils/performScript";
 import Checkmark from "jsx:@svg/checkmark.svg";
 import Crossmark from "jsx:@svg/crossmark.svg";
+import Padlock from "jsx:@svg/padlock.svg";
 import calculateContrast from "@utils/contrast";
 import { useMemo } from "react";
 
@@ -48,10 +49,11 @@ const EventFilters: FC = () => {
                     <div 
                         className="filter-item" 
                         key={filter.id}  
-                        onClick={() => {
-                            !filter.locked && toggleFilter(filter)}}
-                        style={filter.enabled ? {} : {
-                            backgroundColor: "#cccccc",
+                        onClick={!filter.locked ? () => {
+                            toggleFilter(filter)} : undefined}
+                        style={{
+                            opacity: (filter.enabled && !filter.locked) ? 1 : 0.5,
+                            cursor: filter.locked ? "not-allowed" : "pointer"
                         }}
                     >
                         {filter.enabled ? 
@@ -65,18 +67,16 @@ const EventFilters: FC = () => {
                         <Crossmark className="filter-checkbox" style={{
                             backgroundColor: filter.color || "#3788d8",
                             border: (config?.contrastCheck !== false && !calculateContrast(filter.color || "#3788d8")) ? 
-                                "1px solid #767676" : 
+                                "1px solid #000" :
                                 `1px solid ${filter.color || "#3788d8"}`,
-                            fill: "#767676"
+                            fill: (config?.contrastCheck !== false && !calculateContrast(filter.color || "#3788d8")) ? "#000" : "#fff"
                         }}/>}
                         
-                        <p style={filter.enabled ? {
+                        <p style={{
                             color: (config?.contrastCheck !== false && !calculateContrast(filter.color || "#3788d8")) ? 
                                 "#000" : filter.color || "#3788d8"
-                        } : {
-                            color: "#767676"
                         }}>{filter.title}</p>
-                        {filter.locked && <span className="lock-icon">🔒</span>}
+                        {filter.locked && <Padlock className="filter-lock"/>}
                     </div>
                 ))
             }

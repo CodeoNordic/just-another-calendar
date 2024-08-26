@@ -202,6 +202,8 @@ const FullCalendar: FC<Props> = props => {
         eventStartEditable
         eventDurationEditable
         nowIndicator
+        
+        expandRows
 
         weekends={new Date(currentDate).getDay() > 5? true: (config.showWeekends || false)}
 

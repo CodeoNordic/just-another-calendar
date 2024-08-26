@@ -62,6 +62,22 @@ export default function getFieldValue(record: JAC.Event, field: JAC.EventField) 
         }
     }
 
+    if (typeof field.htmlTemplate === 'string' && field.htmlTemplate[0] === '<') {
+        try {
+            return field.htmlTemplate.replaceAll(
+                /\{([^{}]*?(?:\\\{|\\\}|[^{}])*)\}/g,
+                (_, key: string) => templateKey(
+                    record,
+                    key.replaceAll('\\{', '{')
+                        .replaceAll('\\}', '}')
+                )
+            );
+        } catch(err) {
+            console.error('Failed to parse the HTML template for the following field', field);
+            console.error(err);
+        }
+    }
+
     if (typeof field.template === 'string') {
         try {
             return field.template.replaceAll(
