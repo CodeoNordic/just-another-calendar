@@ -1,6 +1,17 @@
 import tinycolor from "tinycolor2";
 import rgbaToRgb from "rgba-to-rgb";
 
+/**
+ * @param r red value
+ * @param g green value
+ * @param b blue value
+ * @returns luminance of the color
+ * @example
+ * ```ts
+ * luminance(0, 0, 0); // 0
+ * luminance(255, 255, 255); // 1
+ * ```
+*/
 export function luminance(r: number, g:number, b:number) {
     const RED = 0.2126;
     const GREEN = 0.7152;
@@ -17,6 +28,16 @@ export function luminance(r: number, g:number, b:number) {
     return a[0] * RED + a[1] * GREEN + a[2] * BLUE;
 }
 
+/**
+ * @param rgb1 first color in rgb format
+ * @param rgb2 second color in rgb format
+ * @returns contrast ratio between two colors
+ * @example
+ * ```ts
+ * contrast([0, 0, 0], [255, 255, 255]); // 21
+ * contrast([0, 0, 0], [0, 0, 0]); // 1
+ * ```
+*/
 export function contrast(rgb1: [number, number, number], rgb2: [number, number, number]): number {
     var lum1 = luminance(...rgb1);
     var lum2 = luminance(...rgb2);
@@ -31,8 +52,8 @@ export function contrast(rgb1: [number, number, number], rgb2: [number, number, 
  * @returns true if the contrast is greater than 1.5
  * @example
  * ```ts
- * calculateContrast("#000", "#fff"); // true
- * calculateContrast("#000", "#000"); // false
+ * calculateContrast("#000", "white"); // true
+ * calculateContrast("rgb(0, 0, 0)", "#000000"); // false
  * ```
  */
 export default function calculateContrast(color: string, bg: string = "#fff") {
