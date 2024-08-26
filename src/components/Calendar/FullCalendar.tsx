@@ -29,6 +29,7 @@ import dateFromString from '@utils/dateFromString';
 import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
 import searchObject from '@utils/searchObject';
+import calculateContrast from '@utils/contrast';
 
 interface Props {
     records?: JAC.Event[];
@@ -151,7 +152,8 @@ const FullCalendar: FC<Props> = props => {
             resourceIds,
             backgroundColor: record.colors?.background,
             borderColor: record.colors?.border,
-            textColor: record.colors?.text,
+            textColor: (config?.contrastCheck !== false && !calculateContrast(record.colors?.text || "#fff", record.colors?.background || "#3788d8")) ? 
+            "#000" : record.colors?.text,
             start: eventStart,
             end: eventEnd,
             extendedProps: { record },

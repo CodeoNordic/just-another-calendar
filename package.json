@@ -34,7 +34,10 @@
   },
   "browserslist": "> 0.5%, last 2 versions, not IE 9-11, not dead",
   "dependencies": {
-    "open": "8.2.1"
+    "@types/tinycolor2": "^1.4.6",
+    "open": "8.2.1",
+    "rgba-to-rgb": "^1.0.2",
+    "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",

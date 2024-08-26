@@ -5,6 +5,8 @@ declare global {
             records: JAC.Event[];
 
             eventFilters?: EventFilter[];
+            
+            contrastCheck?: boolean;
 
             resources?: Resource[];
             resourcesWidth?: string;

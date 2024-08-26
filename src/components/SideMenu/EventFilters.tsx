@@ -1,6 +1,10 @@
 import { useConfigState } from "@context/Config";
 import Collapse from "./Collapse";
 import performScript from "@utils/performScript";
+import Checkmark from "jsx:@svg/checkmark.svg";
+import Crossmark from "jsx:@svg/crossmark.svg";
+import calculateContrast from "@utils/contrast";
+import { useMemo } from "react";
 
 const EventFilters: FC = () => {
     const [config, setConfig] = useConfigState();
@@ -29,25 +33,49 @@ const EventFilters: FC = () => {
         });
     }
 
-    if (config?.eventFilters && config.eventFilters[0]?.sort !== undefined) {
-        config.eventFilters.sort((a, b) => (a.sort !== undefined && b.sort !== undefined) ? a.sort - b.sort : 0);
-    }
+    const sortedFilters = useMemo(() => {
+        const copy = [...config?.eventFilters || []];
+        copy.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+        return copy;
+    }, [config?.eventFilters]);
 
     return <div>
         <Collapse top={<>
             <div>{config?.translations?.filtersHeader ?? "Filters"}</div>
         </>}>
             {
-                config?.eventFilters?.map((filter) => (
+                sortedFilters?.map((filter) => (
                     <div 
                         className="filter-item" 
                         key={filter.id}  
                         onClick={() => {
                             !filter.locked && toggleFilter(filter)}}
-                        style={{backgroundColor: filter.enabled ? "lightgrey" : "inherit"}}
+                        style={filter.enabled ? {} : {
+                            backgroundColor: "#cccccc",
+                        }}
                     >
-                        <div className="filter-color" style={{backgroundColor: filter.color ? filter.color : "#3788d8"}}></div>
-                        {filter.title}
+                        {filter.enabled ? 
+                        <Checkmark className="filter-checkbox" style={{
+                            backgroundColor: filter.color || "#3788d8",
+                            border:  (config?.contrastCheck !== false && !calculateContrast(filter.color || "#3788d8")) ? 
+                                "1px solid #000" :
+                                `1px solid ${filter.color || "#3788d8"}`,   
+                            fill: (config?.contrastCheck !== false && !calculateContrast(filter.color || "#3788d8")) ? "#000" : "#fff"
+                        }}/> :
+                        <Crossmark className="filter-checkbox" style={{
+                            backgroundColor: filter.color || "#3788d8",
+                            border: (config?.contrastCheck !== false && !calculateContrast(filter.color || "#3788d8")) ? 
+                                "1px solid #767676" : 
+                                `1px solid ${filter.color || "#3788d8"}`,
+                            fill: "#767676"
+                        }}/>}
+                        
+                        <p style={filter.enabled ? {
+                            color: (config?.contrastCheck !== false && !calculateContrast(filter.color || "#3788d8")) ? 
+                                "#000" : filter.color || "#3788d8"
+                        } : {
+                            color: "#767676"
+                        }}>{filter.title}</p>
                         {filter.locked && <span className="lock-icon">🔒</span>}
                     </div>
                 ))

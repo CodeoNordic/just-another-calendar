@@ -3,15 +3,18 @@
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    padding: 8px;
+    padding: 0px 8px;
     border-radius: 8px;
     margin: 2px 0px;
     font-size: small;
+    font-weight: 700;
 }
 
-.filter-color {
+.filter-item p {
+    margin: 12px 0px;
+}
+
+.filter-checkbox {
     border-radius: 100%;
-    width: 20px;
-    height: 20px;
-    border: 1px solid black;
+    box-sizing: border-box;
 }
