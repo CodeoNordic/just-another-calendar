@@ -22,7 +22,8 @@ init(JSON.stringify({
             end: '2024-07-17T13:00',
             allDay: false,
             tooltip: 'TEST TOOLTIP JOAKIM',
-            resourceId: '1F'
+            resourceId: '1F',
+            filterId: 'filter1'
         },
 
         {
@@ -33,7 +34,8 @@ init(JSON.stringify({
             start: '2024-07-18T12:00',
             end: '2024-07-18T13:00',
             allDay: false,
-            resourceId: '2F'
+            resourceId: '2F',
+            filterId: 'filter2'
         },
 
         {
@@ -45,7 +47,45 @@ init(JSON.stringify({
             end: '2024-07-18T13:00',
             allDay: false,
             _component: "compact",
-            resourceId: '2F'
+            resourceId: '2F',
+            filterId: 'filter2'
+        },
+
+        {
+            id: '4',
+            FirstName: "test testesen",
+            Test: "TEST VALUE",
+            ButtonText: "BUTTON",
+            start: '2024-07-16T10:00',
+            end: '2024-07-16T14:00',
+            allDay: false,
+            tooltip: 'TEST TOOLTIP JOAKIM',
+            resourceId: '1F',
+            filterId: 'filter3'
+        },
+
+        {
+            id: '5',
+            FirstName: "Vetle :)",
+            Test: "TEST VALUE 2",
+            ButtonText: "BUTTON 2",
+            start: '2024-07-19T9:00',
+            end: '2024-07-19T9:45',
+            resourceId: '3F',
+            filterId: 'filter3'
+        },
+
+        {
+            id: '6',
+            FirstName: "John doe",
+            Test: "TEST VALUE 3",
+            ButtonText: "BUTTON 3",
+            start: '2024-07-22T14:00',
+            end: '2024-07-22T15:30',
+            allDay: false,
+            _component: "compact",
+            resourceId: '2F',
+            filterId: 'filter1'
         }
     ],
 
@@ -80,34 +120,34 @@ init(JSON.stringify({
     ],
     eventFilters: [
         {
-          id: "xxxx-xxxx-xxxx-xxxx",
-          title: "Avtaler",
+          id: "filter1",
+          title: "Låst filter",
           color: "#AAEEAA",
           
-          enabled: true, // Whether the filter is in use or not
-          locked: false, // Set to true to make it unchangeable
+          enabled: true, 
+          locked: true,
           
-          clientOnly: false // If clientOnly is set to true, a _filter must be included
+          clientOnly: true
         },
         {
-          id: "xxxx-xxxx-xxxx-xxx1",
-          title: "Avtaler2",
-          color: "#AAEEAA",
+          id: "filter2",
+          title: "Ulåst filter",
+          color: "#ff0000",
           
-          enabled: true, // Whether the filter is in use or not
-          locked: false, // Set to true to make it unchangeable
+          enabled: true, 
+          locked: false, 
           
-          clientOnly: false // If clientOnly is set to true, a _filter must be included
+          clientOnly: true
         },
         {
-          id: "xxxx-xxxx-xxxx-xxx2",
-          title: "Avtaler3",
+          id: "filter3",
+          title: "Ulåst filter (default av)",
           color: "#0000ff",
           
-          enabled: true, // Whether the filter is in use or not
-          locked: false, // Set to true to make it unchangeable
+          enabled: false,
+          locked: false,
           
-          clientOnly: false // If clientOnly is set to true, a _filter must be included
+          clientOnly: true
         }
       ],
     searchBy: ["FirstName", "start"],
@@ -118,6 +158,7 @@ init(JSON.stringify({
         searchHeader: "Søk",
         searchPlaceholder: "Søk",
         filtersHeader: "Filtre",
-        allDaySlot: "Hele dagen"
+        allDaySlot: "Hele dagen",
+        weekNumberHeader: "U"
     }
 }))

@@ -22,9 +22,7 @@ const SideMenu: FC = () => {
 
         <div className="wrapper">
             <DatePicker />
-            <div className="divider" />
             <Search />
-            <div className="divider" />
             <EventFilters />
         </div>
     </div>

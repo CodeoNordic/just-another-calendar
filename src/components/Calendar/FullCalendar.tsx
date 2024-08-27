@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useConfig } from '@context/Config';
+import { useConfig, useConfigState } from '@context/Config';
 
 import { useCreateMethod } from '@utils/createMethod';
 import { v4 as randomUUID } from 'uuid';
@@ -39,6 +39,8 @@ interface Props {
 const FullCalendar: FC<Props> = props => {
     const calendarRef = useRef<FullCalendarReact|null>(null);
     const config = useConfig()!;
+
+    const [config2, setConfig2] = useConfigState();
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
     const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
@@ -161,12 +163,12 @@ const FullCalendar: FC<Props> = props => {
         }
     }).filter(ev => {
         const filteredOut = config.eventFilters?.some(filter => {
-            return !filter.enabled && filter.id == ev.extendedProps.record.filterId;
+            return ev.extendedProps.record.filterId && !filter.enabled && filter.id == ev.extendedProps.record.filterId;
         });
 
-        const filteredSearch = (config?.searchBy ?? []).every((field) => {
+        const filteredSearch = config.searchBy ? (config?.searchBy).every((field) => {
             return config.search && !ev.extendedProps.record[field].toLowerCase().includes(config.search);
-        });
+        }) : false;
 
         if (filteredOut || filteredSearch) return false;
 
@@ -397,8 +399,22 @@ const FullCalendar: FC<Props> = props => {
         }}
 
         datesSet={info => {
-            
             setResourcesTitle(info.view.title);
+        }}
+
+        selectable
+        select={info => {
+            setConfig2((prev: JAC.Config | null) => ({...prev, records: [...config.records,
+                {
+                    id: randomUUID(),
+                    FirstName: 'New Event',
+                    start: info.startStr.split('+')[0],
+                    end: info.endStr.split('+')[0],
+                    resourceId: info.resource?.id || config.resources?.[0].id,
+                    type: 'event'
+                }
+            ]}) as JAC.Config);
+            
         }}
     />
 }

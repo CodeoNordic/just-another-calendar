@@ -7,6 +7,7 @@ const Search: FC = () => {
     if (!config?.searchBy) return null;
 
     return <div>
+        <div className="divider" />
         <Collapse top={<>
             <div>{config?.translations?.searchHeader ?? "Search"}</div>
         </>}>

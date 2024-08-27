@@ -10,6 +10,8 @@ import { useMemo } from "react";
 const EventFilters: FC = () => {
     const [config, setConfig] = useConfigState();
 
+    if (!config?.eventFilters) return <></>
+
     const toggleFilter = (filter: JAC.EventFilter) => {
         if (filter.clientOnly) {
             return setConfig(prev => {
@@ -41,6 +43,7 @@ const EventFilters: FC = () => {
     }, [config?.eventFilters]);
 
     return <div>
+        <div className="divider" />
         <Collapse top={<>
             <div>{config?.translations?.filtersHeader ?? "Filters"}</div>
         </>}>
