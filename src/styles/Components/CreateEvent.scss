@@ -1,0 +1,35 @@
+.createEvent {
+    position: absolute;
+    background: #F5F5F5;
+    border: 1px solid rgba(0, 0, 0, .3);
+    padding: 4px;
+    z-index: 999;
+
+    .createTitle {
+        font-size: large;
+        text-align: center;
+    }
+
+    .inputsDiv {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 10px;
+
+        .inputsColorDiv {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+
+    .buttonsDiv {
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+    }
+}

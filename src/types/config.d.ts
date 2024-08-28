@@ -38,6 +38,18 @@ declare global {
             searchBy?: string[];
             search?: string;
 
+            // Fields from JAC.Event that appear when creating new events
+            // Defaults to all fields in first event
+            // If no title is provided, the field name will be used
+            createFields?: [{
+                field: string;
+                title?: string;
+                type?: string;
+                default?: string;
+                search?: boolean;
+                searchScript?: string;
+            }];
+
             // Define valid script names here
             scriptNames: {
                 /** Only used if the script result shall be returned to JS */

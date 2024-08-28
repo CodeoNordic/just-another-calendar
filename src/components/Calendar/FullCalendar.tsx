@@ -41,6 +41,9 @@ const FullCalendar: FC<Props> = props => {
     const config = useConfig()!;
 
     const [config2, setConfig2] = useConfigState();
+    const [creatingEvent, setCreatingEvent] = useState(false);
+    const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
+    const [newEventPos, setNewEventPos] = useState<{ x: number, y: number } | null>(null);
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
     const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
@@ -188,235 +191,315 @@ const FullCalendar: FC<Props> = props => {
         return true;
     }), [props.records, dateRange]);
 
-    return <FullCalendarReact
-        ref={cal => calendarRef.current = cal}
-        height={'100vh'}
+    return <div>
+        <FullCalendarReact
+            ref={cal => calendarRef.current = cal}
+            height={'100vh'}
 
-        // Base config
-        schedulerLicenseKey={config.fullCalendarLicense}
-        locale={config.locale ?? 'no-nb'}
+            // Base config
+            schedulerLicenseKey={config.fullCalendarLicense}
+            locale={config.locale ?? 'no-nb'}
 
-        initialView={config.view}
-        initialDate={currentDate}
+            initialView={config.view}
+            initialDate={currentDate}
 
-        editable
-        eventResourceEditable={false}
-        eventStartEditable
-        eventDurationEditable
-        nowIndicator
-        
-        expandRows
-
-        weekends={new Date(currentDate).getDay() > 5? true: (config.showWeekends || false)}
-
-        // Add plugins
-        plugins={[
-            momentPlugin,
-            interactionPlugin,
-            dayGridPlugin,
-            timeGridPlugin,
-
-            resourcePlugin,
-            resourceDayGridPlugin,
-            resourceTimeGridPlugin,
-            resourceTimelinePlugin
-        ]}
-
-        // Set up views
-        views={{
-            resourceTimeGrid: {
-                dayHeaderContent: info => {
-                    const base = capitalize(info.date.toLocaleDateString(config.locale, {
-                        weekday: 'long',
-                        day: '2-digit',
-                        month: 'long'
-                    }), true);
-                    
-                    const bgEvents = eventsBase.filter(ev => {
-                        if (ev.extendedProps!.record.type !== 'backgroundEvent') return false;
-
-                        const start = new Date(ev.start as number);
-                        const current = new Date(info.date);
-
-                        start.setHours(0, 0, 0, 0);
-                        current.setHours(0, 0, 0, 0);
-
-                        return start.valueOf() === current.valueOf();
-                    });
-
-                    const firstColor = bgEvents[0]?.backgroundColor;
-                    return <span style={{ color: firstColor }}>
-                        {base}
-                        {!!bgEvents.length && <>
-                            <br />
-                            ({bgEvents.map(ev => ev.extendedProps!.record!.backgroundText).join(', ')})
-                        </>}
-                    </span>
-                },
-
-                slotLabelContent: info => {
-                    const str = info.date.toLocaleTimeString(
-                        config.locale,
-                        {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }
-                    );
-
-                    const isHourly = str.toLowerCase().match(/00 *(am|pm)?$/);
-
-                    return <span className={isHourly? 'timeslot-large': 'timeslot-small'}>
-                        {isHourly? str: str.substring(3, 5)}
-                    </span>
-                },
-
-                duration: { days: config.days ?? 7 },
-                dayHeaders: true,
-                datesAboveResources: true,
-
-                allDayContent: <div className='jac-all-day'>{config.translations?.allDaySlot ?? 'All day'}</div>,
-                allDaySlot: true//eventsBase.some(ev => ev.allDay)
-            }
-        }}
-
-        // Add content
-        resources={config.resources}
-        events={eventsBase}
-
-        // Renderer for each event
-        eventContent={props => <Event
-            component={config.eventComponent}
-            {...(props.event.extendedProps.record ?? {}) as JAC.Event}
-        />}
-
-        resourceGroupLabelClassNames={info => `resource-group-label-${info.groupValue}`}
-
-        // Automatically open/close resource groups on first load
-        resourceGroupLabelDidMount={info => {
-            const resource = config.resources?.find(r => r.id === info.groupValue);
+            editable
+            eventResourceEditable={false}
+            eventStartEditable
+            eventDurationEditable
+            nowIndicator
             
-            const noEvents = !eventsBase.some(e => e.resourceIds?.includes(info.groupValue));
-            const collapsed = resource?.collapsed !== undefined? resource.collapsed: noEvents;
+            expandRows
 
-            const expander = info.el.querySelector(`.fc-datagrid-expander:has(.fc-icon-${collapsed? 'minus':'plus'}-square)`) as HTMLButtonElement;
-            expander?.click();
-        }}
+            weekends={new Date(currentDate).getDay() > 5? true: (config.showWeekends || false)}
 
-        // Sorting
-        resourceOrder="title"
-        eventOrder={(a, b) => {
-            const recordA = (a as { record: JAC.Event }).record;
-            const recordB = (b as { record: JAC.Event }).record;
+            // Add plugins
+            plugins={[
+                momentPlugin,
+                interactionPlugin,
+                dayGridPlugin,
+                timeGridPlugin,
 
-            // If both records have the same 'isUrgent' value, sort by dateFinishedDisplay
-            if (recordA.isUrgent === recordB.isUrgent) {
-                const dateA = new Date(recordA.dateFinishedDisplay);
-                const dateB = new Date(recordB.dateFinishedDisplay);
+                resourcePlugin,
+                resourceDayGridPlugin,
+                resourceTimeGridPlugin,
+                resourceTimelinePlugin
+            ]}
 
-                return dateA.valueOf() - dateB.valueOf()
-            }
+            // Set up views
+            views={{
+                resourceTimeGrid: {
+                    dayHeaderContent: info => {
+                        const base = capitalize(info.date.toLocaleDateString(config.locale, {
+                            weekday: 'long',
+                            day: '2-digit',
+                            month: 'long'
+                        }), true);
+                        
+                        const bgEvents = eventsBase.filter(ev => {
+                            if (ev.extendedProps!.record.type !== 'backgroundEvent') return false;
 
-            // Otherwise, put the urgent record first
-            return recordA.isUrgent? -1: 1;
-        }}
-        
-        // Additional config values
-        resourceAreaHeaderContent={() => <div className="date-header">{resourcesTitle}</div>}
-        resourceAreaWidth={config.resourcesWidth || '17.5rem'}
-        filterResourcesWithEvents={false}
-        fixedWeekCount={false}
-        slotEventOverlap={false}
-        
-        buttonIcons={false}
-        headerToolbar={{
-            left: '',//'title',
-            right: ''
-        }}
-        
-        eventTimeFormat={config.eventTimeFormat ?? 'HH:mm'}
-        
-        // These will be switched out for config values in the future
-        slotMinTime={config.calendarStartTime || "08:00"} 
-        slotMaxTime={config.calendarEndTime || "21:15"}
+                            const start = new Date(ev.start as number);
+                            const current = new Date(info.date);
 
-        slotLabelFormat="HH:mm"
-        slotDuration="00:15"
-        slotLabelInterval={15}
+                            start.setHours(0, 0, 0, 0);
+                            current.setHours(0, 0, 0, 0);
 
-        // Event handlers
-        eventClick={info => {
-            const root = info.el;
+                            return start.valueOf() === current.valueOf();
+                        });
 
-            // Return if the element clicked was a button
-            const buttons = root.querySelectorAll('button');
+                        const firstColor = bgEvents[0]?.backgroundColor;
+                        return <span style={{ color: firstColor }}>
+                            {base}
+                            {!!bgEvents.length && <>
+                                <br />
+                                ({bgEvents.map(ev => ev.extendedProps!.record!.backgroundText).join(', ')})
+                            </>}
+                        </span>
+                    },
 
-            const target = info.jsEvent.target as HTMLElement;
-            for (const button of buttons) {
-                if (target === button || button.contains(target)) return;
-            }
+                    slotLabelContent: info => {
+                        const str = info.date.toLocaleTimeString(
+                            config.locale,
+                            {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }
+                        );
 
-            performScript('editEvent', info.event.id);
-        }}
+                        const isHourly = str.toLowerCase().match(/00 *(am|pm)?$/);
 
-        eventChange={info => {
-            const revertId = randomUUID();
-            setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
+                        return <span className={isHourly? 'timeslot-large': 'timeslot-small'}>
+                            {isHourly? str: str.substring(3, 5)}
+                        </span>
+                    },
 
-            performScript('onEventChange', {
-                record: info.event.extendedProps.record,
-                start: info.event.start,
-                end: info.event.end,
-                oldResource: (info as EventDropArg).oldResource?.toJSON(),
-                newResource: (info as EventDropArg).newResource?.toJSON(),
-                revertId
-            });
-        }}
+                    duration: { days: config.days ?? 7 },
+                    dayHeaders: true,
+                    datesAboveResources: true,
 
-        eventMouseEnter={info => {
-            const rect = info.el.getBoundingClientRect();
-            const record = info.event.extendedProps.record as JAC.Event;
+                    allDayContent: <div className='jac-all-day'>{config.translations?.allDaySlot ?? 'All day'}</div>,
+                    allDaySlot: true//eventsBase.some(ev => ev.allDay)
+                }
+            }}
 
-            if (record.type === 'backgroundEvent') return;
+            // Add content
+            resources={config.resources}
+            events={eventsBase}
 
-            const buttons = eventButtons(record);
+            // Renderer for each event
+            eventContent={props => <Event
+                component={config.eventComponent}
+                {...(props.event.extendedProps.record ?? {}) as JAC.Event}
+            />}
 
-            setDropdown(prev => ({
-                ...prev,
-                x: rect.left + rect.width,
-                // Move the dropdown up slightly if there's space for it
-                y: rect.top + rect.height - (
-                (
-                    Math.min(rect.width, rect.height) >= (50) ||
-                    (rect.height >= 100)
-                )? 34: 2),
-                buttons,
-                visible: true
-            }))
-        }}
+            resourceGroupLabelClassNames={info => `resource-group-label-${info.groupValue}`}
 
-        eventMouseLeave={() => {
-            setDropdown(prev => ({ ...prev, visible: false }))
-        }}
+            // Automatically open/close resource groups on first load
+            resourceGroupLabelDidMount={info => {
+                const resource = config.resources?.find(r => r.id === info.groupValue);
+                
+                const noEvents = !eventsBase.some(e => e.resourceIds?.includes(info.groupValue));
+                const collapsed = resource?.collapsed !== undefined? resource.collapsed: noEvents;
 
-        datesSet={info => {
-            setResourcesTitle(info.view.title);
-        }}
+                const expander = info.el.querySelector(`.fc-datagrid-expander:has(.fc-icon-${collapsed? 'minus':'plus'}-square)`) as HTMLButtonElement;
+                expander?.click();
+            }}
 
-        selectable
-        select={info => {
-            setConfig2((prev: JAC.Config | null) => ({...prev, records: [...config.records,
-                {
+            // Sorting
+            resourceOrder="title"
+            eventOrder={(a, b) => {
+                const recordA = (a as { record: JAC.Event }).record;
+                const recordB = (b as { record: JAC.Event }).record;
+
+                // If both records have the same 'isUrgent' value, sort by dateFinishedDisplay
+                if (recordA.isUrgent === recordB.isUrgent) {
+                    const dateA = new Date(recordA.dateFinishedDisplay);
+                    const dateB = new Date(recordB.dateFinishedDisplay);
+
+                    return dateA.valueOf() - dateB.valueOf()
+                }
+
+                // Otherwise, put the urgent record first
+                return recordA.isUrgent? -1: 1;
+            }}
+            
+            // Additional config values
+            resourceAreaHeaderContent={() => <div className="date-header">{resourcesTitle}</div>}
+            resourceAreaWidth={config.resourcesWidth || '17.5rem'}
+            filterResourcesWithEvents={false}
+            fixedWeekCount={false}
+            slotEventOverlap={false}
+            
+            buttonIcons={false}
+            headerToolbar={{
+                left: '',//'title',
+                right: ''
+            }}
+            
+            eventTimeFormat={config.eventTimeFormat ?? 'HH:mm'}
+            
+            // These will be switched out for config values in the future
+            slotMinTime={config.calendarStartTime || "08:00"} 
+            slotMaxTime={config.calendarEndTime || "21:15"}
+
+            slotLabelFormat="HH:mm"
+            slotDuration="00:15"
+            slotLabelInterval={15}
+
+            // Event handlers
+            eventClick={info => {
+                const root = info.el;
+
+                // Return if the element clicked was a button
+                const buttons = root.querySelectorAll('button');
+
+                const target = info.jsEvent.target as HTMLElement;
+                for (const button of buttons) {
+                    if (target === button || button.contains(target)) return;
+                }
+
+                performScript('editEvent', info.event.id);
+            }}
+
+            eventChange={info => {
+                const revertId = randomUUID();
+                setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
+
+                performScript('onEventChange', {
+                    record: info.event.extendedProps.record,
+                    start: info.event.start,
+                    end: info.event.end,
+                    oldResource: (info as EventDropArg).oldResource?.toJSON(),
+                    newResource: (info as EventDropArg).newResource?.toJSON(),
+                    revertId
+                });
+            }}
+
+            eventMouseEnter={info => {
+                const rect = info.el.getBoundingClientRect();
+                const record = info.event.extendedProps.record as JAC.Event;
+
+                if (record.type === 'backgroundEvent') return;
+
+                const buttons = eventButtons(record);
+
+                setDropdown(prev => ({
+                    ...prev,
+                    x: rect.left + rect.width,
+                    // Move the dropdown up slightly if there's space for it
+                    y: rect.top + rect.height - (
+                    (
+                        Math.min(rect.width, rect.height) >= (50) ||
+                        (rect.height >= 100)
+                    )? 34: 2),
+                    buttons,
+                    visible: true
+                }))
+            }}
+
+            eventMouseLeave={() => {
+                setDropdown(prev => ({ ...prev, visible: false }))
+            }}
+
+            datesSet={info => {
+                setResourcesTitle(info.view.title);
+            }}
+
+            selectable
+            select={info => {
+
+                // make better
+                const createFields = config.createFields || null;
+
+                setNewEvent({
                     id: randomUUID(),
-                    FirstName: 'New Event',
                     start: info.startStr.split('+')[0],
                     end: info.endStr.split('+')[0],
-                    resourceId: info.resource?.id || config.resources?.[0].id,
-                    type: 'event'
-                }
-            ]}) as JAC.Config);
-            
-        }}
-    />
+                    resourceId: info.resource?.id || ""
+                });
+
+                createFields?.map(field => {
+                    if (field.default) {
+                        setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field.field]: field.default }) as JAC.Event);
+                    }
+                });
+
+                
+                setCreatingEvent(true);
+                setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });
+
+                document.addEventListener('click', e => {
+                    if ((e.target as HTMLElement)?.closest('.createEvent')) return;
+                    setCreatingEvent(false);
+                    setNewEvent(null);
+                }, { once: true });
+
+                /*setConfig2((prev: JAC.Config | null) => ({...prev, records: [...config.records,
+                    {
+                        id: randomUUID(),
+                        FirstName: 'New Event',
+                        start: info.startStr.split('+')[0],
+                        end: info.endStr.split('+')[0],
+                        resourceId: info.resource?.id || config.resources?.[0].id,
+                    }
+                ]}) as JAC.Config);*/
+            }}
+        />
+        {creatingEvent && <div className='createEvent' style={{
+            top: newEventPos?.y,
+            left: newEventPos?.x
+        }}>
+            <div className='inputsDiv'>
+                <p className='createTitle'>Create Event?</p>
+                {config.createFields ? config.createFields.map(field => <div key={field.field}>
+                    <p>{field.title ?? field.field}:</p>
+                    <input type={field.type ?? "string"} value={newEvent?.[field.field] || ""} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field.field]: e.target.value }) as JAC.Event)} />
+                </div>) : Object.keys(config.records[0])?.map((field: any) => <div key={field}>
+                    <p>{field}:</p>
+                    <input type='text' value={newEvent?.[field] || ""} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field]: e.target.value }) as JAC.Event)} />
+                </div>)}
+
+               {/* <div>
+                    <p>Title:</p>
+                    <input type='text' value={newEvent?.FirstName || ""} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, FirstName: e.target.value }) as JAC.Event)} />
+                </div>
+                <div>
+                    <p>Start:</p>
+                    <input type='datetime-local' value={newEvent?.start} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, start: e.target.value }) as JAC.Event)} />
+                </div>
+                <div>
+                    <p>End:</p>
+                    <input type='datetime-local' value={newEvent?.end} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, end: e.target.value }) as JAC.Event)} />
+                </div>
+                <div>
+                    <p>Resource:</p>
+                    <input type='text' value={newEvent?.resourceId} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, resourceId: e.target.value }) as JAC.Event)} />
+                </div>
+                <div className='inputsColorDiv'>
+                    <p>Color:</p>
+                    <input type='color' value={newEvent?.colors?.background || "#3788d8"} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, colors: { ...prev?.colors, background: e.target.value } }) as JAC.Event)} />
+                    <p>Border color:</p>
+                    <input type='color' value={newEvent?.colors?.border || "#3788d8"} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, colors: { ...prev?.colors, border: e.target.value } }) as JAC.Event)} />
+                </div>
+                <div>
+                    <p>Filter id:</p>
+                    <input type='text' value={newEvent?.filterId || ""} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, filterId: e.target.value }) as JAC.Event)} />
+                </div> */}
+            </div>
+            <div className='buttonsDiv'>
+                <button onClick={() => {
+                    setCreatingEvent(false);
+                    setNewEvent(null);
+                }}>Cancel</button>
+                <button onClick={() => {
+                    setCreatingEvent(false);
+                    setNewEvent(null);
+                    setConfig2((prev: JAC.Config | null) => ({...prev, records: [...config.records, newEvent]} as JAC.Config));
+                }}>Create</button>
+            </div>
+        </div>}
+    </div>
 }
 
 export default FullCalendar;

@@ -160,5 +160,37 @@ init(JSON.stringify({
         filtersHeader: "Filtre",
         allDaySlot: "Hele dagen",
         weekNumberHeader: "U"
-    }
+    },
+    createFields: [
+    {
+        field: "FirstName",
+        title: "Navn"
+    },
+    {
+        field: "start",
+        title: "Start",
+        type: "datetime-local"
+    },
+    {
+        field: "end",
+        title: "Slutt",
+        type: "datetime-local"
+    },
+    {
+        field: "color",
+        title: "Farge",
+        type: "color",
+        default: "#3788d8"
+    },
+    {
+        field: "backgroundColor",
+        title: "Bakgrunnsfarge",
+        type: "color",
+        default: "#3788d8"
+    },
+    {
+        field: "filterId",
+        title: "Filtrerings-id",
+        default: "filter1"
+    }]
 }))
