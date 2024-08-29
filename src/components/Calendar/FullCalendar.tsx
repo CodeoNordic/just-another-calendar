@@ -31,6 +31,9 @@ import capitalize from '@utils/capitalize';
 import searchObject from '@utils/searchObject';
 import calculateContrast from '@utils/contrast';
 
+import NewEvent from './Event/NewEvent';
+
+
 interface Props {
     records?: JAC.Event[];
     date?: DateInput;
@@ -40,7 +43,6 @@ const FullCalendar: FC<Props> = props => {
     const calendarRef = useRef<FullCalendarReact|null>(null);
     const config = useConfig()!;
 
-    const [config2, setConfig2] = useConfigState();
     const [creatingEvent, setCreatingEvent] = useState(false);
     const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
     const [newEventPos, setNewEventPos] = useState<{ x: number, y: number } | null>(null);
@@ -408,10 +410,6 @@ const FullCalendar: FC<Props> = props => {
 
             selectable
             select={info => {
-
-                // make better
-                const createFields = config.createFields || null;
-
                 setNewEvent({
                     id: randomUUID(),
                     start: info.startStr.split('+')[0],
@@ -419,86 +417,29 @@ const FullCalendar: FC<Props> = props => {
                     resourceId: info.resource?.id || ""
                 });
 
-                createFields?.map(field => {
-                    if (field.default) {
-                        setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field.field]: field.default }) as JAC.Event);
-                    }
+                config.createFields?.map(field => {
+                    if (!field.default) return;
+                    setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field.field]: field.default }) as JAC.Event);
                 });
-
+                
+                setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });
                 
                 setCreatingEvent(true);
-                setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });
 
                 document.addEventListener('click', e => {
                     if ((e.target as HTMLElement)?.closest('.createEvent')) return;
                     setCreatingEvent(false);
                     setNewEvent(null);
                 }, { once: true });
-
-                /*setConfig2((prev: JAC.Config | null) => ({...prev, records: [...config.records,
-                    {
-                        id: randomUUID(),
-                        FirstName: 'New Event',
-                        start: info.startStr.split('+')[0],
-                        end: info.endStr.split('+')[0],
-                        resourceId: info.resource?.id || config.resources?.[0].id,
-                    }
-                ]}) as JAC.Config);*/
             }}
         />
-        {creatingEvent && <div className='createEvent' style={{
-            top: newEventPos?.y,
-            left: newEventPos?.x
-        }}>
-            <div className='inputsDiv'>
-                <p className='createTitle'>Create Event?</p>
-                {config.createFields ? config.createFields.map(field => <div key={field.field}>
-                    <p>{field.title ?? field.field}:</p>
-                    <input type={field.type ?? "string"} value={newEvent?.[field.field] || ""} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field.field]: e.target.value }) as JAC.Event)} />
-                </div>) : Object.keys(config.records[0])?.map((field: any) => <div key={field}>
-                    <p>{field}:</p>
-                    <input type='text' value={newEvent?.[field] || ""} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field]: e.target.value }) as JAC.Event)} />
-                </div>)}
-
-               {/* <div>
-                    <p>Title:</p>
-                    <input type='text' value={newEvent?.FirstName || ""} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, FirstName: e.target.value }) as JAC.Event)} />
-                </div>
-                <div>
-                    <p>Start:</p>
-                    <input type='datetime-local' value={newEvent?.start} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, start: e.target.value }) as JAC.Event)} />
-                </div>
-                <div>
-                    <p>End:</p>
-                    <input type='datetime-local' value={newEvent?.end} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, end: e.target.value }) as JAC.Event)} />
-                </div>
-                <div>
-                    <p>Resource:</p>
-                    <input type='text' value={newEvent?.resourceId} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, resourceId: e.target.value }) as JAC.Event)} />
-                </div>
-                <div className='inputsColorDiv'>
-                    <p>Color:</p>
-                    <input type='color' value={newEvent?.colors?.background || "#3788d8"} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, colors: { ...prev?.colors, background: e.target.value } }) as JAC.Event)} />
-                    <p>Border color:</p>
-                    <input type='color' value={newEvent?.colors?.border || "#3788d8"} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, colors: { ...prev?.colors, border: e.target.value } }) as JAC.Event)} />
-                </div>
-                <div>
-                    <p>Filter id:</p>
-                    <input type='text' value={newEvent?.filterId || ""} onChange={e => setNewEvent((prev: JAC.Event | null) => ({ ...prev, filterId: e.target.value }) as JAC.Event)} />
-                </div> */}
-            </div>
-            <div className='buttonsDiv'>
-                <button onClick={() => {
-                    setCreatingEvent(false);
-                    setNewEvent(null);
-                }}>Cancel</button>
-                <button onClick={() => {
-                    setCreatingEvent(false);
-                    setNewEvent(null);
-                    setConfig2((prev: JAC.Config | null) => ({...prev, records: [...config.records, newEvent]} as JAC.Config));
-                }}>Create</button>
-            </div>
-        </div>}
+        <NewEvent 
+            creatingEvent={creatingEvent}
+            setCreatingEvent={setCreatingEvent}
+            newEvent={newEvent}
+            setNewEvent={setNewEvent}
+            newEventPos={newEventPos}
+        />
     </div>
 }
 

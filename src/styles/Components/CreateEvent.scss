@@ -2,8 +2,27 @@
     position: absolute;
     background: #F5F5F5;
     border: 1px solid rgba(0, 0, 0, .3);
-    padding: 4px;
     z-index: 999;
+    
+    .topCreate {
+        display: flex;
+        justify-content: end;
+
+        .cross {
+            cursor: pointer;
+            padding: 4px;
+
+            
+        }
+
+        .cross:hover {
+            background: rgba(0, 0, 0, .2) !important;
+        }
+    }
+    
+    .bodyCreate {
+        padding: 4px;
+    } 
 
     .createTitle {
         font-size: large;
