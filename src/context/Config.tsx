@@ -134,7 +134,7 @@ export const useConfig = () => {
 
 export const useConfigState = () => {
     const ctx = useContext(ConfigContext);
-    return ctx;
+    return ctx as State<JAC.Config>;
 }
 
 export default ConfigProvider;

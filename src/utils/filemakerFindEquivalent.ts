@@ -1,3 +1,35 @@
+import dateFromString from './dateFromString';
+
+function greaterOrLessThan(a: string, b: string, operator: '<'|'>'|'<='|'>=') {
+    let valueA: string|number = a;
+    let valueB: string|number = b;
+    
+    const numberA = Number(a);
+    const numberB = Number(b);
+
+    if (Number.isFinite(numberA) && Number.isFinite(numberB)) {
+        valueA = numberA;
+        valueB = numberB;    
+    }
+
+    else {
+        const dateA = dateFromString(a);
+        const dateB = dateFromString(b);
+
+        if (dateA && dateB) {
+            valueA = dateA.valueOf();
+            valueB = dateB.valueOf();
+        }
+    }
+
+    switch(operator) {
+        case '<': return valueA < valueB;
+        case '>': return valueA > valueB;
+        case '<=': return valueA <= valueB;
+        case '>=': return valueA >= valueB;
+    }
+}
+
 export default function fileMakerFindEquivalent(value: any, search: string): boolean {
     search = String(search);
 
@@ -13,17 +45,17 @@ export default function fileMakerFindEquivalent(value: any, search: string): boo
     switch(start) {
         case '==': return stringValue == trimmed;
         case '!=': return stringValue != trimmed;
-        case '<=': return stringValue <= trimmed;
-        case '>=': return stringValue >= trimmed;
+        case '<=': return greaterOrLessThan(stringValue, trimmed, '<=');
+        case '>=': return greaterOrLessThan(stringValue, trimmed, '>=');
     }
 
     start = search.substring(0, 1);
-    trimmed = search.substring(1);
+    trimmed = search.substring(1).toLowerCase();
 
     switch(start) {
-        case '*': return !["", 'undefined', 'null', 'NaN'].includes(String(value));
-        case '<': return stringValue < trimmed;
-        case '>': return stringValue > trimmed;
+        case '*': return !["", undefined, null, NaN].includes(value);
+        case '<': return greaterOrLessThan(stringValue, trimmed, '<');
+        case '>': return greaterOrLessThan(stringValue, trimmed, '>');
     }
 
     return stringValue == search.toLowerCase();

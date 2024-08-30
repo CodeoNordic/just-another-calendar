@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useConfig, useConfigState } from '@context/Config';
+import { useConfig } from '@context/Config';
 
 import { useCreateMethod } from '@utils/createMethod';
 import { v4 as randomUUID } from 'uuid';
@@ -7,6 +7,9 @@ import { v4 as randomUUID } from 'uuid';
 // Import components
 import Event from '@components/Calendar/Event';
 import { useEventDropdown } from './Event/Dropdown';
+
+// Import methods
+import mapEvents from './mapEvents';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
@@ -29,10 +32,8 @@ import dateFromString from '@utils/dateFromString';
 import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
 import searchObject from '@utils/searchObject';
-import calculateContrast from '@utils/contrast';
 
 import NewEvent from './Event/NewEvent';
-
 
 interface Props {
     records?: JAC.Event[];
@@ -48,7 +49,7 @@ const FullCalendar: FC<Props> = props => {
     const [newEventPos, setNewEventPos] = useState<{ x: number, y: number } | null>(null);
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
-    const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
+    //const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
     const [resourcesTitle, setResourcesTitle] = useState<string>('');
 
     const [,setRevertFunctions] = useState<Record<string, Function>>({});
@@ -119,79 +120,10 @@ const FullCalendar: FC<Props> = props => {
         });
     });
 
-    const eventsBase: EventSourceInput = useMemo(() => (props.records ?? []).map((record, i) => {
-        if (!record.id) {
-            console.warn(`The following record does not have an associated ID, and will instead use its array index`, record);
-            record.id = String(i);
-        }
-        //if (!record.resourceId && record.type !== 'backgroundEvent') console.warn(`The following record does not have a resource ID`, record);
-
-        const eventStart = dateFromString(record.timestampStart ?? record.start ?? record.startDate ?? record.dateStart);
-        const eventEnd = dateFromString(record.timestampEnd ?? record.end ?? record.endDate ?? record.dateEnd ?? record.dateFinishedDisplay);
-
-        const timeStart = record.startTime ?? record.timeStart;
-        const timeEnd = record.endTime ?? record.timeEnd;
-
-        if (timeStart) {
-            const match = timeStart.match(/^(\d{2}):(\d{2})/);
-            match && eventStart?.setHours(Number(match[1]), Number(match[2]));
-        }
-
-        if (timeEnd) {
-            const match = timeEnd.match(/^(\d{2}):(\d{2})/);
-            match && eventEnd?.setHours(Number(match[1]), Number(match[2]));
-        }
-
-        if (record.type === 'backgroundEvent') return {
-            start: eventStart,
-            end: eventEnd,
-            allDay: true,
-            display: 'background',
-            backgroundColor: record.backgroundColor ?? '#eaa',
-            extendedProps: { record }
-        }
-
-        const resourceIds = record.resourceId instanceof Array? record.resourceId: (record.resourceId? [record.resourceId]: []);
-
-        return {
-            id: record.id,
-            resourceId: resourceIds[0],
-            resourceIds,
-            backgroundColor: record.colors?.background,
-            borderColor: record.colors?.border,
-            textColor: (config?.contrastCheck !== false && !calculateContrast(record.colors?.text || "#fff", record.colors?.background || "#3788d8")) ? 
-            "#000" : record.colors?.text,
-            start: eventStart,
-            end: eventEnd,
-            extendedProps: { record },
-            allDay: Boolean(record.allDay)
-        }
-    }).filter(ev => {
-        const filteredOut = config.eventFilters?.some(filter => {
-            return ev.extendedProps.record.filterId && !filter.enabled && filter.id == ev.extendedProps.record.filterId;
-        });
-
-        const filteredSearch = config.searchBy ? (config?.searchBy).every((field) => {
-            return config.search && !ev.extendedProps.record[field].toLowerCase().includes(config.search);
-        }) : false;
-
-        if (filteredOut || filteredSearch) return false;
-
-        if (!ev.start || !ev.end) {
-            console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.record);
-            return false;
-        }
-
-        // Return if the event is outside the date range
-        if (dateRange) {
-            if (
-                (ev.start.valueOf() > dateRange.end.valueOf())
-                || ev.end.valueOf() < dateRange.start.valueOf()
-            ) return false;
-        }
-
-        return true;
-    }), [props.records, dateRange]);
+    const eventsBase: EventSourceInput = useMemo(
+        () => mapEvents(config),
+        [props.records]
+    );
 
     return <div>
         <FullCalendarReact
@@ -433,13 +365,12 @@ const FullCalendar: FC<Props> = props => {
                 }, { once: true });
             }}
         />
-        <NewEvent 
-            creatingEvent={creatingEvent}
-            setCreatingEvent={setCreatingEvent}
-            newEvent={newEvent}
-            setNewEvent={setNewEvent}
-            newEventPos={newEventPos}
-        />
+
+        {creatingEvent && <NewEvent
+            eventState={[newEvent, setNewEvent]}
+            creatingState={[creatingEvent, setCreatingEvent]}
+            pos={newEventPos}
+        />}
     </div>
 }
 
