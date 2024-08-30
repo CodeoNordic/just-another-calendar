@@ -1,5 +1,6 @@
 import { useConfigState } from '@context/Config';
 import Crossmark from 'jsx:@assets/svg/crossmark.svg';
+import Checkmark from 'jsx:@assets/svg/checkmark.svg';
 
 
 interface NewEventProps {
@@ -23,11 +24,11 @@ const NewEvent: FC<NewEventProps> = props => {
                 <div className='topCreate' style={{
                     background: newEvent?.colors?.background || "#3788d8"
                 }}>
-                    <Crossmark className='cross' onClick={() => setCreatingEvent(false)}/>
+                    <Crossmark className='icon' onClick={() => setCreatingEvent(false)}/>
                 </div>
                 <div className='bodyCreate'>
                     <p className='createTitle'>Create Event?</p>
-                    {config?.newEventFields?.map(value => <div key={value.field}>
+                    {config?.newEventFields?.map(value => <div key={value.field} className='inputDiv'>
                         <p>{value.title ?? value.field}</p>
                         <input 
                             type={value.type ?? "string"} 
@@ -40,8 +41,6 @@ const NewEvent: FC<NewEventProps> = props => {
                                 e.type === "checkbox" && (inputValue = e.target.checked);
                                 e.type === "time" && (inputValue = newEvent?.[value.field].toString().split("T")[0] + "T" + inputValue);
 
-                                console.log(inputValue);
-
                             setNewEvent({...newEvent, [value.field]: inputValue} as JAC.Event)}} />
                     </div>)}
                 </div>
@@ -50,12 +49,12 @@ const NewEvent: FC<NewEventProps> = props => {
                 <button onClick={() => {
                     setCreatingEvent(false);
                     setNewEvent(null);
-                }}>Discard</button>
+                }}><Crossmark className='icon'/>Discard</button>
                 <button onClick={() => {
                     setCreatingEvent(false);
                     setNewEvent(null);
                     setConfig((prev: JAC.Config | null) => ({...prev, records: [...config!.records, newEvent]} as JAC.Config));
-                }}>Save</button>
+                }}><Checkmark className='icon'/>Save</button>
             </div>
         </div>}
     </div>
