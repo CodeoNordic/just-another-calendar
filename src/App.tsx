@@ -18,7 +18,7 @@ const App: React.FC = () => {
 
         const elem = document.createElement('style');
         elem.id = 'jac-custom-css';
-        elem.innerHTML = css;
+        elem.innerHTML = css.replaceAll('\r', '\n');
 
         document.head.appendChild(elem);
         return () => elem.remove();
