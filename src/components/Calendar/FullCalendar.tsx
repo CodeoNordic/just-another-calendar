@@ -340,8 +340,33 @@ const FullCalendar: FC<Props> = props => {
                 setResourcesTitle(info.view.title);
             }}
 
-            selectable
+            selectable={config.eventCreation}
             select={info => {
+                if (config.scriptNames?.createEvent) {
+                    const start = info.start;
+                    const end = info.end;
+                    
+                    return performScript("createEvent", {
+                        start: {
+                            date: start.getDate(),
+                            month: start.getMonth() + 1,
+                            year: start.getFullYear(),
+                            time: start.toTimeString().split(' ')[0],
+                            unix: start.valueOf(),
+                            iso: start.toISOString()
+                        },
+                        end: {
+                            date: end.getDate(),
+                            month: end.getMonth() + 1,
+                            year: end.getFullYear(),
+                            time: end.toTimeString().split(' ')[0],
+                            unix: end.valueOf(),
+                            iso: end.toISOString()
+                        },
+                        resourceId: info.resource?.id
+                    });                
+                }
+
                 setNewEvent({
                     id: randomUUID(),
                     start: info.startStr.split('+')[0],

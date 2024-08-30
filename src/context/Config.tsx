@@ -46,7 +46,8 @@ const defaultConfig: Partial<JAC.Config> = {
             title: "All Day",
             type: "checkbox"
         }
-    ]
+    ],
+    eventCreation: true,
 };
 
 
@@ -134,7 +135,7 @@ export const useConfig = () => {
 
 export const useConfigState = () => {
     const ctx = useContext(ConfigContext);
-    return ctx as State<JAC.Config>;
+    return ctx;
 }
 
 export default ConfigProvider;

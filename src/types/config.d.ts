@@ -42,7 +42,8 @@ declare global {
             // Defaults to all fields in first event
             // If no title is provided, the field name will be used
             newEventFields?: NewEventField[];
-
+            eventCreation?: boolean;
+            
             // Define valid script names here
             scriptNames: {
                 /** Only used if the script result shall be returned to JS */
@@ -55,6 +56,8 @@ declare global {
                 onDateSelected: string;
                 onEventChange: string;
                 onFilterChange: string;
+                
+                newEventScript?: string;
             };
 
             customCSS?: string;

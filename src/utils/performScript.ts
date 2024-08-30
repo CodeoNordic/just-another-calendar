@@ -31,7 +31,7 @@ export default function performScript(
         }
 
         if (!window.FileMaker && isDevMode()) {
-            console.log(`[DEV]: Running script '${scriptName}'`);
+            console.log(`[DEV]: Running script '${scriptName}' with param:`, param);
             return true;
         }
 
