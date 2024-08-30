@@ -23,7 +23,7 @@ declare global {
             eventComponent?: string;
             eventComponents: EventComponent[];
 
-            compactFields?: (string & keyof JAC.Event)[];
+            //compactFields?: (string & keyof JAC.Event)[];
 
             days?: number;
             firstDayOfWeek?: string|number;

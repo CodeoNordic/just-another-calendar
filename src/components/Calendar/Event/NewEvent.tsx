@@ -3,23 +3,21 @@ import Crossmark from 'jsx:@assets/svg/crossmark.svg';
 
 
 interface NewEventProps {
-    creatingEvent: boolean;
-    setCreatingEvent: (value: boolean) => void;
-    newEvent: JAC.Event | null;
-    setNewEvent: (value: JAC.Event | null) => void;
-    newEventPos: { x: number, y: number } | null;
+    creatingState: State<boolean>;
+    eventState: State<JAC.Event|null>;
+    pos: { x: number, y: number } | null;
 }
 
 const NewEvent: FC<NewEventProps> = props => {
-    const { creatingEvent, setCreatingEvent, newEvent, setNewEvent, newEventPos } = props;
+    const [creatingEvent, setCreatingEvent] = props.creatingState;
+    const [newEvent, setNewEvent] = props.eventState;
+
     const [config, setConfig] = useConfigState();
-    
-    if (!config || !creatingEvent) return null
 
     return <div>
         {creatingEvent && <div className='createEvent' style={{
-            top: newEventPos?.y,
-            left: newEventPos?.x
+            top: props.pos?.y,
+            left: props.pos?.x
         }}>
             <div className='inputsDiv'>
                 <div className='topCreate' style={{
