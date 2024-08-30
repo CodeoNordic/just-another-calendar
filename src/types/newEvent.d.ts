@@ -3,6 +3,7 @@ declare global {
         interface NewEventField {
             field: string;
             title?: string;
+            placeholder?: string;
             type?: string;
             default?: string;
             search?: boolean;

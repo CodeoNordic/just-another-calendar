@@ -22,6 +22,7 @@ const defaultConfig: Partial<JAC.Config> = {
         {
             field: "title",
             title: "Title",
+            placeholder: "Add a title",
             type: "string"
         },
         {
@@ -37,6 +38,7 @@ const defaultConfig: Partial<JAC.Config> = {
         {
             field: "description",
             title: "Description",
+            placeholder: "Add a description",
             type: "string"
         },
         {

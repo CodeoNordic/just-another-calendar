@@ -29,18 +29,20 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
                 <div className='bodyCreate'>
                     <p className='createTitle'>Create Event?</p>
-                    {config.newEventFields?.map(field => <div key={field.field}>
-                        <p>{field.title ?? field.field}:</p>
+                    {config.newEventFields?.map(value => <div key={value.field}>
+                        <p>{value.title ?? value.field}</p>
                         <input 
-                            type={field.type ?? "string"} 
-                            value={field.type === "time" 
-                                ? newEvent?.[field.field].toString().split("T")[1] 
-                                : newEvent?.[field.field] || ""} onChange={e => {
-                            let value = e.target.value as string | number | boolean;
-                            field.type === "checkbox" && (value = e.target.checked);
-                            field.type === "time" && (value = newEvent?.[field.field].toString().split("T")[0] + "T" + value);
+                            type={value.type ?? "string"} 
+                            value={value.type === "time" 
+                                ? newEvent?.[value.field].toString().split("T")[1] 
+                                : newEvent?.[value.field] || ""}
+                            placeholder={value.placeholder ?? ""}     
+                            onChange={e => {
+                                let inputValue = e.target.value as string | number | boolean;
+                                e.type === "checkbox" && (inputValue = e.target.checked);
+                                e.type === "time" && (inputValue = newEvent?.[value.field].toString().split("T")[0] + "T" + inputValue);
 
-                            setNewEvent({...newEvent, [field.field]: value} as JAC.Event)}} />
+                            setNewEvent({...newEvent, [value.field]: value} as JAC.Event)}} />
                     </div>)}
                 </div>
             </div>
