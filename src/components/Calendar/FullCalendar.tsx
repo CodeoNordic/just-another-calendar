@@ -417,7 +417,7 @@ const FullCalendar: FC<Props> = props => {
                     resourceId: info.resource?.id || ""
                 });
 
-                config.createFields?.map(field => {
+                config.newEventFields?.map(field => {
                     if (!field.default) return;
                     setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field.field]: field.default }) as JAC.Event);
                 });

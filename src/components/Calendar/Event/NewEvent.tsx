@@ -30,13 +30,16 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
                 <div className='bodyCreate'>
                     <p className='createTitle'>Create Event?</p>
-                    {config.createFields ? config.createFields.map(field => <div key={field.field}>
+                    {config.newEventFields?.map(field => <div key={field.field}>
                         <p>{field.title ?? field.field}:</p>
-                        <input type={field.type ?? "string"} value={newEvent?.[field.field] || ""} onChange={e => {
-                            setNewEvent({...newEvent, [field.field]: e.target.value} as JAC.Event)}} />
-                    </div>) : Object.keys(config.records[0])?.map((field: any) => <div key={field}>
-                        <p>{field}:</p>
-                        <input type='text' value={newEvent?.[field] || ""} onChange={e => setNewEvent({...newEvent, [field]: e.target.value} as JAC.Event)} />
+                        <input type={field.type ?? "string"} value={field.type === "time" ? newEvent?.[field.field].toString().split("T")[1] : newEvent?.[field.field] || ""} onChange={e => {
+                            let value = e.target.value as string | number | boolean;
+                            field.type === "checkbox" && (value = e.target.checked);
+                            field.type === "time" && (value = newEvent?.[field.field].toString().split("T")[0] + "T" + value);
+                            console.log(value);
+                            console.log(value.toString().split("T")[1]);
+
+                            setNewEvent({...newEvent, [field.field]: value} as JAC.Event)}} />
                     </div>)}
                 </div>
             </div>

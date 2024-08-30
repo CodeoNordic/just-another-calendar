@@ -41,14 +41,7 @@ declare global {
             // Fields from JAC.Event that appear when creating new events
             // Defaults to all fields in first event
             // If no title is provided, the field name will be used
-            createFields?: [{
-                field: string;
-                title?: string;
-                type?: string;
-                default?: string;
-                search?: boolean;
-                searchScript?: string;
-            }];
+            newEventFields?: NewEventField[];
 
             // Define valid script names here
             scriptNames: {

@@ -161,7 +161,7 @@ init(JSON.stringify({
         allDaySlot: "Hele dagen",
         weekNumberHeader: "U"
     },
-    createFields: [
+    newEventFields: [
     {
         field: "FirstName",
         title: "Navn"

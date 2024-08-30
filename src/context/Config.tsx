@@ -3,8 +3,48 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import getRecordsFromObject from '@utils/getRecordsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
-const defaultConfig: {[K in keyof Partial<JAC.Config>]: JAC.Config[K]} = {
-
+const defaultConfig: Partial<JAC.Config> = {
+    eventComponent: "default",
+    eventComponents: [
+        {
+            name: "default",
+            fields: [
+                {
+                    value: "title"
+                },
+                {
+                    template: "{Time:start} - {Time:end}"
+                }
+            ]
+        }
+    ],
+    newEventFields: [
+        {
+            field: "title",
+            title: "Title",
+            type: "string"
+        },
+        {
+            field: "start",
+            title: "Start",
+            type: "time"
+        },
+        {
+            field: "end",
+            title: "End",
+            type: "time"
+        },
+        {
+            field: "description",
+            title: "Description",
+            type: "string"
+        },
+        {
+            field: "allDay",
+            title: "All Day",
+            type: "checkbox"
+        }
+    ]
 };
 
 
