@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import getRecordsFromObject from '@utils/getRecordsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
-const defaultConfig: {[k in keyof Partial<JAC.Config>]: JAC.Config[k]} = {
+const defaultConfig: {[K in keyof Partial<JAC.Config>]: JAC.Config[K]} = {
 
 };
 
@@ -14,8 +14,8 @@ const parseConfig = (cfg: string) => {
         const config = JSON.parse(cfg) as JAC.Config;
         const records = getRecordsFromObject(config.records) || [];
 
-        Object.keys(defaultConfig).forEach((key)  => {
-            config[key as keyof JAC.Config] ??= defaultConfig[key as keyof JAC.Config];
+        Object.keys(defaultConfig).forEach((key) => {
+            (config as RSAny)[key] ??= defaultConfig[key as keyof JAC.Config];
         });
 
         let configWarned = false;
