@@ -3,11 +3,20 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import getRecordsFromObject from '@utils/getRecordsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
+const defaultConfig: {[k in keyof Partial<JAC.Config>]: JAC.Config[k]} = {
+
+};
+
+
 // Parses the JSON from FileMaker into a readable config
 const parseConfig = (cfg: string) => {
     try {
         const config = JSON.parse(cfg) as JAC.Config;
         const records = getRecordsFromObject(config.records) || [];
+
+        Object.keys(defaultConfig).forEach((key)  => {
+            config[key as keyof JAC.Config] ??= defaultConfig[key as keyof JAC.Config];
+        });
 
         let configWarned = false;
         config.records = records.map(record => {
