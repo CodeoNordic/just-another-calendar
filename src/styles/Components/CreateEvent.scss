@@ -2,7 +2,24 @@
     position: absolute;
     background: #F5F5F5;
     border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 5px;
     z-index: 999;
+
+    button {
+        margin: 4px;
+        padding: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .icon {
+        width: 1.3em;
+        height: 1.3em;
+        min-width: 1.3em;
+        min-height: 1.3em;
+    }
     
     .topCreate {
         display: flex;
@@ -35,12 +52,10 @@
         gap: 5px;
         margin-bottom: 10px;
 
-        .inputsColorDiv {
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .inputDiv {
+            margin-top: 5px;
         }
-
+        
         p {
             margin: 0;
         }
