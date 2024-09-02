@@ -20,7 +20,7 @@ declare global {
             
             eventTimeFormat?: string;
 
-            eventComponent?: string;
+            defaultEventComponent?: string;
             eventComponents: EventComponent[];
 
             //compactFields?: (string & keyof JAC.Event)[];
@@ -58,7 +58,7 @@ declare global {
                 onFilterChange: string;
                 
                 newEvent?: string;
-                newEventCreated?: string;
+                eventCreated?: string;
             };
 
             customCSS?: string;
