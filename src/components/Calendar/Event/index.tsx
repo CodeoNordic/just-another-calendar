@@ -1,11 +1,14 @@
+import { useMemo } from 'react';
 import { useConfig } from '@context/Config';
 import useTooltip from '@hooks/useTooltip';
 
-import BackgroundEvent from './Background';
-import Field from './Field';
+import searchObject from '@utils/searchObject';
 import { templateKey } from '@utils/getFieldValue';
 
-const Event: FC<JAC.Event> = props => {
+import BackgroundEvent from './Background';
+import Field from './Field';
+
+const Event: FC<JAC.Event> = ({ children, ...props }) => {
     // An event does not render without the config being present
     const config = useConfig()!;
     const {
@@ -19,16 +22,34 @@ const Event: FC<JAC.Event> = props => {
     if (props.type === 'backgroundEvent') return <BackgroundEvent {...props} />
 
     // Find the correct component to use
-    const componentName = props._component ?? config.defaultEventComponent;
-    let component = config.eventComponents?.find(component => component.name === componentName);
+    const component = useMemo(() => {
+        let comp: JAC.EventComponent|undefined;
+        
+        if (props._component) {
+            comp = config.eventComponents?.find(c => c.name === props._component);
+            if (!comp) console.warn(`A component by the name ${props._component} was not found`, props);
+        }
 
-    // Default to the first component if none was found
+        else {
+            const matchingComponents = config.eventComponents?.filter(c => c._filter && searchObject(props, c._filter)) || [];
+            if (matchingComponents.length > 1)
+                console.warn(`More than one event component had a positive match for the following event. The first one (${matchingComponents[0].name}) will be used.`, props);
+
+            comp = matchingComponents[0];
+        }
+
+        if (!comp && config.defaultEventComponent) {
+            comp = config.eventComponents?.find(c => c.name === config.defaultEventComponent);
+        }
+
+        return comp;
+    }, [props, config.defaultEventComponent, config.eventComponents]);
+
     if (!component) {
-        console.warn(`A component by the name ${componentName} was not found in the config. Using the first defined component`);
-        component = config.eventComponents?.[0];
+        console.warn('A component was not found for the following event', props);
+        return null;
     }
-
-    if (!component) return null;
+    
     if (component.htmlTemplate && component.htmlTemplate[0] === '<') {
         const parsedHtml = component.htmlTemplate
             .replaceAll(
