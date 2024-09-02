@@ -9,6 +9,10 @@ declare global {
             filtersHeader?: string;
 
             allDaySlot?: string;
+
+            eventCreationHeader?: string;
+            eventCreationConfirm?: string;
+            eventCreationCancel?: string;
         }
     }
 }

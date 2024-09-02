@@ -285,7 +285,7 @@ const FullCalendar: FC<Props> = props => {
 
             firstDay={typeof config.firstDayOfWeek === 'number' ? 
                 config.firstDayOfWeek : typeof config.firstDayOfWeek === "string" ? 
-                weekDays.indexOf(config.firstDayOfWeek!.toLowerCase().substring(0,3)) : 0}
+                Math.max(weekDays.indexOf(config.firstDayOfWeek!.toLowerCase().substring(0,3)), 1) : 1}
 
             // Event handlers
             eventClick={info => {
@@ -386,12 +386,8 @@ const FullCalendar: FC<Props> = props => {
                     set(newEventTemp, field.field, field.default);
                 });
 
-                console.log(newEventTemp);
-
                 setNewEvent(newEventTemp);
-
                 setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });
-                
                 setCreatingEvent(true);
 
                 document.addEventListener('click', e => {

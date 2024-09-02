@@ -48,7 +48,7 @@ const defaultConfig: Partial<JAC.Config> = {
         }
     ],
     eventCreation: true,
-    firstDayOfWeek: 'mon',
+    firstDayOfWeek: 1,
 };
 
 

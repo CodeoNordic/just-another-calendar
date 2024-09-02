@@ -61,7 +61,7 @@
         border-left: none !important;
     }
 
-    .fc-view-harness.fc-view-harness-active {
+    .fc-view-harness.fc-view-harness-active:not(:has(.fc-daygrid)) {
         margin-left: 10px;
     }
     .fc-view-harness.fc-view-harness-active tbody {
