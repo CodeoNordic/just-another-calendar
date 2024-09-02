@@ -7,6 +7,7 @@ import performScript from '@utils/performScript';
 import getCalendarDates from '@utils/calendarDates';
 import weekNumber from '@utils/weekNumber';
 import dateFromString from '@utils/dateFromString';
+import dateToObject from '@utils/dateToObject';
 
 import ArrowUp from 'jsx:@svg/arrow-up.svg';
 import ArrowDown from 'jsx:@svg/arrow-down.svg';
@@ -71,30 +72,31 @@ const DatePicker: FC = () => {
                 </div>
 
                 <div className="days">
-                    {Array.from(new Array(7)).map((_, i) => <span key={i}>
+                    {Array.from(new Array(7)).map((_, i) => <span key={i} className="weekday">
                         {new Date(allDates[i]).toLocaleDateString(config?.locale || 'en', { weekday: 'short' }).substring(0, 2)}
                     </span>)}
 
-                    {dates.start.map((date, i) => <button disabled key={i} className="extra-date">
+                    {dates.start.map((date, i) => <button
+                        key={i}
+                        className="extra-date"
+                        onClick={() => performScript('onDateSelected', dateToObject(date))}
+                    >
                         {new Date(date).getDate()}
                     </button>)}
 
                     {dates.middle.map((date, i) => <button
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
-                        onClick={() => {
-                            const d = new Date(date);
-                            performScript('onDateSelected', {
-                                year: d.getFullYear(),
-                                month: d.getMonth() + 1, // 0 indexed months
-                                day: d.getDate()
-                            });
-                        }}
+                        onClick={() => performScript('onDateSelected', dateToObject(date))}
                     >
                         {new Date(date).getDate()}
                     </button>)}
 
-                    {dates.end.map((date, i) => <button disabled key={i} className="extra-date">
+                    {dates.end.map((date, i) => <button
+                        key={i}
+                        className="extra-date"
+                        onClick={() => performScript('onDateSelected', dateToObject(date))}
+                    >
                         {new Date(date).getDate()}
                     </button>)}
                 </div>

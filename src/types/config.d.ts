@@ -27,6 +27,7 @@ declare global {
 
             days?: number;
             firstDayOfWeek?: string|number;
+            allDaySlot?: boolean;
 
             showWeekends?: boolean;
             selectableTooltips?: boolean;
