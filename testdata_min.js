@@ -12,12 +12,5 @@ init(JSON.stringify({
             resourceId: '1F',
         }
     ],
-
-    defaultEventComponent: 'default',
-    eventComponents: [{
-        name: "default",
-        fields: [{
-                value: "FirstName"
-            }]
-    }]
+    date: '2024-08-25',
 }))

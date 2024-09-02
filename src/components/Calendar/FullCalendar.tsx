@@ -35,6 +35,7 @@ import searchObject from '@utils/searchObject';
 
 import NewEvent from './Event/NewEvent';
 import set from 'lodash.set';
+import { weekDays } from '@utils/calendarDates';
 
 interface Props {
     events?: JAC.Event[];
@@ -281,6 +282,10 @@ const FullCalendar: FC<Props> = props => {
             slotLabelFormat="HH:mm"
             slotDuration="00:15"
             slotLabelInterval={15}
+
+            firstDay={typeof config.firstDayOfWeek === 'number' ? 
+                config.firstDayOfWeek : typeof config.firstDayOfWeek === "string" ? 
+                weekDays.indexOf(config.firstDayOfWeek!.toLowerCase().substring(0,3)) : 0}
 
             // Event handlers
             eventClick={info => {

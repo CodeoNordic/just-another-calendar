@@ -29,7 +29,7 @@ const DatePicker: FC = () => {
     }, [selectedMonth]);
 
     // Calculate the dates of the current month
-    const dates = useMemo(() => getCalendarDates(selectedMonth, config?.firstDayOfWeek), [selectedMonth]);
+    const dates = useMemo(() => getCalendarDates(selectedMonth, config?.firstDayOfWeek), [selectedMonth, config?.firstDayOfWeek]);
     const allDates = [...dates.start, ...dates.middle, ...dates.end]
 
     const weekNumbers = useMemo(() => {

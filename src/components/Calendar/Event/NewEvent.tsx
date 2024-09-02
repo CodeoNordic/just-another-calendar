@@ -19,25 +19,25 @@ const NewEvent: FC<NewEventProps> = props => {
     const [config, setConfig] = useConfigState();
 
     return <div>
-        {creatingEvent && <div className='createEvent' style={{
+        {creatingEvent && <div className='create-event' style={{
             top: props.pos?.y,
             left: props.pos?.x
         }}>
-            <div className='inputsDiv'>
-                <div className='topCreate' style={{
+            <div className='inputs-wrapper'>
+                <div className='top-inputs' style={{
                     background: newEvent?.colors?.background || "#3788d8"
                 }}>
                     <Crossmark className='icon' onClick={() => setCreatingEvent(false)}/>
                 </div>
-                <div className='bodyCreate'>
-                    <p className='createTitle'>Create Event?</p>
+                <div className='body-inputs'>
+                    <p className='title-inputs'>Create Event?</p>
                     {config?.newEventFields?.map(value => (
-                        <div key={value.field} className='inputDiv'>
+                        <div key={value.field} className='input-wrapper'>
                             <p>{value.title ?? value.field}</p>
                             <input 
                             lang={config?.locale ?? "en"}
                             type={value.type ?? "string"} 
-                            className={value.type ? `${value.type}Input` : "stringInput"}
+                            className={value.type ? `${value.type}-input` : "string-input"}
                             value={value.type === "time" 
                                 ? get(newEvent as JAC.Event, value.field)?.toString().split("T")[1] || ""
                                 : get(newEvent as JAC.Event, value.field) || ""}
@@ -61,7 +61,7 @@ const NewEvent: FC<NewEventProps> = props => {
                     ))}
                 </div>
             </div>
-            <div className='buttonsDiv'>
+            <div className='buttons-wrapper'>
                 <button onClick={() => {
                     setCreatingEvent(false);
                     setNewEvent(null);

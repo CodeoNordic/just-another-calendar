@@ -1,11 +1,11 @@
-const weekDays: string[] = [
+export const weekDays: string[] = [
+    'sun',
     'mon',
     'tue',
     'wed',
     'thu',
     'fri',
-    'sat',
-    'sun'
+    'sat'
 ];
 
 /** Get all the dates that should be displayed on a calendar for a particular month */
@@ -14,7 +14,7 @@ export default function getCalendarDates(date: Date, firstDay: string|number = '
     const weekDayOrder: string[] = [...weekDays];
 
     const firstDayIndex = typeof firstDay === 'string'
-        ? weekDays.findIndex(day => day === firstDay.toLowerCase().substring(0, 3)) || 0
+        ? Math.max(weekDays.findIndex(day => day === firstDay.toLowerCase().substring(0, 3)), 0)
         : firstDay;
     
     if (firstDayIndex > 0) {
