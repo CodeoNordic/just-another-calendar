@@ -173,12 +173,12 @@ init(JSON.stringify({
     {
         field: "start",
         title: "Start",
-        type: "datetime-local"
+        type: "time"
     },
     {
         field: "end",
         title: "Slutt",
-        type: "datetime-local"
+        type: "time"
     },
     {
         field: "colors.border",
