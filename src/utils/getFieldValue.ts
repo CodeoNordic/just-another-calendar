@@ -25,10 +25,15 @@ export function templateKey(event: JAC.Event, key: string) {
         return date?.toLocaleTimeString(window._config?.locale, { hour: '2-digit', minute: '2-digit' }) || '';
     }
 
-    // If the key starts with 'Eval:' call the function
+    // If the key starts with 'Eval:' parse the following JS code
     if (key.toLowerCase().startsWith('eval:')) {
-        const func = eval(key.substring(5));
-        if (typeof func !== 'function') throw new Error('Eval result was not a function');
+        const jsCode = key.substring(5);
+
+        const func = eval(jsCode);
+        if (typeof func !== 'function') {
+            console.error('Eval result was not a function', jsCode);
+            return '';
+        }
 
         const result = func(event, window._config);
 
@@ -36,7 +41,7 @@ export function templateKey(event: JAC.Event, key: string) {
         return String(result);
     }
 
-    // Else, return the value as a string
+    // Otherwise, return the value as a string
     return String(get(event, key) || '');
 }
 
@@ -45,8 +50,8 @@ export function templateKey(event: JAC.Event, key: string) {
  * 
  * _filter should be handled before this function is ran
 */
-export default function getFieldValue(event: JAC.Event, field: JAC.EventField) {
-    if (typeof field.eval === 'string') {
+export default function getFieldValue(event: JAC.Event, field: Pick<JAC.EventField, 'eval'|'htmlTemplate'|'template'|'value'>) {
+    if (typeof field.eval === 'string' && field.eval.length > 0) {
         try {
             // Parse the passed JS code. Must be a callable function
             const func = eval(field.eval);
@@ -62,7 +67,7 @@ export default function getFieldValue(event: JAC.Event, field: JAC.EventField) {
         }
     }
 
-    if (typeof field.htmlTemplate === 'string' && field.htmlTemplate[0] === '<') {
+    if (typeof field.htmlTemplate === 'string' && field.htmlTemplate.length > 0 && field.htmlTemplate[0] === '<') {
         try {
             return field.htmlTemplate.replaceAll(
                 /\{([^{}]*?(?:\\\{|\\\}|[^{}])*)\}/g,
@@ -78,7 +83,7 @@ export default function getFieldValue(event: JAC.Event, field: JAC.EventField) {
         }
     }
 
-    if (typeof field.template === 'string') {
+    if (typeof field.template === 'string' && field.template.length > 0) {
         try {
             return field.template.replaceAll(
                 /\{([^{}]*?(?:\\\{|\\\}|[^{}])*)\}/g,
@@ -95,8 +100,12 @@ export default function getFieldValue(event: JAC.Event, field: JAC.EventField) {
     }
 
     // Warn and return null if none of the keys are defined
-    if (typeof field.value !== 'string') {
-        typeof field.template !== 'string' && typeof field.eval !== 'string' && console.warn("The following field definition has no key to determine its value. One of three keys must be defined: 'value', 'template', 'eval'", field);
+    if (typeof field.value !== 'string' || field.value.length === 0) {
+        if (
+            (typeof field.template !== 'string' || field.template.length === 0) && 
+            (typeof field.eval !== 'string' || field.eval.length === 0)
+        ) console.warn("The following field definition has no key to determine its value. One of three keys must be defined: 'value', 'template', 'eval'", field);
+        
         return null;
     }
 

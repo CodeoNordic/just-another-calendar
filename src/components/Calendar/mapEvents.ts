@@ -16,12 +16,12 @@ export default function mapEvents(config: JAC.Config) {
         const timeEnd = event.endTime ?? event.timeEnd;
 
         if (timeStart) {
-            const match = timeStart.match(/^(\d{2}):(\d{2})/);
+            const match = timeStart.match(/^(\d{1,2}):(\d{1,2})/);
             match && eventStart?.setHours(Number(match[1]), Number(match[2]));
         }
 
         if (timeEnd) {
-            const match = timeEnd.match(/^(\d{2}):(\d{2})/);
+            const match = timeEnd.match(/^(\d{1,2}):(\d{1,2})/);
             match && eventEnd?.setHours(Number(match[1]), Number(match[2]));
         }
 
