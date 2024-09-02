@@ -367,32 +367,24 @@ const FullCalendar: FC<Props> = props => {
                     });                
                 }
 
-                setNewEvent({
+                let newEventTemp = {
                     id: randomUUID(),
                     start: info.startStr.split('+')[0],
                     end: info.endStr.split('+')[0],
                     resourceId: info.resource?.id || ""
-                });
+                };
                 
                 config.newEventFields?.map(field => {
                     if (!field.default) return;
-                    const newEventCopy = { ...newEvent };
 
-                    console.log(newEvent)
-                    console.log(newEventCopy);
-
-                    setObjectValue(newEventCopy, field.field, field.default);
-
-                    console.log(newEventCopy);
-
-                    setNewEvent({...newEventCopy} as JAC.Event);
+                    setObjectValue(newEventTemp, field.field, field.default);
                 });
-                
+
+                setNewEvent(newEventTemp);
+
                 setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });
                 
                 setCreatingEvent(true);
-
-                console.log(newEvent);
 
                 document.addEventListener('click', e => {
                     if ((e.target as HTMLElement)?.closest('.createEvent')) return;
