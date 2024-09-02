@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import Icon from '@components/Icon'
 import combineClasses from '@utils/combineClasses';
 import getFieldValue from '@utils/getFieldValue';
@@ -5,17 +7,29 @@ import performScript from '@utils/performScript';
 import searchObject from '@utils/searchObject';
 
 const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void; onButtonLeave?: () => void; }> = props => {
-    if (props._filter && !searchObject(props.event, props._filter)) return null;
-    
+    const filterCheck = useMemo(() =>
+        (props._filter && !searchObject(props.event, props._filter)) || true,
+        [props._filter, props.event]
+    );
+
+    // Optimize value parsing with useMemo
+    const fieldValue: JSX.Element | string | null = useMemo(() => {
+        const value =  getFieldValue(props.event, {
+            eval: props.eval,
+            htmlTemplate: props.htmlTemplate,
+            template: props.template,
+            value: props.value
+        });
+
+        if (typeof props.htmlTemplate === 'string' && props.htmlTemplate[0] === '<' && value !== null) return <div dangerouslySetInnerHTML={{ __html: value }} />
+        return value;
+    }, [props.htmlTemplate, props.event, props.eval, props.htmlTemplate, props.template, props.value]);
+
+    if (!filterCheck) return null;
     const fieldIcon = props.icon && <Icon src={props.icon} />
-    let fieldValue: JSX.Element | string | null = props.event && getFieldValue(props.event, props);
-    
-    if (typeof props.htmlTemplate === 'string' && props.htmlTemplate[0] === '<' && fieldValue !== null) {
-        fieldValue = <div dangerouslySetInnerHTML={{__html: fieldValue}}/>
-    }
 
     if (!props.showIfEmpty && fieldValue === null) return null;
-    const fieldType = props.type || 'text';
+    const fieldType = props.type?.toLowerCase() || 'text';
 
     return <div 
         className={combineClasses(
@@ -28,7 +42,7 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
             color: props.color
         }}
     >
-        {fieldType === 'text' && <>
+        {['text', 'time', 'date'].includes(fieldType) && <>
             {fieldIcon}
             <span>{fieldValue}</span>
         </>}

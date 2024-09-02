@@ -29,7 +29,7 @@ const Event: FC<JAC.Event> = props => {
     }
 
     if (!component) return null;
-    if (component.htmlTemplate) {
+    if (component.htmlTemplate && component.htmlTemplate[0] === '<') {
         const parsedHtml = component.htmlTemplate
             .replaceAll(
                 /\{([^{}]*?(?:\\\{|\\\}|[^{}])*)\}/g,

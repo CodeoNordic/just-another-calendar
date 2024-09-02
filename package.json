@@ -22,8 +22,8 @@
   },
   "scripts": {
     "start": "parcel --no-cache --no-source-maps --no-hmr",
-    "build": "rimraf .parcel-cache dist && parcel build --no-cache",
-    "b:build": "rm -rf .parcel-cache dist && parcel build --no-cache",
+    "build": "rimraf .parcel-cache dist && parcel build --no-cache --no-scope-hoist",
+    "b:build": "rm -rf .parcel-cache dist && parcel build --no-cache --no-scope-hoist",
     "upload": "node upload.js",
     "b:upload": "bun upload.js",
     "upload:clean": "npm run build && npm run upload",
@@ -34,10 +34,7 @@
   },
   "browserslist": "> 0.5%, last 2 versions, not IE 9-11, not dead",
   "dependencies": {
-    "@types/tinycolor2": "^1.4.6",
-    "open": "8.2.1",
-    "rgba-to-rgb": "^1.0.2",
-    "tinycolor2": "^1.6.0"
+    "open": "8.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -61,6 +58,7 @@
     "@types/node": "^20.11.16",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
+    "@types/tinycolor2": "^1.4.6",
     "@types/uuid": "^9.0.8",
     "cssnano": "^6.0.3",
     "esm": "^3.2.25",
@@ -72,7 +70,9 @@
     "posthtml-doctype": "^1.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "rgba-to-rgb": "^1.0.2",
     "rimraf": "^5.0.5",
+    "tinycolor2": "^1.6.0",
     "typescript": "^5.4.5",
     "uuid": "^9.0.1"
   }
