@@ -34,29 +34,43 @@ const NewEvent: FC<NewEventProps> = props => {
                     {config?.newEventFields?.map(value => (
                         <div key={value.field} className='input-wrapper'>
                             <p>{value.title ?? value.field}</p>
-                            <input 
-                            lang={config?.locale ?? "en"}
-                            type={value.type ?? "string"} 
-                            className={value.type ? `${value.type}-input` : "string-input"}
-                            value={value.type === "time" 
-                                ? get(newEvent as JAC.Event, value.field)?.toString().split("T")[1] || ""
-                                : get(newEvent as JAC.Event, value.field) || ""}
-                            placeholder={value.placeholder ?? ""}     
-                            onChange={e => {
-                                console.log(get(newEvent as JAC.Event, value.field)?.toString().split("T")[1]);
-                                let inputValue = e.target.value as string | number | boolean;
-                                if (e.target.type === "checkbox") {
-                                    inputValue = e.target.checked;
-                                } else if (e.target.type === "time") {
-                                    const datePart = get(newEvent as JAC.Event, value.field)?.toString().split("T")[0] || "";
-                                    inputValue = `${datePart}T${e.target.value}`;
-                                }
-                                console.log(inputValue);
-                                const newEventCopy = {...newEvent};
-                                set(newEventCopy, value.field, inputValue);
-                                setNewEvent({...newEventCopy} as JAC.Event);
-                            }} 
-                            />
+                            {value.type === "dropdown" ? <select 
+                                className='dropdown-input'
+                                
+                                value={get(newEvent as JAC.Event, value.field) || ""} 
+                                onChange={e => {
+                                    const newEventCopy = {...newEvent};
+                                    set(newEventCopy, value.field, e.target.value);
+                                    setNewEvent({...newEventCopy} as JAC.Event);
+                                }}
+                            >
+                                {value.dropdownItems?.map(item => {
+                                    return typeof item === "string" ? <option key={item} value={item}>{item}</option> : <option key={item.value} value={item.value}>{item.label}</option>;
+                                })}
+                            </select>
+                            : <input 
+                                lang={config?.locale ?? "en"}
+                                type={value.type ?? "string"} 
+                                className={value.type ? `${value.type}-input` : "string-input"}
+                                value={value.type === "time" 
+                                    ? get(newEvent as JAC.Event, value.field)?.toString().split("T")[1] || ""
+                                    : get(newEvent as JAC.Event, value.field) || ""}
+                                placeholder={value.placeholder ?? ""}     
+                                onChange={e => {
+                                    console.log(get(newEvent as JAC.Event, value.field)?.toString().split("T")[1]);
+                                    let inputValue = e.target.value as string | number | boolean;
+                                    if (e.target.type === "checkbox") {
+                                        inputValue = e.target.checked;
+                                    } else if (e.target.type === "time") {
+                                        const datePart = get(newEvent as JAC.Event, value.field)?.toString().split("T")[0] || "";
+                                        inputValue = `${datePart}T${e.target.value}`;
+                                    }
+                                    console.log(inputValue);
+                                    const newEventCopy = {...newEvent};
+                                    set(newEventCopy, value.field, inputValue);
+                                    setNewEvent({...newEventCopy} as JAC.Event);
+                                }} 
+                            />}
                         </div>
                     ))}
                 </div>

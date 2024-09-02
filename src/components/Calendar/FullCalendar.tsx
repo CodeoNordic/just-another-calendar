@@ -77,7 +77,7 @@ const FullCalendar: FC<Props> = props => {
     useEffect(() => {
         if (!calendarRef.current || !config.view) return;
         const api = calendarRef.current.getApi();
-        config.view && (config.view !== api.view.type) && api.changeView(config.view);
+        config.view && (config.view !== api.view.type) && setTimeout(() => api.changeView(config.view!), 0);
     }, [calendarRef, config!.view]);
 
     useEffect(() => {
@@ -395,7 +395,7 @@ const FullCalendar: FC<Props> = props => {
                 setCreatingEvent(true);
 
                 document.addEventListener('click', e => {
-                    if ((e.target as HTMLElement)?.closest('.createEvent')) return;
+                    if ((e.target as HTMLElement)?.closest('.create-event')) return;
                     setCreatingEvent(false);
                     setNewEvent(null);
                 }, { once: true });

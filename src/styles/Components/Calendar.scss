@@ -153,7 +153,11 @@
 
     .fc-timegrid-axis {
         border: none;
-        border-bottom: 1px solid rgba(0, 0, 0, .3);
+    }
+
+    thead > tr:last-child > .fc-timegrid-axis {
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, .3) !important;
     }
 
     // All day header
