@@ -121,11 +121,11 @@ declare global {
             script?: string;
         }>;
 
-        interface EventComponent {
+        type EventComponent = WithFilter<{
             name: string;
             fields?: EventField[];
             htmlTemplate?: string;
-        }
+        }>;
     }
 }
 
