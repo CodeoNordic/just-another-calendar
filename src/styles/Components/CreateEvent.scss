@@ -1,6 +1,6 @@
 .createEvent {
     position: absolute;
-    background: #F5F5F5;
+    background: white;
     border: 1px solid rgba(0, 0, 0, .3);
     border-radius: 5px;
     z-index: 999;
@@ -14,6 +14,46 @@
         gap: 5px;
     }
 
+    .stringInput {
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, .3);
+
+        &:focus {
+            outline: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 1);
+        }
+
+        &:hover {
+            border-bottom: 1px solid rgba(0, 0, 0, 1);
+        }
+    }
+
+    .colorInput {
+        width: 40px;
+        height: 40px;
+        border: none; 
+        padding: 0;
+        cursor: pointer;
+        border-radius: 50%;
+        inline-size: 20px;
+        block-size: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+
+        &:hover {
+            border: 1px solid rgba(0, 0, 0, 1);
+        }
+    }
+    
+    .colorInput::-webkit-color-swatch-wrapper {
+        padding: 0px;
+    }
+      
+    .colorInput::-webkit-color-swatch {
+        border-radius: 50%;
+        border: none;
+    }
+    
+    
     .icon {
         width: 1.3em;
         height: 1.3em;

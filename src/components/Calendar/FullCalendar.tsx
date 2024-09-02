@@ -33,7 +33,8 @@ import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
 import searchObject from '@utils/searchObject';
 
-import NewEvent, { setObjectValue } from './Event/NewEvent';
+import NewEvent from './Event/NewEvent';
+import set from 'lodash.set';
 
 interface Props {
     events?: JAC.Event[];
@@ -377,7 +378,7 @@ const FullCalendar: FC<Props> = props => {
                 config.newEventFields?.map(field => {
                     if (!field.default) return;
 
-                    setObjectValue(newEventTemp, field.field, field.default);
+                    set(newEventTemp, field.field, field.default);
                 });
 
                 setNewEvent(newEventTemp);
