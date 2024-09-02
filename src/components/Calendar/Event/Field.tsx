@@ -8,7 +8,7 @@ import searchObject from '@utils/searchObject';
 
 const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void; onButtonLeave?: () => void; }> = props => {
     const filterCheck = useMemo(() =>
-        (props._filter && !searchObject(props.event, props._filter)) || true,
+        props._filter? searchObject(props.event, props._filter): true,
         [props._filter, props.event]
     );
 

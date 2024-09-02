@@ -18,7 +18,7 @@ export default function searchObject(obj: RSAny, searchParam: string|RSAny): boo
             const searchValue = searchParam[k];
             const value = (k === '_config')? window._config: obj[k];
 
-            if (searchValue === '*') return ![undefined, null].includes(value);
+            if (searchValue === '*') return !["", undefined, null, NaN].includes(value);
             if (typeof searchValue === 'string' && typeof value === 'string')
                 return fileMakerFindEquivalent(value, searchValue);
 
