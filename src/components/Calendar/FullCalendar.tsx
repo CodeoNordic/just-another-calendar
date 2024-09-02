@@ -381,6 +381,8 @@ const FullCalendar: FC<Props> = props => {
                     set(newEventTemp, field.field, field.default);
                 });
 
+                console.log(newEventTemp);
+
                 setNewEvent(newEventTemp);
 
                 setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });

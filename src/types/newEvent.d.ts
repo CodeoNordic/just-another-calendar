@@ -8,6 +8,12 @@ declare global {
             default?: string;
             search?: boolean;
             searchScript?: string;
+
+            dropdown?: string;
+            dropdownItems?: {
+                value: string;
+                label: string;
+            }[] | string[];
         }
     }
 }

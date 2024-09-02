@@ -3,6 +3,7 @@ import Crossmark from 'jsx:@assets/svg/crossmark.svg';
 import Checkmark from 'jsx:@assets/svg/checkmark.svg';
 import get from 'lodash.get';
 import set from 'lodash.set';
+import performScript from '@utils/performScript';
 
 
 interface NewEventProps {
@@ -30,24 +31,34 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
                 <div className='bodyCreate'>
                     <p className='createTitle'>Create Event?</p>
-                    {config?.newEventFields?.map(value => <div key={value.field} className='inputDiv'>
-                        <p>{value.title ?? value.field}</p>
-                        <input 
+                    {config?.newEventFields?.map(value => (
+                        <div key={value.field} className='inputDiv'>
+                            <p>{value.title ?? value.field}</p>
+                            <input 
                             lang={config?.locale ?? "en"}
                             type={value.type ?? "string"} 
                             className={value.type ? `${value.type}Input` : "stringInput"}
                             value={value.type === "time" 
-                                ? get(newEvent as JAC.Event, value.field)?.toString().split("T")[1] 
+                                ? get(newEvent as JAC.Event, value.field)?.toString().split("T")[1] || ""
                                 : get(newEvent as JAC.Event, value.field) || ""}
                             placeholder={value.placeholder ?? ""}     
                             onChange={e => {
+                                console.log(get(newEvent as JAC.Event, value.field)?.toString().split("T")[1]);
                                 let inputValue = e.target.value as string | number | boolean;
-                                e.type === "checkbox" && (inputValue = e.target.checked);
-                                e.type === "time" && (inputValue = newEvent?.[value.field].toString().split("T")[0] + "T" + inputValue);
+                                if (e.target.type === "checkbox") {
+                                inputValue = e.target.checked;
+                                } else if (e.target.type === "time") {
+                                const datePart = get(newEvent as JAC.Event, value.field)?.toString().split("T")[0] || "";
+                                inputValue = `${datePart}T${e.target.value}`;
+                                }
+                                console.log(inputValue);
                                 const newEventCopy = {...newEvent};
                                 set(newEventCopy, value.field, inputValue);
-                                setNewEvent({...newEventCopy} as JAC.Event)}} />
-                    </div>)}
+                                setNewEvent({...newEventCopy} as JAC.Event);
+                            }} 
+                            />
+                        </div>
+                        ))}
                 </div>
             </div>
             <div className='buttonsDiv'>
@@ -56,11 +67,10 @@ const NewEvent: FC<NewEventProps> = props => {
                     setNewEvent(null);
                 }}><Crossmark className='icon'/>Discard</button>
                 <button onClick={() => {
-
-                    console.log(newEvent);
+                    setConfig((prev: JAC.Config | null) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
+                    config?.scriptNames.createEvent && performScript(config?.scriptNames.createEvent as string, newEvent);
                     setCreatingEvent(false);
                     setNewEvent(null);
-                    setConfig((prev: JAC.Config | null) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
                 }}><Checkmark className='icon'/>Save</button>
             </div>
         </div>}

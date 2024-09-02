@@ -57,7 +57,8 @@ declare global {
                 onEventChange: string;
                 onFilterChange: string;
                 
-                newEventScript?: string;
+                newEvent?: string;
+                newEventCreated?: string;
             };
 
             customCSS?: string;
