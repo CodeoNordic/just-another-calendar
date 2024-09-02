@@ -33,7 +33,7 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
 
     return <div 
         className={combineClasses(
-            'jac-field', `type-${props.type}`, 
+            'jac-field', `type-${fieldType}`, 
             props.value && `field-${props.value.replace(/\s/g, '_')}`, 
             props.cssClass
         )}
