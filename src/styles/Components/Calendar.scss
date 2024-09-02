@@ -61,6 +61,10 @@
         border-left: none !important;
     }
 
+    .fc-theme-standard .fc-scrollgrid {
+        border: none;
+    }
+
     .fc-view-harness.fc-view-harness-active:not(:has(.fc-daygrid)) {
         margin-left: 10px;
     }
