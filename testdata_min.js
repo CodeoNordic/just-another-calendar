@@ -13,7 +13,7 @@ init(JSON.stringify({
         }
     ],
 
-    eventComponent: 'default',
+    defaultEventComponent: 'default',
     eventComponents: [{
         name: "default",
         fields: [{

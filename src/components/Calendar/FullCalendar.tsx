@@ -224,7 +224,7 @@ const FullCalendar: FC<Props> = props => {
 
             // Renderer for each event
             eventContent={props => <Event
-                component={config.eventComponent}
+                component={config.defaultEventComponent}
                 {...(props.event.extendedProps.event ?? {}) as JAC.Event}
             />}
 

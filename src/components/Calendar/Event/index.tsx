@@ -19,7 +19,7 @@ const Event: FC<JAC.Event> = props => {
     if (props.type === 'backgroundEvent') return <BackgroundEvent {...props} />
 
     // Find the correct component to use
-    const componentName = props._component ?? config.eventComponent;
+    const componentName = props._component ?? config.defaultEventComponent;
     let component = config.eventComponents?.find(component => component.name === componentName);
 
     // Default to the first component if none was found

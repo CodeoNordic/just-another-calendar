@@ -4,7 +4,7 @@ import getEventsFromObject from '@utils/getEventsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
 const defaultConfig: Partial<JAC.Config> = {
-    eventComponent: "default",
+    defaultEventComponent: "default",
     eventComponents: [
         {
             name: "default",

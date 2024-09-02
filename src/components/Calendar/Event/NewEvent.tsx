@@ -46,10 +46,10 @@ const NewEvent: FC<NewEventProps> = props => {
                                 console.log(get(newEvent as JAC.Event, value.field)?.toString().split("T")[1]);
                                 let inputValue = e.target.value as string | number | boolean;
                                 if (e.target.type === "checkbox") {
-                                inputValue = e.target.checked;
+                                    inputValue = e.target.checked;
                                 } else if (e.target.type === "time") {
-                                const datePart = get(newEvent as JAC.Event, value.field)?.toString().split("T")[0] || "";
-                                inputValue = `${datePart}T${e.target.value}`;
+                                    const datePart = get(newEvent as JAC.Event, value.field)?.toString().split("T")[0] || "";
+                                    inputValue = `${datePart}T${e.target.value}`;
                                 }
                                 console.log(inputValue);
                                 const newEventCopy = {...newEvent};
@@ -58,7 +58,7 @@ const NewEvent: FC<NewEventProps> = props => {
                             }} 
                             />
                         </div>
-                        ))}
+                    ))}
                 </div>
             </div>
             <div className='buttonsDiv'>
@@ -68,7 +68,7 @@ const NewEvent: FC<NewEventProps> = props => {
                 }}><Crossmark className='icon'/>Discard</button>
                 <button onClick={() => {
                     setConfig((prev: JAC.Config | null) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
-                    config?.scriptNames.createEvent && performScript(config?.scriptNames.createEvent as string, newEvent);
+                    config?.scriptNames.createEvent && performScript(config?.scriptNames.eventCreated as string, newEvent);
                     setCreatingEvent(false);
                     setNewEvent(null);
                 }}><Checkmark className='icon'/>Save</button>
