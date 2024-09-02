@@ -4,18 +4,18 @@ import { useConfigState } from '@context/Config';
 import createMethod from '@utils/createMethod';
 import searchArray from '@utils/searchArray';
 
-export default function useRemoveRecords() {
+export default function useRemoveEvents() {
     const [, setConfig] = useConfigState();
 
-    useEffect(() => createMethod('removeRecords', (search, limit) => setConfig(prev => {
+    useEffect(() => createMethod('removeEvents', (search, limit) => setConfig(prev => {
         if (!prev) return null;
-        const { records, ...rest } = prev;
+        const { events, ...rest } = prev;
 
-        if (!search || !records) return { ...prev, records: [] };
+        if (!search || !events) return { ...prev, events: [] };
 
         return {
             ...rest,
-            records: searchArray(records, search, true)
+            events: searchArray(events, search, true)
         }
     })), []);
 }

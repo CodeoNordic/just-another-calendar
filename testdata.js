@@ -12,7 +12,7 @@ init(JSON.stringify({
             html: '<svg width="1em" height="1em" fill="none" viewBox="0 0 24 24" focusable="false" role="img"><path fill="currentColor" fill-rule="evenodd" d="M3.75 12a8.25 8.25 0 1 1 16.5 0 8.25 8.25 0 0 1-16.5 0M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25M12.75 6a.75.75 0 0 0-1.5 0v6c0 .199.079.39.22.53l2.5 2.5a.75.75 0 1 0 1.06-1.06l-2.28-2.28z" clip-rule="evenodd"></path></svg>',
         }
     ],
-    records: [
+    events: [
         {
             id: '1',
             FirstName: "Joakim",
@@ -23,7 +23,11 @@ init(JSON.stringify({
             allDay: false,
             tooltip: 'TEST TOOLTIP JOAKIM',
             resourceId: '1F',
-            filterId: 'filter1'
+            filterId: 'filter1',
+            colors: {
+                background: '#000000',
+                border: '#000000'
+            }
         },
 
         {
@@ -164,7 +168,7 @@ init(JSON.stringify({
     newEventFields: [
     {
         field: "FirstName",
-        title: "Navn"
+        title: "Tittel"
     },
     {
         field: "start",
@@ -177,13 +181,13 @@ init(JSON.stringify({
         type: "datetime-local"
     },
     {
-        field: "color",
-        title: "Farge",
+        field: "colors.border",
+        title: "Kant-farge",
         type: "color",
         default: "#3788d8"
     },
     {
-        field: "backgroundColor",
+        field: "colors.background",
         title: "Bakgrunnsfarge",
         type: "color",
         default: "#3788d8"

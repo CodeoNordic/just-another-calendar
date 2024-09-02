@@ -1,26 +1,26 @@
 declare global {
     namespace FM {
-        type Record<T = {}> = T & RSAny;
+        type Event<T = {}> = T & RSAny;
 
-        interface DataAPIRecord<T = RSAny> {
+        interface DataAPIEvent<T = RSAny> {
             fieldData: T;
             modId: string;
             portalData: RSAny;
-            recordId: string;
+            eventId: string;
         }
 
         interface DataAPIResponse<T = RSAny> {
             messages: { code: string; message: string }[];
 
             response: {
-                data: DataAPIRecord<T>[]|null;
+                data: DataAPIEvent<T>[]|null;
                 dataInfo: {
                     database: string;
                     foundCount: number;
                     layout: string;
                     returnedCount: number;
                     table: string;
-                    totalRecordCount: number;
+                    totalEventCount: number;
                 }
             }
         }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import getRecordsFromObject from '@utils/getRecordsFromObject';
+import getEventsFromObject from '@utils/getEventsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
 const defaultConfig: Partial<JAC.Config> = {
@@ -55,28 +55,28 @@ const defaultConfig: Partial<JAC.Config> = {
 const parseConfig = (cfg: string) => {
     try {
         const config = JSON.parse(cfg) as JAC.Config;
-        const records = getRecordsFromObject(config.records) || [];
+        const events = getEventsFromObject(config.events) || [];
 
         Object.keys(defaultConfig).forEach((key) => {
             (config as RSAny)[key] ??= defaultConfig[key as keyof JAC.Config];
         });
 
         let configWarned = false;
-        config.records = records.map(record => {
-            if (record._config !== undefined) {
-                record.__config = record._config;
-                delete record._config;
+        config.events = events.map(event => {
+            if (event._config !== undefined) {
+                event.__config = event._config;
+                delete event._config;
 
                 if (!configWarned) {
-                    console.warn('One or more records has the _config key defined. This was automatically remapped to __config due to the initial key being used by JAC');
+                    console.warn('One or more events has the _config key defined. This was automatically remapped to __config due to the initial key being used by JAC');
                     configWarned = true;
                 }
             }
 
-            return record;
+            return event;
         });
 
-        config.records = records;
+        config.events = events;
         return config;
     } catch(err) {
         console.error(err);

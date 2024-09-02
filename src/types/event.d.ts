@@ -1,7 +1,7 @@
 declare global {
     namespace JAC {
-        // Define all record interfaces here
-        type Event = FM.Record<{
+        // Define all event interfaces here
+        type Event = FM.Event<{
             type?: 'event'|'backgroundEvent';
             _component?: string;
 

@@ -3,7 +3,7 @@ init(JSON.stringify({
     resources: [
         { id: '1F', title: 'Ressurs 1' },
     ],
-    records: [
+    events: [
         {
             id: '1',
             FirstName: "Vetle L",

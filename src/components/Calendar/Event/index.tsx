@@ -61,7 +61,7 @@ const Event: FC<JAC.Event> = props => {
         >
             {component.fields?.map((field, i) => <Field
                 key={i}
-                record={props}
+                event={props}
                 onButtonEnter={onButtonEnter}
                 onButtonLeave={onButtonLeave}
                 {...field}

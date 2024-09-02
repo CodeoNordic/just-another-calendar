@@ -33,10 +33,10 @@ import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
 import searchObject from '@utils/searchObject';
 
-import NewEvent from './Event/NewEvent';
+import NewEvent, { setObjectValue } from './Event/NewEvent';
 
 interface Props {
-    records?: JAC.Event[];
+    events?: JAC.Event[];
     date?: DateInput;
 }
 
@@ -55,7 +55,7 @@ const FullCalendar: FC<Props> = props => {
     const [,setRevertFunctions] = useState<Record<string, Function>>({});
     const [,setDropdown] = useEventDropdown();
 
-    // Determine dropdown buttons for each record
+    // Determine dropdown buttons for each event
     const eventButtons = useCallback((r: JAC.Event) => {
         if (!config.eventButtons) return [];
         return config.eventButtons?.filter(btn => !btn._filter || searchObject(r, btn._filter));
@@ -122,7 +122,7 @@ const FullCalendar: FC<Props> = props => {
 
     const eventsBase: EventSourceInput = useMemo(
         () => mapEvents(config),
-        [props.records]
+        [props.events]
     );
 
     return <div>
@@ -171,7 +171,7 @@ const FullCalendar: FC<Props> = props => {
                         }), true);
                         
                         const bgEvents = eventsBase.filter(ev => {
-                            if (ev.extendedProps!.record.type !== 'backgroundEvent') return false;
+                            if (ev.extendedProps!.event.type !== 'backgroundEvent') return false;
 
                             const start = new Date(ev.start as number);
                             const current = new Date(info.date);
@@ -187,7 +187,7 @@ const FullCalendar: FC<Props> = props => {
                             {base}
                             {!!bgEvents.length && <>
                                 <br />
-                                ({bgEvents.map(ev => ev.extendedProps!.record!.backgroundText).join(', ')})
+                                ({bgEvents.map(ev => ev.extendedProps!.event!.backgroundText).join(', ')})
                             </>}
                         </span>
                     },
@@ -224,7 +224,7 @@ const FullCalendar: FC<Props> = props => {
             // Renderer for each event
             eventContent={props => <Event
                 component={config.eventComponent}
-                {...(props.event.extendedProps.record ?? {}) as JAC.Event}
+                {...(props.event.extendedProps.event ?? {}) as JAC.Event}
             />}
 
             resourceGroupLabelClassNames={info => `resource-group-label-${info.groupValue}`}
@@ -243,19 +243,19 @@ const FullCalendar: FC<Props> = props => {
             // Sorting
             resourceOrder="title"
             eventOrder={(a, b) => {
-                const recordA = (a as { record: JAC.Event }).record;
-                const recordB = (b as { record: JAC.Event }).record;
+                const eventA = (a as { event: JAC.Event }).event;
+                const eventB = (b as { event: JAC.Event }).event;
 
-                // If both records have the same 'isUrgent' value, sort by dateFinishedDisplay
-                if (recordA.isUrgent === recordB.isUrgent) {
-                    const dateA = new Date(recordA.dateFinishedDisplay);
-                    const dateB = new Date(recordB.dateFinishedDisplay);
+                // If both events have the same 'isUrgent' value, sort by dateFinishedDisplay
+                if (eventA.isUrgent === eventB.isUrgent) {
+                    const dateA = new Date(eventA.dateFinishedDisplay);
+                    const dateB = new Date(eventB.dateFinishedDisplay);
 
                     return dateA.valueOf() - dateB.valueOf()
                 }
 
-                // Otherwise, put the urgent record first
-                return recordA.isUrgent? -1: 1;
+                // Otherwise, put the urgent event first
+                return eventA.isUrgent? -1: 1;
             }}
             
             // Additional config values
@@ -301,7 +301,7 @@ const FullCalendar: FC<Props> = props => {
                 setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
 
                 performScript('onEventChange', {
-                    record: info.event.extendedProps.record,
+                    event: info.event.extendedProps.event,
                     start: info.event.start,
                     end: info.event.end,
                     oldResource: (info as EventDropArg).oldResource?.toJSON(),
@@ -312,11 +312,11 @@ const FullCalendar: FC<Props> = props => {
 
             eventMouseEnter={info => {
                 const rect = info.el.getBoundingClientRect();
-                const record = info.event.extendedProps.record as JAC.Event;
+                const event = info.event.extendedProps.event as JAC.Event;
 
-                if (record.type === 'backgroundEvent') return;
+                if (event.type === 'backgroundEvent') return;
 
-                const buttons = eventButtons(record);
+                const buttons = eventButtons(event);
 
                 setDropdown(prev => ({
                     ...prev,
@@ -373,15 +373,26 @@ const FullCalendar: FC<Props> = props => {
                     end: info.endStr.split('+')[0],
                     resourceId: info.resource?.id || ""
                 });
-
+                
                 config.newEventFields?.map(field => {
                     if (!field.default) return;
-                    setNewEvent((prev: JAC.Event | null) => ({ ...prev, [field.field]: field.default }) as JAC.Event);
+                    const newEventCopy = { ...newEvent };
+
+                    console.log(newEvent)
+                    console.log(newEventCopy);
+
+                    setObjectValue(newEventCopy, field.field, field.default);
+
+                    console.log(newEventCopy);
+
+                    setNewEvent({...newEventCopy} as JAC.Event);
                 });
                 
                 setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });
                 
                 setCreatingEvent(true);
+
+                console.log(newEvent);
 
                 document.addEventListener('click', e => {
                     if ((e.target as HTMLElement)?.closest('.createEvent')) return;

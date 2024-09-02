@@ -3,16 +3,16 @@ import { useConfigState } from '@context/Config';
 
 import createMethod from '@utils/createMethod';
 
-export default function useSetRecords() {
+export default function useSetEvents() {
     const [, setConfig] = useConfigState();
 
-    useEffect(() => createMethod('setRecords', param => setConfig(prev => {
+    useEffect(() => createMethod('setEvents', param => setConfig(prev => {
         if (!prev) return null;
-        const { records, ...rest } = prev;
+        const { events, ...rest } = prev;
 
         return {
             ...rest,
-            records: param instanceof Array? param: [param]
+            events: param instanceof Array? param: [param]
         }
     })), []);
 }

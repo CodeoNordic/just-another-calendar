@@ -4,11 +4,11 @@ import getFieldValue from '@utils/getFieldValue';
 import performScript from '@utils/performScript';
 import searchObject from '@utils/searchObject';
 
-const Field: FC<JAC.EventField & { record: JAC.Event; onButtonEnter?: () => void; onButtonLeave?: () => void; }> = props => {
-    if (props._filter && !searchObject(props.record, props._filter)) return null;
+const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void; onButtonLeave?: () => void; }> = props => {
+    if (props._filter && !searchObject(props.event, props._filter)) return null;
     
     const fieldIcon = props.icon && <Icon src={props.icon} />
-    let fieldValue: JSX.Element | string | null = props.record && getFieldValue(props.record, props);
+    let fieldValue: JSX.Element | string | null = props.event && getFieldValue(props.event, props);
     
     if (typeof props.htmlTemplate === 'string' && props.htmlTemplate[0] === '<' && fieldValue !== null) {
         fieldValue = <div dangerouslySetInnerHTML={{__html: fieldValue}}/>
@@ -38,7 +38,7 @@ const Field: FC<JAC.EventField & { record: JAC.Event; onButtonEnter?: () => void
             onPointerLeave={props.onButtonLeave}
             onClick={props.script? () => performScript(
                 props.script as string,
-                props.record,
+                props.event,
                 undefined,
                 true
             ): undefined

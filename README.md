@@ -101,13 +101,13 @@ Nøkler som anses som gyldige skriptnavn skal defineres i [`config.d.ts`](src/ty
 
 ```tsx
 import performScript from '@utils/performScript';
-import CustomRecordComponent from '@components/...';
+import CustomEventComponent from '@components/...';
 
 // ...
 
-<CustomRecordComponent
-    data={recordData}
-    onClick={() => performScript('onRecordClick', recordData)}
+<CustomEventComponent
+    data={eventData}
+    onClick={() => performScript('onEventClick', eventData)}
 />
 ```
 
@@ -120,17 +120,17 @@ Her benyttes også nøkler gitt fra **config.scriptNames**.
 import { useState, useCallback } from 'preact/hooks';
 
 import fetchFromFileMaker from '@utils/fetchFromFileMaker';
-import getRecordsFromObject from '@utils/getRecordsFromObject';
+import getEventsFromObject from '@utils/getEventsFromObject';
 
 const contactsPerClick = 10;
 
 async function getContacts(offset: number) {
-    const records = await fetchFromFileMaker('getContacts', { limit: contactsPerClick, offset });
-    return getRecordsFromObject<FM.ContactRecord>(records) ?? [];
+    const events = await fetchFromFileMaker('getContacts', { limit: contactsPerClick, offset });
+    return getEventsFromObject<FM.ContactEvent>(events) ?? [];
 }
 
 const MyComponent: React.FC = () => {
-    const [contacts, setContacts] = useState<FM.ContactRecord[]>([]);
+    const [contacts, setContacts] = useState<FM.ContactEvent[]>([]);
     const [offset, setOffset] = useState<number>(1);
 
     // Create a 'loading' state to prevent running the script multiple times

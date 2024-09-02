@@ -1,11 +1,11 @@
 import get from 'lodash.get';
 import dateFromString from './dateFromString';
 
-export function templateKey(record: JAC.Event, key: string) {
+export function templateKey(event: JAC.Event, key: string) {
     // If the key starts with 'Date:' return a formatted date
     if (key.toLowerCase().startsWith('date:')) return new Date(
         dateFromString(String(get(
-            record,
+            event,
             key.substring(5)
         ))) || ''
     ).toLocaleDateString(window._config?.locale, { day: '2-digit', month: 'long' });
@@ -15,10 +15,10 @@ export function templateKey(record: JAC.Event, key: string) {
     if (key.toLowerCase().startsWith('time:')) {
         const pair = key.substring(5).split('+');    
         
-        const date = dateFromString(String(get(record, pair[0])));
+        const date = dateFromString(String(get(event, pair[0])));
 
         if (pair[1] && date) {
-            const time = String(get(record, pair[1])).split(':');
+            const time = String(get(event, pair[1])).split(':');
             date.setHours(Number(time[0]), Number(time[1]));
         }
 
@@ -30,14 +30,14 @@ export function templateKey(record: JAC.Event, key: string) {
         const func = eval(key.substring(5));
         if (typeof func !== 'function') throw new Error('Eval result was not a function');
 
-        const result = func(record, window._config);
+        const result = func(event, window._config);
 
         if (['', null, undefined].includes(result)) return '';
         return String(result);
     }
 
     // Else, return the value as a string
-    return String(get(record, key) || '');
+    return String(get(event, key) || '');
 }
 
 /**
@@ -45,14 +45,14 @@ export function templateKey(record: JAC.Event, key: string) {
  * 
  * _filter should be handled before this function is ran
 */
-export default function getFieldValue(record: JAC.Event, field: JAC.EventField) {
+export default function getFieldValue(event: JAC.Event, field: JAC.EventField) {
     if (typeof field.eval === 'string') {
         try {
             // Parse the passed JS code. Must be a callable function
             const func = eval(field.eval);
             if (typeof func !== 'function') throw new Error('Eval result was not a function');
 
-            const result = func(record, window._config);
+            const result = func(event, window._config);
             if (!['', null, undefined].includes(result)) return String(result);
         } catch(err) {
             console.error('Failed to parse eval for the following field', field);
@@ -67,7 +67,7 @@ export default function getFieldValue(record: JAC.Event, field: JAC.EventField) 
             return field.htmlTemplate.replaceAll(
                 /\{([^{}]*?(?:\\\{|\\\}|[^{}])*)\}/g,
                 (_, key: string) => templateKey(
-                    record,
+                    event,
                     key.replaceAll('\\{', '{')
                         .replaceAll('\\}', '}')
                 )
@@ -83,7 +83,7 @@ export default function getFieldValue(record: JAC.Event, field: JAC.EventField) 
             return field.template.replaceAll(
                 /\{([^{}]*?(?:\\\{|\\\}|[^{}])*)\}/g,
                 (_, key: string) => templateKey(
-                    record,
+                    event,
                     key.replaceAll('\\{', '{')
                         .replaceAll('\\}', '}')
                 )
@@ -101,7 +101,7 @@ export default function getFieldValue(record: JAC.Event, field: JAC.EventField) 
     }
 
     // Return based on field.value
-    const value = get(record, field.value);
+    const value = get(event, field.value);
     if (['', null, undefined].includes(value)) return null;
 
     return String(value);

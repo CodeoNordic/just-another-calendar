@@ -10,28 +10,28 @@ declare global {
         setConfigProp<K extends string & keyof JAC.Config>(k: K, prop: JAC.Config[K]): void;
 
 
-        /** Add one or more records */
-        addRecords(data: WithFilter<JAC.Event>|WithFilter<JAC.Event>[]): void;
+        /** Add one or more events */
+        addEvents(data: WithFilter<JAC.Event>|WithFilter<JAC.Event>[]): void;
 
-        /** Remove one, more or all records. Limit should be set to 1 when removing a specific record */
-        removeRecords(
+        /** Remove one, more or all events. Limit should be set to 1 when removing a specific event */
+        removeEvents(
             search?: Partial<JAC.Event>|(Partial<JAC.Event>[]),
             limit?: number
         ): void;
 
-        /** Overwrite the record list */
-        setRecords(data: JAC.Event|JAC.Event[]): void;
+        /** Overwrite the event list */
+        setEvents(data: JAC.Event|JAC.Event[]): void;
 
         /**
-         * Update a specific record
-         * @param find JSON filter to find the record
-         * @param data Partial or full data to update the record with
-         * @param autocreate Whether to create the record if it doesn't exist
+         * Update a specific event
+         * @param find JSON filter to find the event
+         * @param data Partial or full data to update the event with
+         * @param autocreate Whether to create the event if it doesn't exist
          * @example ```ts
-         * updateRecord(JSON.stringify({id: '123'}), JSON.stringify({title: 'New title'}), true);
+         * updateEvent(JSON.stringify({id: '123'}), JSON.stringify({title: 'New title'}), true);
          * ```
         */
-        updateRecord(find: Partial<JAC.Event>, data: JAC.Event, autocreate?: boolean): void;
+        updateEvent(find: Partial<JAC.Event>, data: JAC.Event, autocreate?: boolean): void;
 
         /** Set the current date to show. */
         /** @deprecated use setConfigValue('date', value) */

@@ -25,7 +25,7 @@ const EventFilters: FC = () => {
                 return {
                     ...prev, 
                     eventFilters: newFilters,
-                    records: [...config?.records || []]
+                    events: [...config?.events || []]
                 } as JAC.Config;
             });
         }

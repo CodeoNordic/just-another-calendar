@@ -2,7 +2,7 @@ declare global {
     namespace JAC {
         // Define the web config here
         interface Config {
-            records: JAC.Event[];
+            events: JAC.Event[];
 
             eventFilters?: EventFilter[];
             

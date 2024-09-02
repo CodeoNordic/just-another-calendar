@@ -9,6 +9,38 @@ interface NewEventProps {
     pos: { x: number, y: number } | null;
 }
 
+export function setObjectValue(obj: object, path: string, value: any) {
+    const keys = path.split('.'); 
+    let current = obj as any;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+
+        if (!(key in current) || typeof current[key] !== 'object') {
+            current[key] = {};
+        }
+
+        current = current[key];
+    }
+
+    current[keys[keys.length - 1]] = value;
+}
+
+function getObjectValue(obj: object, path: string) {
+    const keys = path.split('.');
+    
+    let value = obj as any;
+    for (let key of keys) {
+        if (value && typeof value === 'object' && key in value) {
+            value = value[key];
+        } else {
+            return undefined;
+        }
+    }
+    
+    return value;
+}
+
 const NewEvent: FC<NewEventProps> = props => {
     const [creatingEvent, setCreatingEvent] = props.creatingState;
     const [newEvent, setNewEvent] = props.eventState;
@@ -33,15 +65,16 @@ const NewEvent: FC<NewEventProps> = props => {
                         <input 
                             type={value.type ?? "string"} 
                             value={value.type === "time" 
-                                ? newEvent?.[value.field].toString().split("T")[1] 
-                                : newEvent?.[value.field] || ""}
+                                ? getObjectValue(newEvent || {}, value.field).toString().split("T")[1] 
+                                : getObjectValue(newEvent || {}, value.field) || ""}
                             placeholder={value.placeholder ?? ""}     
                             onChange={e => {
                                 let inputValue = e.target.value as string | number | boolean;
                                 e.type === "checkbox" && (inputValue = e.target.checked);
                                 e.type === "time" && (inputValue = newEvent?.[value.field].toString().split("T")[0] + "T" + inputValue);
-
-                            setNewEvent({...newEvent, [value.field]: inputValue} as JAC.Event)}} />
+                                const newEventCopy = {...newEvent};
+                                setObjectValue(newEventCopy, value.field, inputValue);
+                                setNewEvent({...newEventCopy} as JAC.Event)}} />
                     </div>)}
                 </div>
             </div>
@@ -53,7 +86,7 @@ const NewEvent: FC<NewEventProps> = props => {
                 <button onClick={() => {
                     setCreatingEvent(false);
                     setNewEvent(null);
-                    setConfig((prev: JAC.Config | null) => ({...prev, records: [...config!.records, newEvent]} as JAC.Config));
+                    setConfig((prev: JAC.Config | null) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
                 }}><Checkmark className='icon'/>Save</button>
             </div>
         </div>}

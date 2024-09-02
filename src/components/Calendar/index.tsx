@@ -8,7 +8,7 @@ import stylesFromFontSizes from '@utils/stylesFromConfig';
 
 const Calendar: FC = () => {
     const config = useConfig();
-    const records = config?.records;
+    const events = config?.events;
 
     const date = dateFromString(config?.date)?.valueOf();
     const fontStyles = config?.styles;
@@ -29,7 +29,7 @@ const Calendar: FC = () => {
 
     return <div className="calendar">
         <FullCalendar
-            records={records}
+            events={events}
             date={date}
         />
     </div>

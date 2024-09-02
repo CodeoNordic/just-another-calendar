@@ -86,8 +86,8 @@ declare global {
              * template: '{Time:timestampStart} - {Time:timestampEnd}'
              * 
              * // eval can also be used, but curly brackets in the code must be preceded by a double backslash
-             * template: '{Date:timestampStart} - {Eval:(record, config) => new Date(record.timestampStart).toLocaleTimeString(config.locale)}'
-             * templace: '{Eval:record => \\{ if (record.arrived) return "ARRIVED"; \\}}'
+             * template: '{Date:timestampStart} - {Eval:(event, config) => new Date(event.timestampStart).toLocaleTimeString(config.locale)}'
+             * templace: '{Eval:event => \\{ if (event.arrived) return "ARRIVED"; \\}}'
              * ```
             */
             template?: string;
@@ -98,9 +98,9 @@ declare global {
              * undefined, null or an empty string is considered an empty value
              * @example
              * ```js
-             * eval: 'record => `${record.FirstName} ${record.LastName}`'
-             * eval: 'function(record) { return record.FirstName + ' ' + record.LastName }'
-             * eval: 'record => record.Arrived? "ARRIVED": null'
+             * eval: 'event => `${event.FirstName} ${event.LastName}`'
+             * eval: 'function(event) { return event.FirstName + ' ' + event.LastName }'
+             * eval: 'event => event.Arrived? "ARRIVED": null'
              * ```
             */
             eval?: string;

@@ -45,7 +45,7 @@ const EventDropdownProvider: FC = props => {
                 {dropdown.buttons.map((btn, i) => <button key={i} onClick={btn.script? (() => {
                     performScript(
                         btn.script!,
-                        config?.records?.find(r => r.id === dropdown.eventId),
+                        config?.events?.find(r => r.id === dropdown.eventId),
                         undefined,
                         true
                     );
