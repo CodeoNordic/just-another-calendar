@@ -3,6 +3,7 @@
 
     .top {
         font-size: 1.3em;
+        margin-bottom: 8px;
 
         .title {
             margin-right: auto;
@@ -12,18 +13,17 @@
             background-color: transparent;
             border: none;
 
-            @include buttonEffects;
-
             width: 32px;
             height: 32px;
-
+            
+            @include buttonEffects;
+            
             svg {
                 width: 100%;
                 height: 100%;
             }
         }
 
-        margin-bottom: 8px;
     }
 
     .date-picker-wrapper {
@@ -67,9 +67,10 @@
 
             background-color: transparent;
             border: none;
-
-            @include buttonEffects;
+            
             border-radius: 0;
+            
+            @include buttonEffects;
 
             &.extra-date {
                 opacity: .5;

@@ -13,13 +13,13 @@
 
         padding: 8px 8px 6px 8px;
 
+        @include buttonEffects;
+        
         svg {
             stroke: black;
             scale: 1.25;
             stroke-width: .145em;
         }
-
-        @include buttonEffects;
     }
 
     &.collapsed {
