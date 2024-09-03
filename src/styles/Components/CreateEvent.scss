@@ -12,6 +12,22 @@
         justify-content: center;
         align-items: center;
         gap: 5px;
+        cursor: pointer;
+    }
+
+    .dropdown-input {
+        cursor: pointer;
+
+        border: 1px solid rgba(0, 0, 0, .3);
+
+        &:focus {
+            outline: none;
+            border: 1px solid rgba(0, 0, 0, 1);
+        }
+
+        &:hover {
+            border: 1px solid rgba(0, 0, 0, 1);
+        }
     }
 
     .string-input {
@@ -43,6 +59,20 @@
             border: 1px solid rgba(0, 0, 0, 1);
         }
     }
+
+    .time-input {
+        cursor: pointer;
+        border: 1px solid rgba(0, 0, 0, .3);
+
+        &:focus {
+            outline: none;
+            border: 1px solid rgba(0, 0, 0, 1);
+        }
+
+        &:hover {
+            border: 1px solid rgba(0, 0, 0, 1);
+        }
+    }
     
     .color-input::-webkit-color-swatch-wrapper {
         padding: 0px;
@@ -59,6 +89,8 @@
         height: 1.3em;
         min-width: 1.3em;
         min-height: 1.3em;
+
+        cursor: pointer;
     }
     
     .top-inputs {

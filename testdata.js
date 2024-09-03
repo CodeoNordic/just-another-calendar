@@ -86,14 +86,14 @@ init(JSON.stringify({
             ButtonText: "BUTTON 3",
             start: '2024-07-22T14:00',
             end: '2024-07-22T15:30',
-            allDay: false,
+            allDay: true,
             _component: "compact",
             resourceId: '2F',
             filterId: 'filter1'
         }
     ],
 
-    defaultEventComponent: 'default',
+    eventComponent: 'default',
     eventComponents: [{
         name: "default",
         fields: [
@@ -157,14 +157,20 @@ init(JSON.stringify({
     searchBy: ["FirstName", "start"],
     calendarStartTime: "08:00",
     calendarEndTime: "16:15",
-    locale: "no",
+    locale: "en",
     translations: {
         searchHeader: "Søk",
         searchPlaceholder: "Søk",
         filtersHeader: "Filtre",
         allDaySlot: "Hele dagen",
-        weekNumberHeader: "U"
+        weekNumberHeader: "U",
+        eventCreationHeader: "Ny Avtale",
+        eventCreationCancel: "Avbryt",
+        eventCreationConfirm: "Lagre"
     },
+    showWeekends: false,
+    firstDayOfWeek: 0,
+    days: 5,
     newEventFields: [
     {
         field: "FirstName",
@@ -195,6 +201,21 @@ init(JSON.stringify({
     {
         field: "filterId",
         title: "Filtrerings-id",
-        default: "filter1"
+        default: "filter1",
+        type: "dropdown",
+        dropdownItems: [
+            {
+                value: "filter1",
+                label: "Første filter",
+            },
+            {
+                value: "filter2",
+                label: "Andre filter",
+            },
+            {
+                value: "filter3",
+                label: "Tredje filter",
+            }
+        ]
     }]
 }))

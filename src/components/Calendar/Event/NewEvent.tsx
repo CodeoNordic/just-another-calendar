@@ -129,9 +129,11 @@ const NewEvent: FC<NewEventProps> = props => {
                         background: newEvent?.colors?.background || "#3788d8"
                     }}
                     onMouseDown={handleMouseDown}>
-                    <Crossmark className='icon' onClick={() => {
-                        setCreatingEvent(false)
-                        document.querySelector('.calendar-highlight')?.remove()
+                    <Crossmark 
+                        className='icon' 
+                        onClick={() => {
+                            setCreatingEvent(false)
+                            document.querySelector('.calendar-highlight')?.remove()
                     }}/>
                 </div>
                 <div className='body-inputs'>
