@@ -65,6 +65,12 @@
         border: none;
     }
 
+    .fc-timegrid-col-bg:has(.calendar-hightlight) {
+        .fc-timegrid-bg-harness {
+            display: none;
+        }
+    }
+
     .fc-view-harness.fc-view-harness-active:not(:has(.fc-daygrid)) {
         margin-left: 10px;
     }

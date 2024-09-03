@@ -36,6 +36,7 @@ import searchObject from '@utils/searchObject';
 import NewEvent from './Event/NewEvent';
 import set from 'lodash.set';
 import { weekDays } from '@utils/calendarDates';
+import dateToObject from '@utils/dateToObject';
 
 interface Props {
     events?: JAC.Event[];
@@ -348,30 +349,36 @@ const FullCalendar: FC<Props> = props => {
 
             selectable={config.eventCreation}
             select={info => {
+                document.querySelector('.calendar-hightlight')?.remove();
                 if (config.scriptNames?.createEvent) {
                     const start = info.start;
                     const end = info.end;
-                    
-                    return performScript("createEvent", {
+                    console.log({
                         start: {
-                            date: start.getDate(),
-                            month: start.getMonth() + 1,
-                            year: start.getFullYear(),
-                            time: start.toTimeString().split(' ')[0],
-                            unix: start.valueOf(),
-                            iso: start.toISOString()
+                            ...dateToObject(start),
+                            time: start.toTimeString().split(' ')[0]
                         },
                         end: {
-                            date: end.getDate(),
-                            month: end.getMonth() + 1,
-                            year: end.getFullYear(),
-                            time: end.toTimeString().split(' ')[0],
-                            unix: end.valueOf(),
-                            iso: end.toISOString()
+                            ...dateToObject(end),
+                            time: end.toTimeString().split(' ')[0]
                         },
                         resourceId: info.resource?.id
-                    });                
+                    })
+                    return performScript("createEvent", {
+                        start: {
+                            ...dateToObject(start),
+                            time: start.toTimeString().split(' ')[0]
+                        },
+                        end: {
+                            ...dateToObject(end),
+                            time: end.toTimeString().split(' ')[0]
+                        },
+                        resourceId: info.resource?.id
+                    });
+                    
                 }
+
+                
 
                 let newEventTemp = {
                     id: randomUUID(),
@@ -392,6 +399,7 @@ const FullCalendar: FC<Props> = props => {
 
                 document.addEventListener('click', e => {
                     if ((e.target as HTMLElement)?.closest('.create-event')) return;
+                    document.querySelector('.calendar-hightlight')?.remove();
                     setCreatingEvent(false);
                     setNewEvent(null);
                 }, { once: true });
