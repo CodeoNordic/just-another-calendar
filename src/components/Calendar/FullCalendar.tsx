@@ -349,21 +349,9 @@ const FullCalendar: FC<Props> = props => {
 
             selectable={config.eventCreation}
             select={info => {
-                document.querySelector('.calendar-hightlight')?.remove();
                 if (config.scriptNames?.createEvent) {
                     const start = info.start;
                     const end = info.end;
-                    console.log({
-                        start: {
-                            ...dateToObject(start),
-                            time: start.toTimeString().split(' ')[0]
-                        },
-                        end: {
-                            ...dateToObject(end),
-                            time: end.toTimeString().split(' ')[0]
-                        },
-                        resourceId: info.resource?.id
-                    })
                     return performScript("createEvent", {
                         start: {
                             ...dateToObject(start),
@@ -377,8 +365,8 @@ const FullCalendar: FC<Props> = props => {
                     });
                     
                 }
-
                 
+                document.querySelector('.calendar-highlight')?.remove();
 
                 let newEventTemp = {
                     id: randomUUID(),
@@ -399,7 +387,7 @@ const FullCalendar: FC<Props> = props => {
 
                 document.addEventListener('click', e => {
                     if ((e.target as HTMLElement)?.closest('.create-event')) return;
-                    document.querySelector('.calendar-hightlight')?.remove();
+                    document.querySelector('.calendar-highlight')?.remove();
                     setCreatingEvent(false);
                     setNewEvent(null);
                 }, { once: true });

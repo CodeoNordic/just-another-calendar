@@ -65,9 +65,9 @@
         border: none;
     }
 
-    .fc-timegrid-col-bg:has(.calendar-hightlight) {
+    .fc-timegrid-col-bg:has(.calendar-highlight) {
         .fc-timegrid-bg-harness {
-            display: none;
+            opacity: 0;
         }
     }
 

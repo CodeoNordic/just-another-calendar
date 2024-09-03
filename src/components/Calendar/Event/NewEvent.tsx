@@ -96,15 +96,16 @@ const NewEvent: FC<NewEventProps> = props => {
             document.removeEventListener('mouseup', handleMouseUp);
         };
     }, [isDragging]);
-    
+
     if (!creatingEvent) return null;
 
     const fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
     const fcElParent = fcEl?.parentElement;
+
     
-    if (fcEl && !fcElParent?.querySelector('.calendar-hightlight')) {
+    if (fcEl && !fcElParent?.querySelector('.calendar-highlight')) {
         const el = document.createElement('div');
-        el.className = 'calendar-hightlight';
+        el.className = 'calendar-highlight';
         el.style.zIndex = '100';
         el.style.background = 'rgba(188, 232, 241, .3)';
         el.style.position = 'absolute';
@@ -112,6 +113,7 @@ const NewEvent: FC<NewEventProps> = props => {
         el.style.bottom = fcEl.style.bottom;
         el.style.left = "0px";
         el.style.right = "0px";
+        el.style.overflow = 'hidden';
         fcElParent?.appendChild(el);
     }
 
@@ -129,7 +131,7 @@ const NewEvent: FC<NewEventProps> = props => {
                     onMouseDown={handleMouseDown}>
                     <Crossmark className='icon' onClick={() => {
                         setCreatingEvent(false)
-                        document.querySelector('.calendar-hightlight')?.remove()
+                        document.querySelector('.calendar-highlight')?.remove()
                     }}/>
                 </div>
                 <div className='body-inputs'>
@@ -177,14 +179,14 @@ const NewEvent: FC<NewEventProps> = props => {
             </div>
             <div className='buttons-wrapper'>
                 <button onClick={() => {
-                    document.querySelector('.calendar-hightlight')?.remove();
+                    document.querySelector('.calendar-highlight')?.remove();
                     setCreatingEvent(false);
                     setNewEvent(null);
                 }}><Crossmark className='icon'/>{config?.translations?.eventCreationCancel ?? "Discard"}</button>
                 <button onClick={() => {
                     setConfig((prev: JAC.Config | null) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
                     config?.scriptNames.createEvent && performScript(config?.scriptNames.eventCreated as string, newEvent);
-                    document.querySelector('.calendar-hightlight')?.remove();
+                    document.querySelector('.calendar-highlight')?.remove();
                     setCreatingEvent(false);
                     setNewEvent(null);
                 }}><Checkmark className='icon'/>{config?.translations?.eventCreationConfirm ?? "Save"}</button>
