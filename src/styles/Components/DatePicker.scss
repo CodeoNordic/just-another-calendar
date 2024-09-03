@@ -44,8 +44,16 @@
         padding-right: 10px;
     }
 
-    .week-numbers, .days {
-        row-gap: 4px;
+    .week-numbers {
+        row-gap: 8px;
+    }
+
+    .days {
+        row-gap: 6px;
+    }
+
+    .weekday {
+        padding-bottom: 4px;
     }
 
     .days {
@@ -55,13 +63,16 @@
         justify-content: center;
 
         button {
-            padding: 0;
+            padding: 4px 0;
 
             background-color: transparent;
             border: none;
 
-            &:not(.extra-date) {
-                @include buttonEffects;
+            @include buttonEffects;
+            border-radius: 0;
+
+            &.extra-date {
+                opacity: .5;
             }
         }
 
