@@ -367,6 +367,10 @@ const FullCalendar: FC<Props> = props => {
                 }
                 
                 document.querySelector('.calendar-highlight')?.remove();
+                const arrow = document.querySelector('.create-arrow') as HTMLElement | null;
+                if (arrow) {
+                  arrow.style.display = "block";
+                }
 
                 let newEventTemp = {
                     id: randomUUID(),

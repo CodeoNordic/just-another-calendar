@@ -43,6 +43,7 @@ declare global {
             // Defaults to all fields in first event
             // If no title is provided, the field name will be used
             newEventFields?: NewEventField[];
+            newEventMovable?: boolean;
             eventCreation?: boolean;
             
             // Define valid script names here

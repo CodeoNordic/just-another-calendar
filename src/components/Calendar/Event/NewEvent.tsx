@@ -21,25 +21,45 @@ const NewEvent: FC<NewEventProps> = props => {
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [position, setPosition] = useState<{ x: number, y: number }>(props.pos || { x: 0, y: 0 });
+    const [arrowPos, setArrowPos] = useState<{ x: number, y: number, dir: number }>({ x: 0, y: 0, dir: 0 })
 
     const [config, setConfig] = useConfigState();
 
     useEffect(() => {
-        if (eventRef.current) {
+        const el = document.querySelector('.calendar-highlight') as HTMLElement;
+
+        if (eventRef.current && el) {
             const rect = eventRef.current.getBoundingClientRect();
+            const highlightRect = el.getBoundingClientRect();
+            
+            let x = 0;
+            let y = 0;
+            let arrowPosX = 0;
+            let arrowPosY = 0;
+            let arrowDir = 0;
 
-            let top = props.pos?.y || 0;
-            let left = props.pos?.x || 0;
+            x = highlightRect.left + highlightRect.width + 10;
+            y = highlightRect.top + (highlightRect.height / 2) - (rect.height / 2);
 
-            if (top + rect.height > window.innerHeight) {
-                top = top - rect.height;
+            arrowPosX = highlightRect.left + highlightRect.width;
+            arrowPosY = highlightRect.top + (highlightRect.height / 2) - 10;
+
+            if (x + rect.width > window.innerWidth) {
+                x = x - highlightRect.width - rect.width - 20;
+
+                arrowPosX = arrowPosX - highlightRect.width - 10;
+                arrowDir = 1;
             }
 
-            if (left + rect.width > window.innerWidth) {
-                left = left - rect.width;
+            if (y + (rect.height) > window.innerHeight) {
+                y = window.innerHeight - rect.height - 5;
+            } else if (y < 0) {
+                y = 5;
             }
 
-            setPosition({ x: left, y: top });
+            setPosition({ x, y });
+
+            setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir })
         }
     }, [props.pos]);
 
@@ -56,7 +76,10 @@ const NewEvent: FC<NewEventProps> = props => {
     }
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        if (eventRef.current) {
+        if (eventRef.current && config?.newEventMovable) {
+            const arrow = document.querySelector('.create-arrow') as HTMLElement;
+            arrow.style.display = "none";
+
             const rect = eventRef.current.getBoundingClientRect();
             setDragOffset({
                 x: e.clientX - rect.left,
@@ -123,68 +146,90 @@ const NewEvent: FC<NewEventProps> = props => {
         fcElParent?.appendChild(el);
     }
 
-    return <div ref={eventRef} className='create-event' style={{
-            top: position.y,
-            left: position.x
-        }}>
-        <div className='inputs-wrapper'>
-            <div 
-                className='top-inputs' 
-                style={{
-                    cursor: "grab",
-                    background: newEvent?.colors?.background || "#3788d8"
-                }}
-                onMouseDown={handleMouseDown}>
-                <Crossmark className='icon' onClick={stopNewEvent}/>
-            </div>
-            <div className='body-inputs'>
-                <p className='title-inputs'>{config?.translations?.eventCreationHeader ?? "New Event"}</p>
-                {config?.newEventFields?.map(value => (
-                    <div key={value.field} className='input-wrapper'>
-                        <p>{value.title ?? value.field}</p>
-                        {value.type === "dropdown" ? <select 
-                            className='dropdown-input'
-                            value={get(newEvent as JAC.Event, value.field)} 
-                            onChange={e => setNewEventField(value.field, e.target.value)}
-                        >
-                            {value.dropdownItems?.map(item => {
-                                return typeof item === "string" 
-                                    ? <option key={item} value={item}>{item}</option> 
-                                    : <option key={item.value} value={item.value}>{item.label}</option>;
-                            })}
-                        </select>
-                        : <input 
-                            lang={config?.locale ?? "en"}
-                            type={value.type ?? "string"} 
-                            className={value.type ? `${value.type}-input` : "string-input"}
-                            value={value.type === "time" 
-                                ? get(newEvent as JAC.Event, value.field)?.toString().split("T")[1]
-                                : get(newEvent as JAC.Event, value.field) || ""}
-                            placeholder={value.placeholder ?? ""}     
-                            onChange={e => {
-                                const inputValue = e.target.type === "checkbox" 
-                                ? e.target.checked 
-                                : e.target.type === "time" 
-                                ? `${get(newEvent as JAC.Event, value.field)?.toString().split("T")[0]}T${e.target.value}` 
-                                : e.target.value;
-                                setNewEventField(value.field, inputValue);
-                            }} 
-                        />}
-                    </div>
-                ))}
+    return <>
+        <div
+            className='create-arrow'
+            style={{
+                top: arrowPos.y,
+                left: arrowPos.x + (arrowPos.dir == 0 ? 1 : -1),
+                borderRight: arrowPos.dir == 0 ? "10px solid rgba(0, 0, 0, .3)" : "none",
+                borderLeft: arrowPos.dir == 1 ? "10px solid rgba(0, 0, 0, .3)" : "none",
+            }}
+        >
+            <div
+            className='create-arrow-inner'
+            style={{
+                marginLeft: arrowPos.dir == 0 ? 1 : -11, 
+                borderRight: arrowPos.dir == 0 ? "10px solid white" : "none",
+                borderLeft: arrowPos.dir == 1 ? "10px solid white" : "none",
+            }}
+            >
+
             </div>
         </div>
-        <div className='buttons-wrapper'>
-            <button onClick={() => {
-                stopNewEvent();
-            }}><Crossmark className='icon'/>{config?.translations?.eventCreationCancel ?? "Discard"}</button>
-            <button onClick={() => {
-                setConfig((prev) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
-                config?.scriptNames.createEvent && performScript(config?.scriptNames.eventCreated as string, newEvent);
-                stopNewEvent();
-            }}><Checkmark className='icon'/>{config?.translations?.eventCreationConfirm ?? "Save"}</button>
+        <div ref={eventRef} className='create-event' style={{
+                top: position.y,
+                left: position.x
+            }}>
+            <div className='inputs-wrapper'>
+                <div 
+                    className='top-inputs' 
+                    style={{
+                        cursor: config?.newEventMovable ? "grab" : "default",
+                        background: newEvent?.colors?.background || "#3788d8"
+                    }}
+                    onMouseDown={handleMouseDown}>
+                    <Crossmark className='icon' onClick={stopNewEvent}/>
+                </div>
+                <div className='body-inputs'>
+                    <p className='title-inputs'>{config?.translations?.eventCreationHeader ?? "New Event"}</p>
+                    {config?.newEventFields?.map(value => (
+                        <div key={value.field} className='input-wrapper'>
+                            <p>{value.title ?? value.field}</p>
+                            {value.type === "dropdown" ? <select 
+                                className='dropdown-input'
+                                value={get(newEvent as JAC.Event, value.field)} 
+                                onChange={e => setNewEventField(value.field, e.target.value)}
+                            >
+                                {value.dropdownItems?.map(item => {
+                                    return typeof item === "string" 
+                                        ? <option key={item} value={item}>{item}</option> 
+                                        : <option key={item.value} value={item.value}>{item.label}</option>;
+                                })}
+                            </select>
+                            : <input 
+                                lang={config?.locale ?? "en"}
+                                type={value.type ?? "string"} 
+                                className={value.type ? `${value.type}-input` : "string-input"}
+                                value={value.type === "time" 
+                                    ? get(newEvent as JAC.Event, value.field)?.toString().split("T")[1]
+                                    : get(newEvent as JAC.Event, value.field) || ""}
+                                placeholder={value.placeholder ?? ""}     
+                                onChange={e => {
+                                    const inputValue = e.target.type === "checkbox" 
+                                    ? e.target.checked 
+                                    : e.target.type === "time" 
+                                    ? `${get(newEvent as JAC.Event, value.field)?.toString().split("T")[0]}T${e.target.value}` 
+                                    : e.target.value;
+                                    setNewEventField(value.field, inputValue);
+                                }} 
+                            />}
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div className='buttons-wrapper'>
+                <button onClick={() => {
+                    stopNewEvent();
+                }}><Crossmark className='icon'/>{config?.translations?.eventCreationCancel ?? "Discard"}</button>
+                <button onClick={() => {
+                    setConfig((prev) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
+                    config?.scriptNames.createEvent && performScript(config?.scriptNames.eventCreated as string, newEvent);
+                    stopNewEvent();
+                }}><Checkmark className='icon'/>{config?.translations?.eventCreationConfirm ?? "Save"}</button>
+            </div>
         </div>
-    </div>
+    </>
 }
 
 export default NewEvent;
