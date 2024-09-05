@@ -60,7 +60,8 @@ declare global {
                 onDateSelected: string;
                 onEventChange: string;
                 onFilterChange: string;
-                
+                onSourceFilterChange: string;
+
                 newEvent?: string;
                 eventCreated?: string;
             };

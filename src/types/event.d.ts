@@ -28,6 +28,9 @@ declare global {
             // for filtering
             filterId?: string;
 
+            // for filtering by source
+            source?: string;
+
             allDay?: boolean;
 
             tooltip?: string;

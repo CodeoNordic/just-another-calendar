@@ -54,11 +54,15 @@ export default function mapEvents(config: JAC.Config) {
             return ev.extendedProps.event.filterId && !filter.enabled && filter.id == ev.extendedProps.event.filterId;
         });
 
+        const filteredSource = config.sourceFilters?.some(filter => {
+            return ev.extendedProps.event.source && !filter.enabled && filter.id == ev.extendedProps.event.source;
+        });
+
         const filteredSearch = config.searchBy ? (config?.searchBy).every((field) => {
             return config.search && !ev.extendedProps.event[field].toLowerCase().includes(config.search);
         }) : false;
 
-        if (filteredOut || filteredSearch) return false;
+        if (filteredOut || filteredSearch || filteredSource) return false;
 
         if (!ev.start || !ev.end) {
             console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.event);

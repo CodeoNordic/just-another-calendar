@@ -6,6 +6,7 @@ import ChevronIcon from 'jsx:@svg/menu-toggle.svg';
 import combineClasses from '@utils/combineClasses';
 import EventFilters from './EventFilters';
 import Search from './Search';
+import SourceFilters from './SourceFilters';
 
 
 
@@ -24,6 +25,7 @@ const SideMenu: FC = () => {
             <DatePicker />
             <Search />
             <EventFilters />
+            <SourceFilters />
         </div>
     </div>
 }
