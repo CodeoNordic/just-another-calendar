@@ -5,6 +5,8 @@ declare global {
             events: JAC.Event[];
 
             eventFilters?: EventFilter[];
+
+            sourceFilters?: SourceFilter[];
             
             contrastCheck?: boolean;
 

@@ -28,6 +28,20 @@ declare global {
             /** If the filter is client only, _filter must be defined, as it will filter locally */
             clientOnly?: boolean;
         }>;
+
+        interface SourceFilter {
+            id: string
+            title?: string;
+            color?: string;
+
+            enabled?: boolean;
+
+            locked?: boolean;
+
+            sort?: number;
+
+            clientOnly?: boolean;
+        }
     
         interface TextStyle {
             font?: string;

@@ -7,6 +7,7 @@ declare global {
             searchPlaceholder?: string;
 
             filtersHeader?: string;
+            sourceHeader?: string;
 
             allDaySlot?: string;
 
