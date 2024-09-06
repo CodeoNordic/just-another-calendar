@@ -1,13 +1,16 @@
-import { useConfigState } from "@context/Config";
 import Collapse from "./Collapse";
+import { useConfigState } from "@context/Config";
 import calculateContrast from "@utils/contrast";
-import Checkmark from "jsx:@svg/checkmark.svg";
-import Crossmark from "jsx:@svg/crossmark.svg";
-import Padlock from "jsx:@svg/padlock.svg";
 import performScript from "@utils/performScript";
+
+import Padlock from "jsx:@svg/padlock.svg";
+import Crossmark from "jsx:@svg/crossmark.svg";
+import Checkmark from "jsx:@svg/checkmark.svg";
 
 const SourceFilters: FC = () => {
     const [config, setConfig] = useConfigState();
+    
+    if (!config?.sourceFilters) return null
 
     const toggleFilter = (filter: JAC.SourceFilter) => {
         if (filter.clientOnly) {
@@ -32,9 +35,6 @@ const SourceFilters: FC = () => {
             enabled: !filter.enabled || false
         });
     }
-
-
-    if (!config?.sourceFilters) return null
 
     return <div>
         <div className="divider" />
@@ -69,7 +69,9 @@ const SourceFilters: FC = () => {
                         fill: notEnoughContrast ? "#000" : "#fff"
                     }}/>}
                     
-                    <p style={{color: notEnoughContrast ? "#000" : filter.color || "#3788d8"}}>{filter.title}</p>
+                    <p style={{
+                        color: notEnoughContrast ? "#000" : filter.color || "#3788d8"
+                    }}>{filter.title}</p>
                     {filter.locked && <Padlock className="filter-lock"/>}
                 </div>)
             })}
