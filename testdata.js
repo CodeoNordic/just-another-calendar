@@ -27,7 +27,8 @@ init(JSON.stringify({
             colors: {
                 background: '#000000',
                 border: '#000000'
-            }
+            },
+            source: 'source1'
         },
 
         {
@@ -39,7 +40,8 @@ init(JSON.stringify({
             end: '2024-07-18T13:00',
             allDay: false,
             resourceId: '2F',
-            filterId: 'filter2'
+            filterId: 'filter2',
+            source: 'source2'
         },
 
         {
@@ -52,7 +54,8 @@ init(JSON.stringify({
             allDay: false,
             _component: "compact",
             resourceId: '2F',
-            filterId: 'filter2'
+            filterId: 'filter2',
+            source: 'source1'
         },
 
         {
@@ -65,7 +68,8 @@ init(JSON.stringify({
             allDay: false,
             tooltip: 'TEST TOOLTIP JOAKIM',
             resourceId: '1F',
-            filterId: 'filter3'
+            filterId: 'filter3',
+            source: 'source3'
         },
 
         {
@@ -76,7 +80,8 @@ init(JSON.stringify({
             start: '2024-07-19T9:00',
             end: '2024-07-19T9:45',
             resourceId: '3F',
-            filterId: 'filter3'
+            filterId: 'filter3',
+            source: 'source2'
         },
 
         {
@@ -89,7 +94,8 @@ init(JSON.stringify({
             allDay: true,
             _component: "compact",
             resourceId: '2F',
-            filterId: 'filter1'
+            filterId: 'filter1',
+            source: 'source3'
         }
     ],
 
@@ -153,7 +159,39 @@ init(JSON.stringify({
           
           clientOnly: true
         }
-      ],
+    ],
+    sourceFilters: [
+        {
+          id: "source1",
+          title: "Låst kilde",
+          color: "#AAEEee",
+          
+          enabled: true, 
+          locked: true,
+          
+          clientOnly: true
+        },
+        {
+          id: "source2",
+          title: "Ulåst kilde",
+          color: "#ff0055",
+          
+          enabled: true, 
+          locked: false, 
+          
+          clientOnly: true
+        },
+        {
+          id: "source3",
+          title: "Ulåst kilde (default av)",
+          color: "#0000ff",
+          
+          enabled: false,
+          locked: false,
+          
+          clientOnly: true
+        }
+    ],
     searchBy: ["FirstName", "start"],
     calendarStartTime: "08:00",
     calendarEndTime: "16:15",
@@ -162,6 +200,7 @@ init(JSON.stringify({
         searchHeader: "Søk",
         searchPlaceholder: "Søk",
         filtersHeader: "Filtre",
+        sourceHeader: "Kilder",
         allDaySlot: "Hele dagen",
         weekNumberHeader: "U",
         eventCreationHeader: "Ny Avtale",
@@ -170,7 +209,9 @@ init(JSON.stringify({
     },
     showWeekends: false,
     firstDayOfWeek: 0,
+    newEventMovable: true,
     days: 5,
+    contrastMin: 3,
     newEventFields: [
     {
         field: "FirstName",
@@ -201,7 +242,7 @@ init(JSON.stringify({
     {
         field: "filterId",
         title: "Filtrerings-id",
-        default: "filter1",
+        default: "filter2",
         type: "dropdown",
         dropdownItems: [
             {
