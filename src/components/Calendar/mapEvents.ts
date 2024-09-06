@@ -42,7 +42,7 @@ export default function mapEvents(config: JAC.Config) {
             resourceIds,
             backgroundColor: event.colors?.background,
             borderColor: event.colors?.border,
-            textColor: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8")) ? 
+            textColor: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config.contrastMin)) ? 
             "#000" : event.colors?.text,
             start: eventStart,
             end: eventEnd,

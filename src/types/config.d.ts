@@ -9,7 +9,8 @@ declare global {
             sourceFilters?: SourceFilter[];
             
             contrastCheck?: boolean;
-
+            contrastMin?: number;
+            
             resources?: Resource[];
             resourcesWidth?: string;
 

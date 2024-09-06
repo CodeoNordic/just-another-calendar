@@ -30,7 +30,7 @@ export function luminance(r: number, g:number, b:number) {
 
 /**
  * @param rgb1 first color in rgb format
- * @param rgb2 second color in rgb format
+ * @param rgb2 second color in rgb format"
  * @returns contrast ratio between two colors
  * @example
  * ```ts
@@ -49,14 +49,15 @@ export function contrast(rgb1: [number, number, number], rgb2: [number, number, 
 /**
  * @param color color to check contrast (any valid css color)
  * @param bg background color (any valid css color), default is white
- * @returns true if the contrast is greater than 2
+ * @param contrastMin minimum contrast value, default is 2
+ * @returns true if the contrast is greater than contrastMin
  * @example
  * ```ts
  * calculateContrast("#000", "white"); // true
  * calculateContrast("rgb(0, 0, 0)", "#000000"); // false
  * ```
  */
-export default function calculateContrast(color: string, bg: string = "#fff") {
+export default function calculateContrast(color: string, bg: string = "#fff", contrastMin: number = 2): boolean {
     const colorRGBAObj = tinycolor(color).toRgb();
     const bgRGBAObj = tinycolor(bg).toRgb();
 
@@ -68,5 +69,5 @@ export default function calculateContrast(color: string, bg: string = "#fff") {
     const rgbObj = tinycolor(rgb).toRgb();
 
     const contrastValue = contrast([rgbObj.r, rgbObj.g, rgbObj.b], [bgRGBObj.r, bgRGBObj.g, bgRGBObj.b]);
-    return contrastValue > 2;
+    return contrastValue > contrastMin;
 };

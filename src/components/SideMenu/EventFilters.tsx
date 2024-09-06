@@ -50,7 +50,8 @@ const EventFilters: FC = () => {
             <div>{config?.translations?.filtersHeader ?? "Filters"}</div>
         </>}>
             {sortedFilters?.map((filter) => {
-                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8") && config?.contrastCheck !== false;
+                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", undefined /*Maybe add actual background later*/, config?.contrastMin) 
+                    && config?.contrastCheck !== false;
 
                 return (<div 
                     className="filter-item" 

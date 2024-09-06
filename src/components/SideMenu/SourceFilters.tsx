@@ -42,7 +42,7 @@ const SourceFilters: FC = () => {
             <div>{config?.translations?.sourceHeader ?? "Filters"}</div>
         </>}>
             {config?.sourceFilters.map(filter => {
-                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8") && config?.contrastCheck !== false;
+                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", undefined /*Maybe add actual background later*/, config?.contrastMin) && config?.contrastCheck !== false;
                 
                 return (<div 
                     className="filter-item" 

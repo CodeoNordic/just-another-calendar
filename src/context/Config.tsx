@@ -49,6 +49,8 @@ const defaultConfig: Partial<JAC.Config> = {
     ],
     eventCreation: true,
     firstDayOfWeek: 1,
+    contrastCheck: true,
+    contrastMin: 2,
 };
 
 
