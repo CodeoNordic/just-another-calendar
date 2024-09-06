@@ -342,13 +342,15 @@ const FullCalendar: FC<Props> = props => {
             eventMouseLeave={() => {
                 setDropdown(prev => ({ ...prev, visible: false }))
             }}
-
+            
             datesSet={info => {
                 setResourcesTitle(info.view.title);
             }}
-
+            
             selectable={config.eventCreation}
             select={info => {
+                if (!info.startStr.split('+')[1]) return;
+                
                 if (config.scriptNames?.createEvent) {
                     const start = info.start;
                     const end = info.end;
@@ -372,6 +374,7 @@ const FullCalendar: FC<Props> = props => {
                   arrow.style.display = "block";
                 }
 
+
                 let newEventTemp = {
                     id: randomUUID(),
                     start: info.startStr.split('+')[0],
@@ -384,6 +387,8 @@ const FullCalendar: FC<Props> = props => {
 
                     set(newEventTemp, field.field, field.default);
                 });
+
+                console.log(newEventTemp);
 
                 setNewEvent(newEventTemp as JAC.Event);
                 setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });
