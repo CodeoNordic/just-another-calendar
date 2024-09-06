@@ -401,7 +401,6 @@ const FullCalendar: FC<Props> = props => {
         {creatingEvent && <NewEvent
             eventState={[newEvent, setNewEvent]}
             creatingState={[creatingEvent, setCreatingEvent]}
-            pos={newEventPos}
         />}
     </div>
 }

@@ -10,7 +10,6 @@ import React, { useEffect, useRef, useState } from 'react';
 interface NewEventProps {
     creatingState: State<boolean>;
     eventState: State<JAC.Event|null>;
-    pos: { x: number, y: number } | null;
 }
 
 const NewEvent: FC<NewEventProps> = props => {
@@ -20,8 +19,9 @@ const NewEvent: FC<NewEventProps> = props => {
     
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-    const [position, setPosition] = useState<{ x: number, y: number }>(props.pos || { x: 0, y: 0 });
+    const [position, setPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [arrowPos, setArrowPos] = useState<{ x: number, y: number, dir: number }>({ x: 0, y: 0, dir: 0 })
+    const [visible, setVisible] = useState(false);
 
     const [config, setConfig] = useConfigState();
 
@@ -58,15 +58,20 @@ const NewEvent: FC<NewEventProps> = props => {
             }
 
             setPosition({ x, y });
-
+            
             setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir })
+
+            setTimeout(() => {
+                setVisible(true);
+            }, 0);
         }
-    }, [props.pos]);
+    }, [visible, newEvent]);
 
     const stopNewEvent = () => {
         setCreatingEvent(false);
         setNewEvent(null);
         document.querySelector('.calendar-highlight')?.remove();
+        setVisible(false);
     }
 
     const setNewEventField = (field: string, value: string | number | boolean) => {
@@ -146,7 +151,9 @@ const NewEvent: FC<NewEventProps> = props => {
         fcElParent?.appendChild(el);
     }
 
-    return <>
+    return <div style={{
+        display: visible ? "block" : "none"
+    }}>
         <div
             className='create-arrow'
             style={{
@@ -229,7 +236,7 @@ const NewEvent: FC<NewEventProps> = props => {
                 }}><Checkmark className='icon'/>{config?.translations?.eventCreationConfirm ?? "Save"}</button>
             </div>
         </div>
-    </>
+    </div>
 }
 
 export default NewEvent;
