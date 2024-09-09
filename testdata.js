@@ -212,6 +212,51 @@ init(JSON.stringify({
     newEventMovable: true,
     days: 5,
     contrastMin: 3,
+    insertableEvents: [
+        {
+            id: '1',
+            FirstName: "Joakim",
+            allDay: false,
+            resourceId: '1F',
+            filterId: 'filter1',
+            colors: {
+                background: '#000000',
+                border: '#000000'
+            },
+            source: 'source1'
+        },
+
+        {
+            id: '2',
+            FirstName: "Joakim Isaksen",
+            Test: "TEST VALUE 2",
+            ButtonText: "BUTTON 2",
+            allDay: false,
+            resourceId: '2F',
+            filterId: 'filter2',
+            source: 'source2'
+        },
+
+        {
+            id: '3',
+            FirstName: "Joakim Isaksen +",
+            Test: "TEST VALUE 3",
+            ButtonText: "BUTTON 3",
+            allDay: false,
+            _component: "compact",
+            resourceId: '2F',
+            filterId: 'filter2',
+            source: 'source1'
+        },
+
+        {
+            id: '4',
+            FirstName: "test testesen",
+            resourceId: '1F',
+            filterId: 'filter3',
+            source: 'source3'
+        }
+    ],
     newEventFields: [
     {
         field: "FirstName",
