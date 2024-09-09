@@ -158,7 +158,7 @@ const FullCalendar: FC<Props> = props => {
             eventResourceEditable={false}
             eventStartEditable
             eventDurationEditable
-            nowIndicator
+            nowIndicator={config.nowIndicator}
             
             expandRows
 

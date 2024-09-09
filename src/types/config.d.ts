@@ -14,7 +14,7 @@ declare global {
             
             resources?: Resource[];
             resourcesWidth?: string;
-
+            
             fullCalendarLicense?: string;
             locale?: string;
             translations?: Translations;
@@ -22,11 +22,13 @@ declare global {
             view?: string;
             date?: string;
             
+            
             eventTimeFormat?: string;
-
+            nowIndicator?: boolean;
+            
             defaultEventComponent?: string;
             eventComponents: EventComponent[];
-
+            
             //compactFields?: (string & keyof JAC.Event)[];
 
             days?: number;

@@ -52,6 +52,7 @@ const defaultConfig: Partial<JAC.Config> = {
     firstDayOfWeek: 1,
     contrastCheck: true,
     contrastMin: 2,
+    nowIndicator: true,
 };
 
 

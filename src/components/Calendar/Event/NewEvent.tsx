@@ -140,6 +140,12 @@ const NewEvent: FC<NewEventProps> = props => {
         };
     }, [isDragging]);
 
+    useEffect(() => {
+        console.log(newEvent?.start)
+        console.log(newEvent?.end)
+        calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId}), console.log(calendarRef)
+    }, [newEvent?.start, newEvent?.end])
+
     if (!creatingEvent) return null;
 
     const fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
@@ -233,14 +239,15 @@ const NewEvent: FC<NewEventProps> = props => {
                                 onChange={e => {
                                     let inputValue: string|boolean|Date = e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
-                                    if (value.type === "time") {
+                                    if (e.target.type === "time") {
                                         const date = dateFromString(get(newEvent as JAC.Event, value.field))
                                         const [inputHour, inputMinute] = (inputValue as string).split(':');
                                         date?.setHours(Number(inputHour), Number(inputMinute));
                                         inputValue = date!.toISOString();
-                                    }
 
-                                    //e.target.type === "time" && calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId}), console.log(calendarRef)
+                                        
+                                    }
+                                    
                                     setNewEventField(value.field, inputValue || "");
                                 }} 
                             />}
