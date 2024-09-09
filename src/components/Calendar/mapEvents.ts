@@ -7,7 +7,6 @@ export default function mapEvents(config: JAC.Config) {
             console.warn(`The following event does not have an associated ID, and will instead use its array index`, event);
             event.id = String(i);
         }
-        //if (!event.resourceId && event.type !== 'backgroundEvent') console.warn(`The following event does not have a resource ID`, event);
 
         const dates = datesFromEvent(event);
 
@@ -57,14 +56,6 @@ export default function mapEvents(config: JAC.Config) {
             console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.event);
             return false;
         }
-
-        // Return if the event is outside the date range
-        /*if (dateRange) {
-            if (
-                (ev.start.valueOf() > dateRange.end.valueOf())
-                || ev.end.valueOf() < dateRange.start.valueOf()
-            ) return false;
-        }*/
 
         return true;
     })

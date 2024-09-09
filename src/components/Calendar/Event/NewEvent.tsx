@@ -225,7 +225,7 @@ const NewEvent: FC<NewEventProps> = props => {
                                     ? (() => {
                                         const date = dateFromString(get(newEvent as JAC.Event, value.field))
                                         if (!date) return ""; 
-                                        date.setHours(date.getHours() + Math.abs(date.getTimezoneOffset()) / 60);
+                                        date.setHours(date.getHours());
                                         
                                         return date.toTimeString().substring(0, 5)   
                                     })()
@@ -237,7 +237,6 @@ const NewEvent: FC<NewEventProps> = props => {
 
                                     if (value.type === "time") {
                                         const date = dateFromString(get(newEvent as JAC.Event, value.field))
-                                        const offset = date?.getTimezoneOffset() || 0;
                                         const [inputHour, inputMinute] = (inputValue as string).split(':');
                                         date?.setHours(Number(inputHour), Number(inputMinute));
                                         
