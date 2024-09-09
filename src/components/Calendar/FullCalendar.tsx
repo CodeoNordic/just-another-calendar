@@ -363,7 +363,6 @@ const FullCalendar: FC<Props> = props => {
 
             droppable
             drop={info => {
-                console.log(info);
                 const start = new Date(info.date);
 
                 const end = new Date(start.getTime()); 
@@ -398,8 +397,6 @@ const FullCalendar: FC<Props> = props => {
                 if (arrow) {
                   arrow.style.display = "block";
                 }
-
-                console.log(info);
 
                 let newEventTemp = {
                     id: randomUUID(),

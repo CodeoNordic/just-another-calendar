@@ -4,7 +4,7 @@ declare global {
             field: string;
             title?: string;
             placeholder?: string;
-            type?: React.InputHTMLAttributes<HTMLInputElement>['type']|'dropdown'|'startTime'|'endTime';
+            type?: React.InputHTMLAttributes<HTMLInputElement>['type']|'dropdown';
             default?: string;
             search?: boolean;
             searchScript?: string;

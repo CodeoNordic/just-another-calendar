@@ -9,12 +9,12 @@ export default function datesFromEvent(event: JAC.Event) {
 
     if (timeStart) {
         const match = timeStart.match(/^(\d{1,2}):(\d{1,2})/);
-        match && eventStart?.setHours(Number(match[1]) - ((eventStart?.getTimezoneOffset() ?? 0) / 60), Number(match[2]));
+        match && eventStart?.setHours(Number(match[1]), Number(match[2]));
     }
 
     if (timeEnd) {
         const match = timeEnd.match(/^(\d{1,2}):(\d{1,2})/);
-        match && eventEnd?.setHours(Number(match[1]) - ((eventEnd?.getTimezoneOffset() ?? 0) / 60), Number(match[2]));
+        match && eventEnd?.setHours(Number(match[1]), Number(match[2]));
     }
 
     return { start: eventStart, end: eventEnd };

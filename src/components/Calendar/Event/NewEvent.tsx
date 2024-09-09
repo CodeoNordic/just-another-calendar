@@ -216,8 +216,7 @@ const NewEvent: FC<NewEventProps> = props => {
                                         : <option key={item.value} value={item.value}>{item.label}</option>;
                                 })}
                             </select>
-                            : value.type === "startTime" || value.type === "endTime" ? <input></input> :
-                            <input 
+                            : <input 
                                 lang={config?.locale ?? "en"}
                                 type={value.type ?? "string"} 
                                 className={value.type ? `${value.type}-input` : "string-input"}
@@ -233,15 +232,12 @@ const NewEvent: FC<NewEventProps> = props => {
                                 placeholder={value.placeholder ?? ""}     
                                 onChange={e => {
                                     let inputValue: string|boolean|Date = e.target.type === "checkbox" ? e.target.checked : e.target.value;
-                                    console.log("RAWRRR INPUT VALUE: " + inputValue)
 
                                     if (value.type === "time") {
                                         const date = dateFromString(get(newEvent as JAC.Event, value.field))
                                         const [inputHour, inputMinute] = (inputValue as string).split(':');
                                         date?.setHours(Number(inputHour), Number(inputMinute));
-                                        
                                         inputValue = date!.toISOString();
-                                        console.log("DATE: " + date, "INPUT: " + inputValue)
                                     }
 
                                     //e.target.type === "time" && calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId}), console.log(calendarRef)

@@ -9,8 +9,7 @@ import searchArray from '@utils/searchArray';
 export default function useAddEvents() {
     const [, setConfig] = useConfigState();
 
-    const addEvents = (param: JAC.Event | JAC.Event[]) => setConfig(prev => {
-        console.log(param);
+    const addEvents = (param: WithFilter<JAC.Event> | WithFilter<JAC.Event>[]) => setConfig(prev => {
         if (!prev) return null;
         
         const { events, ...rest } = prev;
@@ -22,9 +21,9 @@ export default function useAddEvents() {
             events: [
                 ...(events instanceof Array? events: []),
                 // If _filter is defined, the event should only be included if no existing events match it
-                ...(param instanceof Array? param: [param])//.filter(event => !Boolean(
-                    //searchArray(events, event._filter).length
-                //))
+                ...(param instanceof Array? param: [param]).filter(event => !event._filter || !Boolean(
+                    searchArray(events, event._filter).length
+                ))
             ]
         }
     })
