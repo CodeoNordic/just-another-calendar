@@ -17,7 +17,7 @@ import { DateInput, EventDropArg, EventSourceInput } from '@fullcalendar/core';
 
 // Import Calendar plugins
 import momentPlugin from '@fullcalendar/moment';
-import interactionPlugin from '@fullcalendar/interaction';
+import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 
@@ -37,6 +37,7 @@ import NewEvent from './Event/NewEvent';
 import set from 'lodash.set';
 import { weekDays } from '@utils/calendarDates';
 import dateToObject from '@utils/dateToObject';
+import { useCalendarRef } from '@context/CalendarRefProvider';
 
 interface Props {
     events?: JAC.Event[];
@@ -44,12 +45,11 @@ interface Props {
 }
 
 const FullCalendar: FC<Props> = props => {
-    const calendarRef = useRef<FullCalendarReact|null>(null);
+    const calendarRef = useCalendarRef();
     const config = useConfig()!;
 
     const [creatingEvent, setCreatingEvent] = useState(false);
     const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
-    const [newEventPos, setNewEventPos] = useState<{ x: number, y: number } | null>(null);
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
     //const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
@@ -127,6 +127,20 @@ const FullCalendar: FC<Props> = props => {
         () => mapEvents(config),
         [props.events]
     );
+
+    useEffect(() => {
+        const containerEl = document.querySelector('.insertable-events') as HTMLElement | null;
+        if (containerEl) {
+            new Draggable(containerEl, {
+                itemSelector: '.insertable-event',
+                eventData: function(eventEl) {
+                    return {
+                        create: false,
+                    }
+                }
+            });
+        }
+    }, []);
 
     return <div>
         <FullCalendarReact
@@ -346,6 +360,17 @@ const FullCalendar: FC<Props> = props => {
             datesSet={info => {
                 setResourcesTitle(info.view.title);
             }}
+
+            droppable
+            drop={info => {
+                console.log(info);
+                const start = new Date(info.date);
+
+                const end = new Date(start.getTime()); 
+                end.setMinutes(end.getMinutes() + 60); 
+                
+                calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
+            }}
             
             selectable={config.eventCreation}
             select={info => {
@@ -374,11 +399,12 @@ const FullCalendar: FC<Props> = props => {
                   arrow.style.display = "block";
                 }
 
+                console.log(info);
 
                 let newEventTemp = {
                     id: randomUUID(),
-                    start: info.startStr.split('+')[0],
-                    end: info.endStr.split('+')[0],
+                    start: info.start.toISOString(),
+                    end: info.end.toISOString(),
                     resourceId: info.resource?.id || ""
                 };
                 
@@ -389,7 +415,6 @@ const FullCalendar: FC<Props> = props => {
                 });
 
                 setNewEvent(newEventTemp as JAC.Event);
-                setNewEventPos({ x: info.jsEvent?.clientX || 0, y: info.jsEvent?.clientY || 0 });
                 setCreatingEvent(true);
 
                 document.addEventListener('click', e => {

@@ -7,6 +7,7 @@ import combineClasses from '@utils/combineClasses';
 import EventFilters from './EventFilters';
 import Search from './Search';
 import SourceFilters from './SourceFilters';
+import InsertableEvents from './InsertableEvents';
 
 
 
@@ -26,6 +27,7 @@ const SideMenu: FC = () => {
             <Search />
             <EventFilters />
             <SourceFilters />
+            <InsertableEvents />
         </div>
     </div>
 }

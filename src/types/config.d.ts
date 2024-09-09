@@ -3,6 +3,7 @@ declare global {
         // Define the web config here
         interface Config {
             events: JAC.Event[];
+            insertableEvents?: JAC.Event[];
 
             eventFilters?: EventFilter[];
 

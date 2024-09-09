@@ -1,5 +1,5 @@
-import dateFromString from '@utils/dateFromString';
 import calculateContrast from '@utils/contrast';
+import datesFromEvent from '@utils/datesFromEvent';
 
 export default function mapEvents(config: JAC.Config) {
     return config.events.map((event, i) => {
@@ -9,21 +9,10 @@ export default function mapEvents(config: JAC.Config) {
         }
         //if (!event.resourceId && event.type !== 'backgroundEvent') console.warn(`The following event does not have a resource ID`, event);
 
-        const eventStart = dateFromString(event.timestampStart ?? event.start ?? event.startDate ?? event.dateStart);
-        const eventEnd = dateFromString(event.timestampEnd ?? event.end ?? event.endDate ?? event.dateEnd ?? event.dateFinishedDisplay);
+        const dates = datesFromEvent(event);
 
-        const timeStart = event.startTime ?? event.timeStart;
-        const timeEnd = event.endTime ?? event.timeEnd;
-
-        if (timeStart) {
-            const match = timeStart.match(/^(\d{1,2}):(\d{1,2})/);
-            match && eventStart?.setHours(Number(match[1]), Number(match[2]));
-        }
-
-        if (timeEnd) {
-            const match = timeEnd.match(/^(\d{1,2}):(\d{1,2})/);
-            match && eventEnd?.setHours(Number(match[1]), Number(match[2]));
-        }
+        const eventStart = dates.start;
+        const eventEnd = dates.end;
 
         if (event.type === 'backgroundEvent') return {
             start: eventStart,

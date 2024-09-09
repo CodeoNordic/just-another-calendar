@@ -5,6 +5,8 @@ import get from 'lodash.get';
 import set from 'lodash.set';
 import performScript from '@utils/performScript';
 import React, { useEffect, useRef, useState } from 'react';
+import { useCalendarRef } from '@context/CalendarRefProvider';
+import dateFromString from '@utils/dateFromString';
 
 
 interface NewEventProps {
@@ -22,6 +24,8 @@ const NewEvent: FC<NewEventProps> = props => {
     const [position, setPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [arrowPos, setArrowPos] = useState<{ x: number, y: number, dir: number }>({ x: 0, y: 0, dir: 0 })
     const [visible, setVisible] = useState(false);
+
+    const calendarRef = useCalendarRef();
 
     const [config, setConfig] = useConfigState();
 
@@ -78,7 +82,7 @@ const NewEvent: FC<NewEventProps> = props => {
         setVisible(false);
     }
 
-    const setNewEventField = (field: string, value: string | number | boolean) => {
+    const setNewEventField = (field: string, value: string | number | boolean | Date) => {
         const newEventCopy = { ...newEvent };
         set(newEventCopy, field, value);
         setNewEvent(newEventCopy as JAC.Event);
@@ -194,8 +198,12 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
                 <div className='body-inputs'>
                     <p className='title-inputs'>{config?.translations?.eventCreationHeader ?? "New Event"}</p>
-                    {config?.newEventFields?.map(value => (
-                        <div key={value.field} className='input-wrapper'>
+                    {config?.newEventFields?.map(value => {
+
+
+                        
+
+                        return <div key={value.field} className='input-wrapper'>
                             <p>{value.title ?? value.field}</p>
                             {value.type === "dropdown" ? <select 
                                 className='dropdown-input'
@@ -208,25 +216,41 @@ const NewEvent: FC<NewEventProps> = props => {
                                         : <option key={item.value} value={item.value}>{item.label}</option>;
                                 })}
                             </select>
-                            : <input 
+                            : value.type === "startTime" || value.type === "endTime" ? <input></input> :
+                            <input 
                                 lang={config?.locale ?? "en"}
                                 type={value.type ?? "string"} 
                                 className={value.type ? `${value.type}-input` : "string-input"}
                                 value={value.type === "time" 
-                                    ? get(newEvent as JAC.Event, value.field)?.toString().split("T")[1]
+                                    ? (() => {
+                                        const date = dateFromString(get(newEvent as JAC.Event, value.field))
+                                        if (!date) return ""; 
+                                        date.setHours(date.getHours() + Math.abs(date.getTimezoneOffset()) / 60);
+                                        
+                                        return date.toTimeString().substring(0, 5)   
+                                    })()
                                     : get(newEvent as JAC.Event, value.field) || ""}
                                 placeholder={value.placeholder ?? ""}     
                                 onChange={e => {
-                                    const inputValue = e.target.type === "checkbox" 
-                                    ? e.target.checked 
-                                    : e.target.type === "time" 
-                                    ? `${get(newEvent as JAC.Event, value.field)?.toString().split("T")[0]}T${e.target.value}` 
-                                    : e.target.value;
-                                    setNewEventField(value.field, inputValue);
+                                    let inputValue: string|boolean|Date = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+                                    console.log("RAWRRR INPUT VALUE: " + inputValue)
+
+                                    if (value.type === "time") {
+                                        const date = dateFromString(get(newEvent as JAC.Event, value.field))
+                                        const offset = date?.getTimezoneOffset() || 0;
+                                        const [inputHour, inputMinute] = (inputValue as string).split(':');
+                                        date?.setHours(Number(inputHour), Number(inputMinute));
+                                        
+                                        inputValue = date!.toISOString();
+                                        console.log("DATE: " + date, "INPUT: " + inputValue)
+                                    }
+
+                                    //e.target.type === "time" && calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId}), console.log(calendarRef)
+                                    setNewEventField(value.field, inputValue || "");
                                 }} 
                             />}
                         </div>
-                    ))}
+                })}
                 </div>
             </div>
             <div className='buttons-wrapper'>

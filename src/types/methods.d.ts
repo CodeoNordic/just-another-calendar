@@ -12,6 +12,7 @@ declare global {
 
         /** Add one or more events */
         addEvents(data: WithFilter<JAC.Event>|WithFilter<JAC.Event>[]): void;
+        addEvent(data: WithFilter<JAC.Event>|WithFilter<JAC.Event>[]): void;
 
         /** Remove one, more or all events. Limit should be set to 1 when removing a specific event */
         removeEvents(

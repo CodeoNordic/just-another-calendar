@@ -7,6 +7,7 @@ import SideMenu from '@components/SideMenu';
 import Calendar from '@components/Calendar';
 
 import '@utils/calendarDates';
+import CalendarRefProvider from '@context/CalendarRefProvider';
 
 const App: React.FC = () => {
     const config = useConfig();
@@ -26,10 +27,12 @@ const App: React.FC = () => {
 
     if (!config) return null;
     return <EventDropdownProvider>
-        <div className="app-wrapper">
-            <SideMenu />
-            <Calendar />
-        </div>
+        <CalendarRefProvider>
+            <div className="app-wrapper">
+                <SideMenu />
+                <Calendar />
+            </div>
+        </CalendarRefProvider>
     </EventDropdownProvider>
 }
 
