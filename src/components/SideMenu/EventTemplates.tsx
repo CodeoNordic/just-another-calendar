@@ -21,7 +21,6 @@ const EventTemplates: FC = () => {
                         className="insertable-event"
                         key={template.title}  
                         style={{
-
                             background: template.backgroundColor || "#3788d8",
                             color: calculateContrast(template.textColor || "#fff", template.backgroundColor || "#3788d8", config?.contrastMin) 
                                 ? template.textColor || "#fff" 
