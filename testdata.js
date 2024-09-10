@@ -212,50 +212,82 @@ init(JSON.stringify({
     newEventMovable: true,
     days: 5,
     contrastMin: 3,
-    insertableEvents: [
+    eventTemplates: [
         {
-            id: '1',
-            FirstName: "Joakim",
-            allDay: false,
-            resourceId: '1F',
-            filterId: 'filter1',
-            colors: {
-                background: '#000000',
-                border: '#000000'
-            },
-            source: 'source1'
+            title: "Test 1",
+            backgroundColor: "#ff0000",
+            textColor: "#ffffff",
+            event: {
+                FirstName: "Joakim",
+                filterId: 'filter1',
+                colors: {
+                    background: '#ff0000',
+                    border: '#ff0000'
+                },
+                source: 'source1'
+            }
         },
 
         {
-            id: '2',
-            FirstName: "Joakim Isaksen",
-            Test: "TEST VALUE 2",
-            ButtonText: "BUTTON 2",
-            allDay: false,
-            resourceId: '2F',
-            filterId: 'filter2',
-            source: 'source2'
+            title: "Test 2",
+            backgroundColor: "#00ff00",
+            textColor: "#ffffff",
+            event: {
+                FirstName: "Joakim Isaksen",
+                filterId: 'filter2',
+                colors: {
+                    background: '#00ff00',
+                    border: '#00ff00'
+                },
+                source: 'source2'
+            }
         },
 
         {
-            id: '3',
-            FirstName: "Joakim Isaksen +",
-            Test: "TEST VALUE 3",
-            ButtonText: "BUTTON 3",
-            allDay: false,
-            _component: "compact",
-            resourceId: '2F',
-            filterId: 'filter2',
-            source: 'source1'
+            title: "Test 3",
+            backgroundColor: "#0000ff",
+            textColor: "#ffffff",
+            event: {
+                FirstName: "Joakim Isaksen +",
+                filterId: 'filter2',
+                colors: {
+                    background: '#0000ff',
+                    border: '#0000ff'
+                },
+                source: 'source1'
+            }
         },
 
         {
-            id: '4',
-            FirstName: "test testesen",
-            resourceId: '1F',
-            filterId: 'filter3',
-            source: 'source3'
+            title: "Test 4",
+            backgroundColor: "#ff00ff",
+            textColor: "#ffffff",
+            event: {
+                FirstName: "test testesen",
+                filterId: 'filter3',
+                colors: {
+                    background: '#ff00ff',
+                    border: '#ff00ff'
+                },
+                source: 'source3'
+            }
+        },
+
+        {
+            title: "Test 5",
+            backgroundColor: "#00ffff",
+            textColor: "#ffffff",
+            event: {
+                FirstName: "Vetle :)",
+                filterId: 'filter3',
+                colors: {
+                    background: '#00ffff',
+                    border: '#00ffff'
+                },
+                source: 'source2'
+            }
         }
+
     ],
     newEventFields: [
     {
