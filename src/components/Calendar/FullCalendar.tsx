@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useConfig } from '@context/Config';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useConfig, useConfigState } from '@context/Config';
 
 import { useCreateMethod } from '@utils/createMethod';
 import { v4 as randomUUID } from 'uuid';
@@ -46,7 +46,8 @@ interface Props {
 
 const FullCalendar: FC<Props> = props => {
     const calendarRef = useCalendarRef();
-    const config = useConfig()!;
+
+    const [config, setConfig] = useConfigState() as [JAC.Config, Function];
 
     const [creatingEvent, setCreatingEvent] = useState(false);
     const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
@@ -133,10 +134,8 @@ const FullCalendar: FC<Props> = props => {
         if (containerEl) {
             new Draggable(containerEl, {
                 itemSelector: '.insertable-event',
-                eventData: function(eventEl) {
-                    return {
-                        create: false,
-                    }
+                eventData: {
+                    create: false,
                 }
             });
         }
@@ -363,6 +362,10 @@ const FullCalendar: FC<Props> = props => {
 
             droppable
             drop={info => {
+                const event = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
+
+                console.log(event);
+
                 const start = new Date(info.date);
 
                 const end = new Date(start.getTime()); 

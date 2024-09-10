@@ -15,7 +15,7 @@ const InsertableEvents: FC = () => {
             {config?.insertableEvents.map(event => {
                 return (
                     <div
-                        data-event='{ "title": "my event", "duration": "02:00" }' 
+                        data-event='{ "FirstName": "my event", "duration": "02:00" }' 
                         className="insertable-event"
                         key={event.id}  
                         style={{

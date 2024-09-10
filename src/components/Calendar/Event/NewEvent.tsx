@@ -29,51 +29,84 @@ const NewEvent: FC<NewEventProps> = props => {
 
     const [config, setConfig] = useConfigState();
 
+    if (!creatingEvent) return null;
+
+    useEffect(() => {
+        if (!creatingEvent) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            e.key === "Escape" && stopNewEvent();
+            e.key === "Enter" && addEvent();
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [creatingEvent, newEvent]);
+
     useEffect(() => {
         const el = document.querySelector('.calendar-highlight') as HTMLElement;
-
+    
         if (eventRef.current && el) {
             const rect = eventRef.current.getBoundingClientRect();
             const highlightRect = el.getBoundingClientRect();
             
-            let x = 0;
-            let y = 0;
-            let arrowPosX = 0;
-            let arrowPosY = 0;
+            let x = highlightRect.left + highlightRect.width + 10;
+            let y = highlightRect.top + (highlightRect.height / 2) - (rect.height / 2);
+            let arrowPosX = highlightRect.left + highlightRect.width;
+            let arrowPosY = highlightRect.top + (highlightRect.height / 2) - 10;
             let arrowDir = 0;
-
-            x = highlightRect.left + highlightRect.width + 10;
-            y = highlightRect.top + (highlightRect.height / 2) - (rect.height / 2);
-
-            arrowPosX = highlightRect.left + highlightRect.width;
-            arrowPosY = highlightRect.top + (highlightRect.height / 2) - 10;
-
+    
             if (x + rect.width > window.innerWidth) {
                 x = x - highlightRect.width - rect.width - 20;
-
                 arrowPosX = arrowPosX - highlightRect.width - 10;
                 arrowDir = 1;
             }
-
-            if (y + (rect.height) > window.innerHeight) {
+    
+            if (y + rect.height > window.innerHeight) {
                 y = window.innerHeight - rect.height - 5;
             } else if (y < 0) {
                 y = 5;
             }
-
+    
             if (arrowPosY + 20 > window.innerHeight) {
                 arrowPosY = window.innerHeight - 27;
             }
-
+    
+            //console.log(x, y, arrowPosX, arrowPosY, arrowDir);
+    
             setPosition({ x, y });
+            setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
             
-            setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir })
-
             setTimeout(() => {
                 setVisible(true);
             }, 0);
         }
     }, [visible, newEvent]);
+
+    useEffect(() => {
+        if (isDragging) {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        } else {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        }
+
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isDragging]);
+
+    useEffect(() => {
+        calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId});
+    }, [newEvent?.start, newEvent?.end])
+
+    const addEvent = () => {
+        setConfig((prev) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
+        config?.scriptNames.eventCreated && performScript(config?.scriptNames.eventCreated, newEvent);
+        stopNewEvent();
+    }
 
     const stopNewEvent = () => {
         setCreatingEvent(false);
@@ -82,7 +115,7 @@ const NewEvent: FC<NewEventProps> = props => {
         setVisible(false);
     }
 
-    const setNewEventField = (field: string, value: string | number | boolean | Date) => {
+    const setNewEventField = (field: string, value: string|number|boolean|Date) => {
         const newEventCopy = { ...newEvent };
         set(newEventCopy, field, value);
         setNewEvent(newEventCopy as JAC.Event);
@@ -125,29 +158,6 @@ const NewEvent: FC<NewEventProps> = props => {
         setIsDragging(false);
     };
 
-    useEffect(() => {
-        if (isDragging) {
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-        } else {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        }
-
-        return () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        };
-    }, [isDragging]);
-
-    useEffect(() => {
-        console.log(newEvent?.start)
-        console.log(newEvent?.end)
-        calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId}), console.log(calendarRef)
-    }, [newEvent?.start, newEvent?.end])
-
-    if (!creatingEvent) return null;
-
     const fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
     const fcElParent = fcEl?.parentElement;
 
@@ -164,6 +174,8 @@ const NewEvent: FC<NewEventProps> = props => {
         el.style.overflow = 'hidden';
         fcElParent?.appendChild(el);
     }
+
+    //console.log(newEvent);
 
     return <div style={{
         display: visible ? "block" : "none"
@@ -205,10 +217,6 @@ const NewEvent: FC<NewEventProps> = props => {
                 <div className='body-inputs'>
                     <p className='title-inputs'>{config?.translations?.eventCreationHeader ?? "New Event"}</p>
                     {config?.newEventFields?.map(value => {
-
-
-                        
-
                         return <div key={value.field} className='input-wrapper'>
                             <p>{value.title ?? value.field}</p>
                             {value.type === "dropdown" ? <select 
@@ -256,14 +264,8 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
             </div>
             <div className='buttons-wrapper'>
-                <button onClick={() => {
-                    stopNewEvent();
-                }}><Crossmark className='icon'/>{config?.translations?.eventCreationCancel ?? "Discard"}</button>
-                <button onClick={() => {
-                    setConfig((prev) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
-                    config?.scriptNames.createEvent && performScript(config?.scriptNames.eventCreated as string, newEvent);
-                    stopNewEvent();
-                }}><Checkmark className='icon'/>{config?.translations?.eventCreationConfirm ?? "Save"}</button>
+                <button onClick={stopNewEvent}><Crossmark className='icon'/>{config?.translations?.eventCreationCancel ?? "Discard"}</button>
+                <button onClick={addEvent}><Checkmark className='icon'/>{config?.translations?.eventCreationConfirm ?? "Save"}</button>
             </div>
         </div>
     </div>
