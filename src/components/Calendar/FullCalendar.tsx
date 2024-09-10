@@ -364,8 +364,6 @@ const FullCalendar: FC<Props> = props => {
             drop={info => {
                 const event = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
 
-                console.log(event);
-
                 const start = new Date(info.date);
 
                 const duration = event.duration.split(':') as [string, string];

@@ -72,8 +72,6 @@ const NewEvent: FC<NewEventProps> = props => {
                 arrowPosY = window.innerHeight - 27;
             }
     
-            //console.log(x, y, arrowPosX, arrowPosY, arrowDir);
-    
             setPosition({ x, y });
             setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
             
@@ -99,7 +97,14 @@ const NewEvent: FC<NewEventProps> = props => {
     }, [isDragging]);
 
     useEffect(() => {
+        const tempEvent = newEvent;
+
         calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId});
+    
+        setNewEvent(prev => ({
+            ...prev,
+            ...tempEvent
+        }) as JAC.Event | null);
     }, [newEvent?.start, newEvent?.end])
 
     const addEvent = () => {
@@ -174,8 +179,6 @@ const NewEvent: FC<NewEventProps> = props => {
         el.style.overflow = 'hidden';
         fcElParent?.appendChild(el);
     }
-
-    //console.log(newEvent);
 
     return <div style={{
         display: visible ? "block" : "none"

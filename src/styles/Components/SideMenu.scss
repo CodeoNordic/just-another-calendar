@@ -48,7 +48,14 @@
             stroke-width: .04em;
         }
     }
-    
+
+    .insertable-event {
+        margin-top: 2px;
+        border-radius: 5px;
+        padding: 4px;
+        cursor: grab;
+    }
+
 
     &.open {
         .toggle-button {
