@@ -13,9 +13,11 @@ const InsertableEvents: FC = () => {
             <div>{config?.translations?.insertableEventsHeader ?? "Insertable events"}</div>
         </>}>
             {config?.insertableEvents.map(event => {
+                event.duration ??= "01:00";
+
                 return (
                     <div
-                        data-event='{ "FirstName": "my event", "duration": "02:00" }' 
+                        data-event={JSON.stringify(event)}
                         className="insertable-event"
                         key={event.id}  
                         style={{

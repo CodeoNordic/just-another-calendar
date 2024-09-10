@@ -368,10 +368,22 @@ const FullCalendar: FC<Props> = props => {
 
                 const start = new Date(info.date);
 
+                const duration = event.duration.split(':') as [string, string];
                 const end = new Date(start.getTime()); 
-                end.setMinutes(end.getMinutes() + 60); 
+                end.setMinutes(end.getMinutes() + Number(duration[1]) + Number(duration[0]) * 60); 
                 
                 calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
+
+                setTimeout(() => {
+                    setNewEvent(prev => ({
+                        ...prev,
+                        id: randomUUID(),
+                        start: start.toISOString(),
+                        end: end.toISOString(),
+                        resourceId: info.resource?._resource.id,
+                        ...event
+                    }));
+                }, 0);
             }}
             
             selectable={config.eventCreation}
@@ -406,7 +418,7 @@ const FullCalendar: FC<Props> = props => {
                     start: info.start.toISOString(),
                     end: info.end.toISOString(),
                     resourceId: info.resource?.id || ""
-                };
+                } as JAC.Event;
                 
                 config.newEventFields?.map(field => {
                     if (!field.default) return;
@@ -414,7 +426,7 @@ const FullCalendar: FC<Props> = props => {
                     set(newEventTemp, field.field, field.default);
                 });
 
-                setNewEvent(newEventTemp as JAC.Event);
+                setNewEvent(newEventTemp);
                 setCreatingEvent(true);
 
                 document.addEventListener('click', e => {
