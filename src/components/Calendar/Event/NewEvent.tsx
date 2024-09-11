@@ -109,7 +109,7 @@ const NewEvent: FC<NewEventProps> = props => {
 
     const addEvent = () => {
         setConfig((prev) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
-        config?.scriptNames.eventCreated && performScript(config?.scriptNames.eventCreated, newEvent);
+        config?.scriptNames?.eventCreated && performScript(config.scriptNames.eventCreated, newEvent);
         stopNewEvent();
     }
 
