@@ -68,8 +68,8 @@ init(JSON.stringify({
             allDay: false,
             tooltip: 'TEST TOOLTIP JOAKIM',
             resourceId: '1F',
-            filterId: 'filter3',
-            source: 'source3'
+            filterId: ['filter3', 'filter2'],
+            source: ['source3', 'source2']
         },
 
         {
@@ -205,7 +205,8 @@ init(JSON.stringify({
         weekNumberHeader: "U",
         eventCreationHeader: "Ny Avtale",
         eventCreationCancel: "Avbryt",
-        eventCreationConfirm: "Lagre"
+        eventCreationConfirm: "Lagre",
+        eventTemplatesHeader: "Avtalemaler"
     },
     showWeekends: false,
     firstDayOfWeek: 0,
@@ -263,6 +264,7 @@ init(JSON.stringify({
             backgroundColor: "#ff00ff",
             textColor: "#ffffff",
             event: {
+                duration: "02:00",
                 FirstName: "test testesen",
                 filterId: 'filter3',
                 colors: {
@@ -289,6 +291,10 @@ init(JSON.stringify({
         }
 
     ],
+    sourceFiltersOpenDefault: false,
+    eventFiltersOpenDefault: false,
+    searchOpenDefault: false,
+    eventTemplatesOpenDefault: false,
     newEventFields: [
     {
         field: "FirstName",
