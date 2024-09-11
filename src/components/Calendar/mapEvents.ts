@@ -39,7 +39,15 @@ export default function mapEvents(config: JAC.Config) {
         }
     }).filter(ev => {
         const filteredOut = config.eventFilters?.some(filter => {
-            return ev.extendedProps.event.filterId && !filter.enabled && filter.id == ev.extendedProps.event.filterId;
+            const filterId = ev.extendedProps.event.filterId;
+            if (typeof filterId === 'string') {
+                return ev.extendedProps.event.filterId && !filter.enabled && filter.id == ev.extendedProps.event.filterId;
+            } else if (filterId instanceof Array) {
+                // if any of the filters are disabled
+                // might want to change this to all filters are disabled
+                return ev.extendedProps.event.filterId && !filter.enabled && filterId.some(id => filter.id == id); 
+            }
+            return false;
         });
 
         const filteredSource = config.sourceFilters?.some(filter => {

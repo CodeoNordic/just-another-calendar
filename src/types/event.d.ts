@@ -26,7 +26,7 @@ declare global {
             timestampEnd?: string;
 
             // for filtering
-            filterId?: string;
+            filterId?: string|string[];
 
             // for filtering by source
             source?: string;
