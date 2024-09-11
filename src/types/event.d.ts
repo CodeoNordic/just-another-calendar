@@ -29,7 +29,7 @@ declare global {
             filterId?: string|string[];
 
             // for filtering by source
-            source?: string;
+            source?: string|string[];
 
             allDay?: boolean;
 

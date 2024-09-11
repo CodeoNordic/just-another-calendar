@@ -40,18 +40,23 @@ export default function mapEvents(config: JAC.Config) {
     }).filter(ev => {
         const filteredOut = config.eventFilters?.some(filter => {
             const filterId = ev.extendedProps.event.filterId;
-            if (typeof filterId === 'string') {
-                return ev.extendedProps.event.filterId && !filter.enabled && filter.id == ev.extendedProps.event.filterId;
-            } else if (filterId instanceof Array) {
+            if (typeof filterId === 'string') 
+                return filterId && !filter.enabled && filter.id == filterId;
+            else if (filterId instanceof Array) 
                 // if any of the filters are disabled
                 // might want to change this to all filters are disabled
-                return ev.extendedProps.event.filterId && !filter.enabled && filterId.some(id => filter.id == id); 
-            }
+                return filterId && !filter.enabled && filterId.some(id => filter.id == id); 
+            
             return false;
         });
 
         const filteredSource = config.sourceFilters?.some(filter => {
-            return ev.extendedProps.event.source && !filter.enabled && filter.id == ev.extendedProps.event.source;
+            const sourceId = ev.extendedProps.event.source;
+            if (typeof sourceId === 'string')
+                return sourceId && !filter.enabled && filter.id == sourceId;
+            else if (sourceId instanceof Array)
+                // same as above comment
+                return sourceId && !filter.enabled && sourceId.some(id => filter.id == id);
         });
 
         const filteredSearch = config.searchBy ? (config?.searchBy).every((field) => {
