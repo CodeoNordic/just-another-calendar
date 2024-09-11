@@ -8,7 +8,7 @@ declare global {
 
             filtersHeader?: string;
             sourceHeader?: string;
-            insertableEventsHeader?: string;
+            eventTemplatesHeader?: string;
 
             allDaySlot?: string;
 

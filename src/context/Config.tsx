@@ -53,6 +53,10 @@ const defaultConfig: Partial<JAC.Config> = {
     contrastCheck: true,
     contrastMin: 2,
     nowIndicator: true,
+    sourceFiltersOpenDefault: true,
+    eventTemplatesOpenDefault: true,
+    eventFiltersOpenDefault: true,
+    searchOpenDefault: true,
 };
 
 

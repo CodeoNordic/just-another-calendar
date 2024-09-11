@@ -27,7 +27,7 @@ const EventFilters: FC = () => {
                 return {
                     ...prev, 
                     eventFilters: newFilters,
-                    events: [...config?.events]
+                    events: [...config.events]
                 } as JAC.Config;
             });
         }
@@ -39,19 +39,20 @@ const EventFilters: FC = () => {
     }
 
     const sortedFilters = useMemo(() => {
-        const copy = [...config?.eventFilters || []];
+        const copy = [...config.eventFilters || []];
         copy.sort((a, b) => (a.sort || 0) - (b.sort || 0));
         return copy;
-    }, [config?.eventFilters]);
+    }, [config.eventFilters]);
 
     return <div>
         <div className="divider" />
         <Collapse top={<>
-            <div>{config?.translations?.filtersHeader ?? "Filters"}</div>
-        </>}>
+            <div>{config.translations?.filtersHeader ?? "Filters"}</div>
+        </>}
+        collapsed={!config.eventFiltersOpenDefault}>
             {sortedFilters?.map((filter) => {
-                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", undefined /*Maybe add actual background later*/, config?.contrastMin) 
-                    && config?.contrastCheck !== false;
+                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", undefined /*Maybe add actual background later*/, config.contrastMin) 
+                    && config.contrastCheck !== false;
 
                 return (<div 
                     className="filter-item" 

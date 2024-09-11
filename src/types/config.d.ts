@@ -3,11 +3,20 @@ declare global {
         // Define the web config here
         interface Config {
             events: JAC.Event[];
-            eventTemplates?: EventTemplate[];
 
+            eventTemplates?: EventTemplate[];
+            eventTemplatesOpenDefault?: boolean;
+            
             eventFilters?: EventFilter[];
+            eventFiltersOpenDefault?: boolean;
+            
+            // fields in event that should be searched
+            searchBy?: string[];
+            search?: string;
+            searchOpenDefault?: boolean;
 
             sourceFilters?: SourceFilter[];
+            sourceFiltersOpenDefault?: boolean;
             
             contrastCheck?: boolean;
             contrastMin?: number;
@@ -21,7 +30,6 @@ declare global {
             
             view?: string;
             date?: string;
-            
             
             eventTimeFormat?: string;
             nowIndicator?: boolean;
@@ -41,9 +49,6 @@ declare global {
             calendarStartTime?: string;
             calendarEndTime?: string;
 
-            // fields in event that should be searched
-            searchBy?: string[];
-            search?: string;
 
             // Fields from JAC.Event that appear when creating new events
             // Defaults to all fields in first event

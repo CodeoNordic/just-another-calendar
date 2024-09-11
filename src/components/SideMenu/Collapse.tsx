@@ -3,8 +3,8 @@ import ChevronDown from 'jsx:@svg/chevron-down.svg';
 
 import combineClasses from '@utils/combineClasses';
 
-const Collapse: FC<{ top?: React.JSX.Element }> = props => {
-    const [collapsed, setCollapsed] = useState<boolean>(false);
+const Collapse: FC<{ top?: React.JSX.Element, collapsed?: boolean }> = props => {
+    const [collapsed, setCollapsed] = useState<boolean>(props.collapsed ?? false);
 
     return <div className={combineClasses('collapse', collapsed && 'collapsed')}>
         <div className="top">

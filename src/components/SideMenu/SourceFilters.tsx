@@ -25,7 +25,7 @@ const SourceFilters: FC = () => {
                 return {
                     ...prev, 
                     sourceFilters: newFilters,
-                    events: [...config?.events || []]
+                    events: [...config.events || []]
                 } as JAC.Config;
             });
         }
@@ -39,10 +39,11 @@ const SourceFilters: FC = () => {
     return <div>
         <div className="divider" />
         <Collapse top={<>
-            <div>{config?.translations?.sourceHeader ?? "Filters"}</div>
-        </>}>
-            {config?.sourceFilters.map(filter => {
-                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", undefined /*Maybe add actual background later*/, config?.contrastMin) && config?.contrastCheck !== false;
+            <div>{config.translations?.sourceHeader ?? "Filters"}</div>
+        </>}
+        collapsed={!config.sourceFiltersOpenDefault}>
+            {config.sourceFilters.map(filter => {
+                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", undefined /*Maybe add actual background later*/, config.contrastMin) && config.contrastCheck !== false;
                 
                 return (<div 
                     className="filter-item" 

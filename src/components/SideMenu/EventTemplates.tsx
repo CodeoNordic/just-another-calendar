@@ -10,8 +10,10 @@ const EventTemplates: FC = () => {
     return <div className="insertable-events">
         <div className="divider" />
         <Collapse top={<>
-            <div>{config?.translations?.insertableEventsHeader ?? "Insertable events"}</div>
-        </>}>
+            <div>{config.translations?.eventTemplatesHeader ?? "Event templates"}</div>
+        </>}
+        collapsed={!config.eventTemplatesOpenDefault}
+        >
             {config?.eventTemplates.map(template => {
                 template.event.duration ??= "01:00";
 

@@ -10,7 +10,8 @@ const Search: FC = () => {
         <div className="divider" />
         <Collapse top={<>
             <div>{config?.translations?.searchHeader ?? "Search"}</div>
-        </>}>
+        </>}
+        collapsed={!config.searchOpenDefault}>
             <input type="text" placeholder={config?.translations?.searchPlaceholder ?? "Search"}
                 value={config?.search || ""}
                 onChange={e => {
