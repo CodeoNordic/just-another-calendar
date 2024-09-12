@@ -28,8 +28,8 @@ export default function mapEvents(config: JAC.Config) {
             id: event.id,
             resourceId: resourceIds[0],
             resourceIds,
-            backgroundColor: event.colors?.background,
-            borderColor: event.colors?.border,
+            backgroundColor: event.colors?.background || "#3788d8",
+            borderColor: event.colors?.border || "#3788d8",
             textColor: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config.contrastMin)) ? 
             "#000" : event.colors?.text,
             start: eventStart,

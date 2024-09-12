@@ -44,9 +44,13 @@ const NewEvent: FC<NewEventProps> = props => {
     }, [creatingEvent, newEvent]);
 
     useEffect(() => {
-        const el = document.querySelector('.calendar-highlight') as HTMLElement;
-    
+
+        let el = document.querySelector('.calendar-highlight') as HTMLElement;
+        if (!el) el = document.querySelector('.fc-highlight') as HTMLElement
+        
+        console.log("highlight", el);
         if (eventRef.current && el) {
+            console.log('setting position');
             const rect = eventRef.current.getBoundingClientRect();
             const highlightRect = el.getBoundingClientRect();
             
@@ -71,6 +75,8 @@ const NewEvent: FC<NewEventProps> = props => {
             if (arrowPosY + 20 > window.innerHeight) {
                 arrowPosY = window.innerHeight - 27;
             }
+
+            console.log('setting position', { x, y });
     
             setPosition({ x, y });
             setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
@@ -179,6 +185,8 @@ const NewEvent: FC<NewEventProps> = props => {
         el.style.overflow = 'hidden';
         fcElParent?.appendChild(el);
     }
+
+    console.log('new event', newEvent);
 
     return <div style={{
         display: visible ? "block" : "none"

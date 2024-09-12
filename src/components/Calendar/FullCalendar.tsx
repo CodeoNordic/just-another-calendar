@@ -159,6 +159,8 @@ const FullCalendar: FC<Props> = props => {
             eventDurationEditable
             nowIndicator={config.nowIndicator}
             
+            eventDisplay={'block'}
+
             expandRows
 
             weekends={new Date(currentDate).getDay() > 5? true: (config.showWeekends || false)}
@@ -370,7 +372,21 @@ const FullCalendar: FC<Props> = props => {
                 const end = new Date(start.getTime()); 
                 end.setMinutes(end.getMinutes() + Number(duration[1]) + Number(duration[0]) * 60); 
                 
-                calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
+                console.log("drop", start, end, info.resource);
+                console.log("drop", start.getHours());
+                console.log("drop", start.getFullYear(), start.getMonth(), start.getDate());
+
+
+                if (start.getHours() === 0) {
+                    const startNew = start.toISOString(); 
+                    const endNew = end.toISOString();
+
+                    console.log("drop", startNew, endNew);
+
+                    calendarRef.current?.getApi().select({start: startNew, end: endNew + 1, allDay: false});
+                } else {
+                    calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
+                }
 
                 setTimeout(() => {
                     setNewEvent(prev => ({
@@ -386,7 +402,7 @@ const FullCalendar: FC<Props> = props => {
             
             selectable={config.eventCreation}
             select={info => {
-                if (!info.startStr.split('+')[1]) return;
+                console.log(info);
                 
                 if (config.scriptNames?.createEvent) {
                     const start = info.start;
@@ -423,6 +439,8 @@ const FullCalendar: FC<Props> = props => {
 
                     set(newEventTemp, field.field, field.default);
                 });
+
+                console.log("temp", newEventTemp);
 
                 setNewEvent(newEventTemp);
                 setCreatingEvent(true);
