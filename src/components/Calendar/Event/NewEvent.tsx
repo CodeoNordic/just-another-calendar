@@ -48,9 +48,7 @@ const NewEvent: FC<NewEventProps> = props => {
         let el = document.querySelector('.calendar-highlight') as HTMLElement;
         if (!el) el = document.querySelector('.fc-highlight') as HTMLElement
         
-        console.log("highlight", el);
         if (eventRef.current && el) {
-            console.log('setting position');
             const rect = eventRef.current.getBoundingClientRect();
             const highlightRect = el.getBoundingClientRect();
             
@@ -76,8 +74,6 @@ const NewEvent: FC<NewEventProps> = props => {
                 arrowPosY = window.innerHeight - 27;
             }
 
-            console.log('setting position', { x, y });
-    
             setPosition({ x, y });
             setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
             
@@ -123,6 +119,7 @@ const NewEvent: FC<NewEventProps> = props => {
         setCreatingEvent(false);
         setNewEvent(null);
         document.querySelector('.calendar-highlight')?.remove();
+        document.querySelector('.fc-highlight')?.remove();
         setVisible(false);
     }
 
@@ -169,10 +166,11 @@ const NewEvent: FC<NewEventProps> = props => {
         setIsDragging(false);
     };
 
-    const fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
+    let fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
+    //if (!fcEl) fcEl = document.querySelector('.fc-daygrid-bg-harness') as HTMLElement; // need fix for .fc-highlight before uncommenting
     const fcElParent = fcEl?.parentElement;
 
-    if (fcEl && !fcElParent?.querySelector('.calendar-highlight')) {
+    if (fcEl && !fcElParent?.querySelector('.calendar-highlight')) { // does not work for .fc-highlight
         const el = document.createElement('div');
         el.className = 'calendar-highlight';
         el.style.zIndex = '100';
@@ -185,8 +183,6 @@ const NewEvent: FC<NewEventProps> = props => {
         el.style.overflow = 'hidden';
         fcElParent?.appendChild(el);
     }
-
-    console.log('new event', newEvent);
 
     return <div style={{
         display: visible ? "block" : "none"

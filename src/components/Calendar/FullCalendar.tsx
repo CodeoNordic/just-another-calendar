@@ -370,20 +370,11 @@ const FullCalendar: FC<Props> = props => {
 
                 const duration = event.duration.split(':') as [string, string];
                 const end = new Date(start.getTime()); 
-                end.setMinutes(end.getMinutes() + Number(duration[1]) + Number(duration[0]) * 60); 
-                
-                console.log("drop", start, end, info.resource);
-                console.log("drop", start.getHours());
-                console.log("drop", start.getFullYear(), start.getMonth(), start.getDate());
-
+                end.setMinutes(end.getMinutes() + Number(duration[1]) + Number(duration[0]) * 60);
 
                 if (start.getHours() === 0) {
                     const startNew = start.toISOString(); 
-                    const endNew = end.toISOString();
-
-                    console.log("drop", startNew, endNew);
-
-                    calendarRef.current?.getApi().select({start: startNew, end: endNew + 1, allDay: false});
+                    calendarRef.current?.getApi().select(startNew);
                 } else {
                     calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
                 }
@@ -402,8 +393,6 @@ const FullCalendar: FC<Props> = props => {
             
             selectable={config.eventCreation}
             select={info => {
-                console.log(info);
-                
                 if (config.scriptNames?.createEvent) {
                     const start = info.start;
                     const end = info.end;
@@ -439,8 +428,6 @@ const FullCalendar: FC<Props> = props => {
 
                     set(newEventTemp, field.field, field.default);
                 });
-
-                console.log("temp", newEventTemp);
 
                 setNewEvent(newEventTemp);
                 setCreatingEvent(true);
