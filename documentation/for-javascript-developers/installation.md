@@ -1,5 +1,5 @@
 # Installation (For JavaScript developers)
-This document will guide you, the JavaScript deveoper, through installing and setting
+This document provides the instructions to installing and setting
 up the development environment, in order to modify and test the source code.
 
 ## Prerequisites
@@ -9,7 +9,7 @@ up the development environment, in order to modify and test the source code.
 
 ## Installation (For JavaScript developers)
 To set up the development environment:
-1. Open a terminal in the project directory. (same folder as [package.json](../source-code/package.json))
+1. Open a terminal in the [source-code](../source-code) directory. (same directory as [package.json](../source-code/package.json))
 2. Run the following commands
 ```sh
 npm install     # or bun install
