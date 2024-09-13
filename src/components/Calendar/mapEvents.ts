@@ -38,26 +38,30 @@ export default function mapEvents(config: JAC.Config) {
             allDay: Boolean(event.allDay)
         }
     }).filter(ev => {
-        const filteredOut = config.eventFilters?.some(filter => {
-            const filterId = ev.extendedProps.event.filterId;
-            if (typeof filterId === 'string') 
-                return filterId && !filter.enabled && filter.id == filterId;
-            else if (filterId instanceof Array) 
-                // if any of the filters are disabled
-                // might want to change this to all filters are disabled
-                return filterId && !filter.enabled && filterId.some(id => filter.id == id); 
-            
-            return false;
-        });
+        const filterId = ev.extendedProps.event.filterId;
+        let filteredOut = false 
 
-        const filteredSource = config.sourceFilters?.some(filter => {
-            const sourceId = ev.extendedProps.event.source;
-            if (typeof sourceId === 'string')
-                return sourceId && !filter.enabled && filter.id == sourceId;
-            else if (sourceId instanceof Array)
-                // same as above comment
-                return sourceId && !filter.enabled && sourceId.some(id => filter.id == id);
-        });
+        if (typeof filterId === 'string') 
+            filteredOut = config.eventFilters?.some(filter => {
+                return !filter.enabled && filter.id == filterId;
+            }) || false;
+        else if (filterId instanceof Array)  
+            filteredOut = filterId?.every(id => {
+                return config.eventFilters?.some(filter => filter.id == id && !filter.enabled); 
+            });
+    
+        
+        const sourceId = ev.extendedProps.event.source; 
+        let filteredSource = false;
+
+        if (typeof sourceId === 'string')
+            filteredSource = config.sourceFilters?.some(filter => {
+                return !filter.enabled && filter.id == sourceId;
+            }) || false;
+        else if (sourceId instanceof Array)
+            filteredSource = sourceId?.every(id => {
+                return config.sourceFilters?.some(filter => filter.id == id && !filter.enabled);
+            });
 
         const filteredSearch = config.searchBy ? (config?.searchBy).every((field) => {
             return config.search && !ev.extendedProps.event[field].toLowerCase().includes(config.search);

@@ -14,6 +14,7 @@ import mapEvents from './mapEvents';
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
 import { DateInput, EventDropArg, EventSourceInput } from '@fullcalendar/core';
+import listPlugin from '@fullcalendar/list';
 
 // Import Calendar plugins
 import momentPlugin from '@fullcalendar/moment';
@@ -175,7 +176,9 @@ const FullCalendar: FC<Props> = props => {
                 resourcePlugin,
                 resourceDayGridPlugin,
                 resourceTimeGridPlugin,
-                resourceTimelinePlugin
+                resourceTimelinePlugin,
+
+                listPlugin 
             ]}
 
             // Set up views
@@ -297,7 +300,7 @@ const FullCalendar: FC<Props> = props => {
 
             slotLabelFormat="HH:mm"
             slotDuration="00:15"
-            slotLabelInterval={15}
+            slotLabelInterval={config.view?.startsWith('resourceTimeline') ? { hours: 1 }: { minutes: 15 }}
 
             firstDay={typeof config.firstDayOfWeek === 'number' ? 
                 config.firstDayOfWeek : typeof config.firstDayOfWeek === "string" ? 
@@ -374,7 +377,7 @@ const FullCalendar: FC<Props> = props => {
 
                 if (start.getHours() === 0) {
                     const startNew = start.toISOString(); 
-                    calendarRef.current?.getApi().select(startNew);
+                    calendarRef.current?.getApi().select({start: startNew, end: undefined, allDay: false, resourceId: info.resource?._resource.id});
                 } else {
                     calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
                 }
