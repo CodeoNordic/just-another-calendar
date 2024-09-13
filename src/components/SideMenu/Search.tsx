@@ -9,11 +9,11 @@ const Search: FC = () => {
     return <div>
         <div className="divider" />
         <Collapse top={<>
-            <div>{config?.translations?.searchHeader ?? "Search"}</div>
+            <div>{config.translations?.searchHeader ?? "Search"}</div>
         </>}
         collapsed={!config.searchOpenDefault}>
-            <input type="text" placeholder={config?.translations?.searchPlaceholder ?? "Search"}
-                value={config?.search || ""}
+            <input type="text" placeholder={config.translations?.searchPlaceholder ?? "Search"}
+                value={config.search || ""}
                 onChange={e => {
                     setConfig((prev: JAC.Config | null) => ({...prev, search: e.target.value, events: [...config.events]}) as JAC.Config)
                 }}

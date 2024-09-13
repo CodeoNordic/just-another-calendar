@@ -64,7 +64,7 @@ export default function mapEvents(config: JAC.Config) {
             });
 
         const filteredSearch = config.searchBy ? (config?.searchBy).every((field) => {
-            return config.search && !ev.extendedProps.event[field].toLowerCase().includes(config.search);
+            return config.search && !ev.extendedProps.event[field]?.toLowerCase().includes(config.search.toLowerCase());
         }) : false;
 
         if (filteredOut || filteredSearch || filteredSource) return false;
