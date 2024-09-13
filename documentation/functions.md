@@ -7,7 +7,7 @@ Initialise the calendar with one singular configuration object. (JSON)
 Check the [init documentation](./init.md) for more information.
 
 ### setConfigValue(key, value)
-Change a specific value in the config. The key can be any of the values mentioned in the [configuration](./init.md). This function should be used when changing e.g the `date` or `view` of the calendar.
+Change a specific value in the config. The key can be any of the values mentioned in the [configuration](./init.md#json-structure). This function should be used when changing e.g the `date` or `view` of the calendar.
 
 Example:
 ```js

@@ -7,7 +7,7 @@ Granted that the built version contains only one HTML-file, setting up the web v
 
 1. Fetch the HTML-code, for instance through a text field in a record
 2. Use the `[Set Web Viewer]` step, and set the URL to the source code
-3. Use the `[Perform JavaScript In Web Viewer]` step, calling the [init function](./init.md) function with the JSON-configuration
+3. Use the `[Perform JavaScript In Web Viewer]` step, calling the [init function](./init.md) function with the [JSON-configuration](./init.md#json-structure)
 
 Upon loading the HTML-code itself, the web viewer will be blank until the configuration has been passed using the [init function](./init.md) in step 3.
 
