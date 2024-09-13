@@ -1,8 +1,7 @@
-//import { join } from 'path';
-//import config from './widget.json' assert { type: 'json' };
-
 const { join } = require('path');
 const config = require('./widget.json');
+
+if (typeof config !== 'object') throw new Error('widget.json was not parsed as an object');
 
 // open is used to run the fmp:// protocol
 const open = require('open');
