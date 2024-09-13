@@ -57,9 +57,6 @@ const defaultConfig: Partial<JAC.Config> = {
     eventTemplatesOpenDefault: true,
     eventFiltersOpenDefault: true,
     searchOpenDefault: true,
-    
-    // @ts-ignore
-    [atob('ZnVsbENhbGVuZGFyTGljZW5zZQ==')]: window[atob('Y29kZW9GY0xpY2Vuc2U=')]
 };
 
 
