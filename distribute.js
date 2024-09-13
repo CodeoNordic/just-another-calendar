@@ -42,14 +42,16 @@ archive.directory('documentation/', 'documentation');
 //addFile('dist/index.html', 'just-another-calendar.html');
 
 const sourceCodeFiles = [
+    '.parcelrc',
+    '.posthtmlrc',
+    'bun.lockb',
     'package.json',
     'package-lock.json',
-    'bun.lockb',
-    'widget.json',
+    'testdata.json',
+    'testdata_min.json',
     'tsconfig.json',
     'upload.js',
-    '.parcelrc',
-    '.posthtmlrc'
+    'widget.json',
 ];
 
 sourceCodeFiles.forEach(name => {

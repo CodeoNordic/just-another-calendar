@@ -148,7 +148,7 @@ const FullCalendar: FC<Props> = props => {
             height={'100vh'}
 
             // Base config
-            schedulerLicenseKey={config.fullCalendarLicense}
+            schedulerLicenseKey={config.fullCalendarLicense || window[atob('Y29kZW9GY0xpY2Vuc2U=') as keyof Window]}
             locale={config.locale ?? 'no-nb'}
 
             initialView={config.view}
