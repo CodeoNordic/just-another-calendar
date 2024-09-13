@@ -372,9 +372,11 @@ const FullCalendar: FC<Props> = props => {
                 const end = new Date(start.getTime()); 
                 end.setMinutes(end.getMinutes() + Number(duration[1]) + Number(duration[0]) * 60);
 
+                console.log(info.resource?._resource.id);
+
                 if (start.getHours() === 0) {
                     const startNew = start.toISOString(); 
-                    calendarRef.current?.getApi().select(startNew);
+                    calendarRef.current?.getApi().select({start: startNew, end: undefined, allDay: false, resourceId: info.resource?._resource.id});
                 } else {
                     calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
                 }
