@@ -345,6 +345,7 @@ const FullCalendar: FC<Props> = props => {
 
                 setDropdown(prev => ({
                     ...prev,
+                    eventId: event?.id,
                     x: rect.left + rect.width,
                     // Move the dropdown up slightly if there's space for it
                     y: rect.top + rect.height - (

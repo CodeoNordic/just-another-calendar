@@ -3,6 +3,8 @@
 
     THIS FILE REQUIRES A 'fullcalendar.license' FILE
     WHICH INCLUDES THE FULLCALENDAR DEVELOPER LICENSE
+
+    THIS FILE IS FOR INTERNAL USE ONLY, AND SHOULD NOT BE SHIPPED WITH "Just Another Calendar"
 */
 const fcLicenseFileName = 'fullcalendar.license';
 
