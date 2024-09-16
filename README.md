@@ -8,16 +8,33 @@
 
 <p><strong>&copy; Codeo Norge AS</strong></p>
 <p>This module requires <a href="https://www.claris.com/filemaker" target="_blank">FileMaker Pro</a> version 19.0 or later</p>
-<a href="#contact-support" style="color: inherit; padding: 6px 12px; border: 2px solid; border-radius: 4px;">Contact Us!</a>
+
+\<\-\-\- [Contact Us](#contact-support) \-\-\-\>
 </div>
 
 ## Documentation
+## Disclaimer
+Function examples will be written in JavaScript. However, these should be called from FileMaker using the `[Perform JavaScript In Web Viewer]` script step.
+
+---
 For JavaScript developers:
-- [Installation](./documentation/installation.md)
-- [Building the module](./documentation/building.md)
+- [Installation](./documentation/for-javascript-developers/installation.md)
+- [Building the module](./documentation/for-javascript-developers/building.md)
 
 For FileMaker Pro developers:
 - [Uploading to FileMaker](./documentation/uploading-to-filemaker.md)
+- [Initialising the Web Viewer](./documentation/web-viewer.md)
+- [Callable Functions from FileMaker](./documentation/functions.md)
+
+## Contact (support)
+You may contact our development team for consultation/freelancing regarding this module.
+
+- Company: Codeo Norge AS
+- Email: support@codeo.no
+- Developers:
+    - Andreas Haandlykken: ah@codeo.no (CEO and FileMaker developer)
+    - Joakim Isaksen: ji@codeo.no (React developer)
+    - Vetle Emanuel Lindbråten: vel@codeo.no (React developer)
 
 ## About
 
@@ -31,13 +48,3 @@ For FileMaker Pro developers:
 This module was initially created to replace an outdated and unoptimized calendar in Codeo's ERP-system [NOBS](https://codeo.no/vi-jobber-med/nobs), but was later modified to be generic, to make it reusable by other applications.
 
 The first concept for this calendar was developed during one of our developers apprenticeships, resulting in a highly modern and efficient web component.
-
-## Contact (support)
-You may contact our development team for consultation/freelancing regarding this module.
-
-- Company: Codeo Norge AS
-- Email: support@codeo.no
-- Developers:
-    - Andreas Haandlykken: ah@codeo.no (CEO and FileMaker developer)
-    - Joakim Isaksen: ji@codeo.no (React developer)
-    - Vetle Emanuel Lindbråten: vel@codeo.no (React developer)

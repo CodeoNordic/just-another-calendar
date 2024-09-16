@@ -1,4 +1,5 @@
-const { join } = require('path');
+const { join, resolve } = require('path');
+const { existsSync } = require('fs');
 const config = require('./widget.json');
 
 if (typeof config !== 'object') throw new Error('widget.json was not parsed as an object');
@@ -18,8 +19,11 @@ const {
 // Construct the base FMP URL
 const fmpUrl = `fmp://${server}/${file}`;
 
-// Get the path to index.html in the dist folder
-const filePath = join(__dirname, 'dist', 'index.html');
+// Get the path to index.html, and upload the original if no dist HTML was found
+const builtPath = join(__dirname, 'dist', 'index.html');
+const filePath = existsSync(builtPath)? builtPath: resolve(__dirname, '..', 'just-another-calendar.html');
+
+if (!existsSync(filePath)) throw new Error(`The module HTML-file was not found. The following paths were checked: ${builtPath}, ${filePath}`);
 
 // Parameters to pass to the script
 const params = { name, filePath, ...extra };
