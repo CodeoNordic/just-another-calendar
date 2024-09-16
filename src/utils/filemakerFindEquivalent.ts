@@ -58,5 +58,5 @@ export default function fileMakerFindEquivalent(value: any, search: string): boo
         case '>': return greaterOrLessThan(stringValue, trimmed, '>');
     }
 
-    return stringValue == search.toLowerCase();
+    return stringValue.includes(search.toLowerCase());
 }
