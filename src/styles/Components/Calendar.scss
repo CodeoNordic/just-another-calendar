@@ -154,11 +154,23 @@
         opacity: .7;
     }
 
+    .fc-scrollgrid-section.fc-scrollgrid-section-header th {
+       border-bottom: 1px solid rgba(0, 0, 0, .3);
+    } 
+
     .fc-col-header-cell.fc-resource {
         border: none;
         border-bottom: 1px solid rgba(0, 0, 0, .3);
         font-weight: 500;
         font-size: small;
+    }
+    
+    .fc-col-header-cell {
+        border-bottom: none !important;
+    }
+
+    .fc-datagrid-cell {
+        border-bottom: none !important;
     }
 
     .fc-timegrid-axis {
@@ -184,6 +196,7 @@
 
         :nth-child(2) .fc-timegrid-axis {
             border-top-width: 0;
+            border-bottom: none !important;
         }
     }
 
