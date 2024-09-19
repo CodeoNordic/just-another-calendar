@@ -44,7 +44,6 @@ const NewEvent: FC<NewEventProps> = props => {
     }, [creatingEvent, newEvent]);
 
     useEffect(() => {
-
         let el = document.querySelector('.calendar-highlight') as HTMLElement;
         if (!el) el = document.querySelector('.fc-highlight') as HTMLElement
         
@@ -101,6 +100,7 @@ const NewEvent: FC<NewEventProps> = props => {
     useEffect(() => {
         const tempEvent = newEvent;
 
+        console.log(newEvent);
         calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId});
     
         setNewEvent(prev => ({
@@ -155,8 +155,8 @@ const NewEvent: FC<NewEventProps> = props => {
 
             if (top < 0) top = 0;
             if (left < 0) left = 0;
-            if (top + rect.height > viewportHeight) top = viewportHeight - rect.height;
-            if (left + rect.width > viewportWidth) left = viewportWidth - rect.width;
+            if (top + rect.height > viewportHeight - 1) top = viewportHeight - rect.height - 1; // -1 is for the border
+            if (left + rect.width > viewportWidth - 1) left = viewportWidth - rect.width - 1;
 
             setPosition({ x: left, y: top });
         }
@@ -166,23 +166,26 @@ const NewEvent: FC<NewEventProps> = props => {
         setIsDragging(false);
     };
 
-    let fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
-    //if (!fcEl) fcEl = document.querySelector('.fc-daygrid-bg-harness') as HTMLElement; // need fix for .fc-highlight before uncommenting
-    const fcElParent = fcEl?.parentElement;
+    useEffect(() => {
+        const fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
+        const fcElParent = fcEl?.parentElement;
 
-    if (fcEl && !fcElParent?.querySelector('.calendar-highlight')) { // does not work for .fc-highlight
-        const el = document.createElement('div');
-        el.className = 'calendar-highlight';
-        el.style.zIndex = '100';
-        el.style.background = 'rgba(188, 232, 241, .3)';
-        el.style.position = 'absolute';
-        el.style.top = fcEl.style.top;
-        el.style.bottom = fcEl.style.bottom;
-        el.style.left = "0px";
-        el.style.right = "0px";
-        el.style.overflow = 'hidden';
-        fcElParent?.appendChild(el);
-    }
+        if (fcEl && !fcElParent?.querySelector('.calendar-highlight')) {
+            console.log('highlight 1');
+            const el = document.createElement('div');
+            el.className = 'calendar-highlight';
+            el.style.zIndex = '100';
+            el.style.background = 'rgba(188, 232, 241, .3)';
+            el.style.position = 'absolute';
+            el.style.top = fcEl.style.top;
+            el.style.bottom = fcEl.style.bottom;
+            el.style.left = "0px";
+            el.style.right = "0px";
+            el.style.overflow = 'hidden';
+            fcElParent?.appendChild(el);
+        }
+    
+    }, [newEvent, position]);
 
     return <div style={{
         display: visible ? "block" : "none"

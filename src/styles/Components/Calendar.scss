@@ -154,6 +154,10 @@
         opacity: .7;
     }
 
+    .fc-timeline-slot.fc-timeline-slot-label.fc-day {
+        border-bottom: none !important;
+    }
+
     .fc-scrollgrid-section.fc-scrollgrid-section-header th {
        border-bottom: 1px solid rgba(0, 0, 0, .3);
     } 
