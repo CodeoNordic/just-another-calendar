@@ -17,21 +17,19 @@ const EventTemplates: FC = () => {
             {config?.eventTemplates.map(template => {
                 template.event.duration ??= "01:00";
 
-                return (
-                    <div
-                        data-event={JSON.stringify(template.event)}
-                        className="insertable-event"
-                        key={template.title}  
-                        style={{
-                            background: template.backgroundColor || "#3788d8",
-                            color: calculateContrast(template.textColor || "#fff", template.backgroundColor || "#3788d8", config?.contrastMin) 
-                                ? template.textColor || "#fff" 
-                                : "#000"
-                        }}
-                    >
-                        {template.title}
-                    </div>
-                )})}
+                return <div
+                    data-event={JSON.stringify(template.event)}
+                    className="insertable-event"
+                    key={template.title}  
+                    style={{
+                        background: template.backgroundColor || "#3788d8",
+                        color: calculateContrast(template.textColor || "#fff", template.backgroundColor || "#3788d8", config?.contrastMin) 
+                            ? template.textColor || "#fff" 
+                            : "#000"
+                    }}>
+                    {template.title}
+                </div>
+            })}
         </Collapse>
     </div>
 }
