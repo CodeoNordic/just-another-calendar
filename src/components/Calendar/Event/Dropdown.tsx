@@ -1,4 +1,4 @@
-import { useRef, createContext, useContext, useState } from 'react'
+import { useRef, createContext, useContext, useState, useEffect } from 'react'
 
 import { useConfig } from '@context/Config';
 import performScript from '@utils/performScript';
@@ -32,6 +32,13 @@ const EventDropdownProvider: FC = props => {
     const [dropdownHover, setDropdownHover] = useState<boolean>(false);
 
     const divRef = useRef<HTMLDivElement|null>(null);
+
+    useEffect(() => {
+        window.addEventListener('scroll', () => setDropdown(prev => ({
+            ...prev,
+            visible: false
+        })), true);
+    }, []);
 
     return <>
         <div className="event-dropdown" ref={divRef} style={{
