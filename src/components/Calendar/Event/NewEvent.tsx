@@ -101,7 +101,6 @@ const NewEvent: FC<NewEventProps> = props => {
     useEffect(() => {
         const tempEvent = newEvent;
 
-        console.log(newEvent);
         calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId});
         const arrow = document.querySelector('.create-arrow') as HTMLElement | null;
         if (arrow) arrow.style.display = "block";
@@ -175,7 +174,6 @@ const NewEvent: FC<NewEventProps> = props => {
         const fcElParent = fcEl?.parentElement;
 
         if (fcEl && !fcElParent?.querySelector('.calendar-highlight')) {
-            console.log('highlight 1');
             const el = document.createElement('div');
             el.className = 'calendar-highlight';
             el.style.zIndex = '100';
