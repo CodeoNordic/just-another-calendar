@@ -24,6 +24,7 @@ const NewEvent: FC<NewEventProps> = props => {
     const [position, setPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [arrowPos, setArrowPos] = useState<{ x: number, y: number, dir: number }>({ x: 0, y: 0, dir: 0 })
     const [visible, setVisible] = useState(false);
+    const [moved, setMoved] = useState(false);
 
     const calendarRef = useCalendarRef();
 
@@ -77,7 +78,7 @@ const NewEvent: FC<NewEventProps> = props => {
             setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
             
             setTimeout(() => {
-                setVisible(true);
+                setVisible(true)
             }, 0);
         }
     }, [visible, newEvent]);
@@ -102,7 +103,9 @@ const NewEvent: FC<NewEventProps> = props => {
 
         console.log(newEvent);
         calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId});
-    
+        const arrow = document.querySelector('.create-arrow') as HTMLElement | null;
+        if (arrow) arrow.style.display = "block";
+
         setNewEvent(prev => ({
             ...prev,
             ...tempEvent
@@ -140,6 +143,7 @@ const NewEvent: FC<NewEventProps> = props => {
                 y: e.clientY - rect.top,
             });
             setIsDragging(true);
+            setMoved(true);
         }
     };
 
