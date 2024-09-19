@@ -26,6 +26,7 @@ import resourcePlugin, { ResourceApi } from '@fullcalendar/resource'
 import resourceDayGridPlugin from '@fullcalendar/resource-daygrid';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import multiMonthPlugin from '@fullcalendar/multimonth'
 
 // Import utils
 import createMethod from '@utils/createMethod';
@@ -178,7 +179,8 @@ const FullCalendar: FC<Props> = props => {
                 resourceTimeGridPlugin,
                 resourceTimelinePlugin,
 
-                listPlugin 
+                listPlugin,
+                multiMonthPlugin
             ]}
 
             // Set up views

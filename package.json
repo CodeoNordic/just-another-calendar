@@ -29,6 +29,7 @@
   },
   "browserslist": "> 0.5%, last 2 versions, not IE 9-11, not dead",
   "dependencies": {
+    "@fullcalendar/multimonth": "^6.1.15",
     "open": "8.2.1"
   },
   "devDependencies": {
