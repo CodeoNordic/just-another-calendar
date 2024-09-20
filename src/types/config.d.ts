@@ -10,15 +10,16 @@ declare global {
             eventTemplatesOpenDefault?: boolean;
             
             eventFilters?: EventFilter[];
-            eventFiltersOpenDefault?: boolean;
+            eventFilterAreas?: [{
+                name: string;
+                title: string;
+                openDefault?: boolean;
+            }];
             
             // fields in event that should be searched
             searchBy?: string[];
             search?: string;
             searchOpenDefault?: boolean;
-
-            sourceFilters?: SourceFilter[];
-            sourceFiltersOpenDefault?: boolean;
             
             contrastCheck?: boolean;
             contrastMin?: number;
@@ -54,7 +55,7 @@ declare global {
 
             // Fields from JAC.Event that appear when creating new events
             // Defaults to all fields in first event
-            // If no title is provided, the field name will be used
+            // If no title is provided, the name will be used
             newEventFields?: NewEventField[];
             newEventMovable?: boolean;
             eventCreation?: boolean;

@@ -123,7 +123,7 @@ const FullCalendar: FC = () => {
 
     const eventsBase: EventSourceInput = useMemo(
         () => mapEvents(config),
-        [config.events, config.sourceFilters, config.eventFilters, config.search, config.searchBy]
+        [config.events, config.eventFilters, config.search, config.searchBy]
     );
 
     useEffect(() => {
@@ -422,9 +422,9 @@ const FullCalendar: FC = () => {
                 } as JAC.Event;
                 
                 config.newEventFields?.map(field => {
-                    if (!field.default) return;
+                    if (!field.defaultValue) return;
 
-                    set(newEventTemp, field.field, field.default);
+                    set(newEventTemp, field.name, field.defaultValue);
                 });
 
                 setNewEvent(newEventTemp);

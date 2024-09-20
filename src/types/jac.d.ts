@@ -14,6 +14,7 @@ declare global {
         type EventFilter = WithFilter<{
             id: string;
             title?: string;
+            areaName?: string;
             color?: string;
 
             /** Whether the filter is currently being used or not */

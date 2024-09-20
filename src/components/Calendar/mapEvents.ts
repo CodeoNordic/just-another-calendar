@@ -43,25 +43,16 @@ export default function mapEvents(config: JAC.Config) {
 
         if (typeof filterId === 'string') 
             filteredOut = config.eventFilters?.some(filter => {
-                return !filter.enabled && filter.id == filterId;
+                return !filter.enabled && filter.id == filterId && filter.clientOnly;
             }) || false;
         else if (filterId instanceof Array)  
             filteredOut = filterId?.every(id => {
-                return config.eventFilters?.some(filter => filter.id == id && !filter.enabled); 
+                return config.eventFilters?.some(filter => filter.id == id && !filter.enabled && filter.clientOnly); 
             });
     
         
         const sourceId = ev.extendedProps.event.source; 
         let filteredSource = false;
-
-        if (typeof sourceId === 'string')
-            filteredSource = config.sourceFilters?.some(filter => {
-                return !filter.enabled && filter.id == sourceId;
-            }) || false;
-        else if (sourceId instanceof Array)
-            filteredSource = sourceId?.every(id => {
-                return config.sourceFilters?.some(filter => filter.id == id && !filter.enabled);
-            });
 
         const filteredSearch = config.searchBy ? (config?.searchBy).every((field) => {
             return config.search && !ev.extendedProps.event[field]?.toLowerCase().includes(config.search.toLowerCase());

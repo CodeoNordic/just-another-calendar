@@ -228,7 +228,6 @@ init(JSON.stringify({
                 source: 'source1'
             }
         },
-
         {
             title: "Test 2",
             backgroundColor: "#00ff00",
@@ -243,7 +242,6 @@ init(JSON.stringify({
                 source: 'source2'
             }
         },
-
         {
             title: "Test 3",
             backgroundColor: "#0000ff",
@@ -258,7 +256,6 @@ init(JSON.stringify({
                 source: 'source1'
             }
         },
-
         {
             title: "Test 4",
             backgroundColor: "#ff00ff",
@@ -274,7 +271,6 @@ init(JSON.stringify({
                 source: 'source3'
             }
         },
-
         {
             title: "Test 5",
             backgroundColor: "#00ffff",
@@ -288,8 +284,7 @@ init(JSON.stringify({
                 },
                 source: 'source2'
             }
-        }
-
+        } 
     ],
     sourceFiltersOpenDefault: false,
     eventFiltersOpenDefault: false,
@@ -297,33 +292,33 @@ init(JSON.stringify({
     eventTemplatesOpenDefault: false,
     newEventFields: [
     {
-        field: "FirstName",
+        name: "FirstName",
         title: "Tittel"
     },
     {
-        field: "start",
+        name: "start",
         title: "Start",
         type: "time"
     },
     {
-        field: "end",
+        name: "end",
         title: "Slutt",
         type: "time"
     },
     {
-        field: "colors.border",
+        name: "colors.border",
         title: "Kant-farge",
         type: "color",
         default: "#3788d8"
     },
     {
-        field: "colors.background",
+        name: "colors.background",
         title: "Bakgrunnsfarge",
         type: "color",
         default: "#3788d8"
     },
     {
-        field: "filterId",
+        name: "filterId",
         title: "Filtrerings-id",
         default: "filter2",
         type: "dropdown",

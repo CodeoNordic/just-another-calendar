@@ -228,15 +228,15 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
                 <div className='body-inputs'>
                     <p className='title-inputs'>{config?.translations?.eventCreationHeader ?? "New Event"}</p>
-                    {config?.newEventFields?.map(value => {
-                        return <div key={value.field} className='input-wrapper'>
-                            <p>{value.title ?? value.field}</p>
-                            {value.type === "dropdown" ? <select 
+                    {config?.newEventFields?.map(field => {
+                        return <div key={field.name} className='input-wrapper'>
+                            <p>{field.title ?? field.name}</p>
+                            {field.type === "dropdown" ? <select 
                                 className='dropdown-input'
-                                value={get(newEvent as JAC.Event, value.field)} 
-                                onChange={e => setNewEventField(value.field, e.target.value)}
+                                value={get(newEvent as JAC.Event, field.name)} 
+                                onChange={e => setNewEventField(field.name, e.target.value)}
                             >
-                                {value.dropdownItems?.map(item => {
+                                {field.dropdownItems?.map(item => {
                                     return typeof item === "string" 
                                         ? <option key={item} value={item}>{item}</option> 
                                         : <option key={item.value} value={item.value}>{item.label}</option>;
@@ -244,23 +244,23 @@ const NewEvent: FC<NewEventProps> = props => {
                             </select>
                             : <input 
                                 lang={config?.locale ?? "en"}
-                                type={value.type ?? "string"} 
-                                className={value.type ? `${value.type}-input` : "string-input"}
-                                value={value.type === "time" 
+                                type={field.type ?? "string"} 
+                                className={field.type ? `${field.type}-input` : "string-input"}
+                                value={field.type === "time" 
                                     ? (() => {
-                                        const date = dateFromString(get(newEvent as JAC.Event, value.field))
+                                        const date = dateFromString(get(newEvent as JAC.Event, field.name))
                                         if (!date) return ""; 
                                         date.setHours(date.getHours());
                                         
                                         return date.toTimeString().substring(0, 5)   
                                     })()
-                                    : get(newEvent as JAC.Event, value.field) || ""}
-                                placeholder={value.placeholder ?? ""}     
+                                    : get(newEvent as JAC.Event, field.name) || ""}
+                                placeholder={field.placeholder ?? ""}     
                                 onChange={e => {
                                     let inputValue: string|boolean|Date = e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
                                     if (e.target.type === "time") {
-                                        const date = dateFromString(get(newEvent as JAC.Event, value.field))
+                                        const date = dateFromString(get(newEvent as JAC.Event, field.name))
                                         const [inputHour, inputMinute] = (inputValue as string).split(':');
                                         date?.setHours(Number(inputHour), Number(inputMinute));
                                         inputValue = date!.toISOString();
@@ -268,7 +268,7 @@ const NewEvent: FC<NewEventProps> = props => {
                                         
                                     }
                                     
-                                    setNewEventField(value.field, inputValue || "");
+                                    setNewEventField(field.name, inputValue || "");
                                 }} 
                             />}
                         </div>

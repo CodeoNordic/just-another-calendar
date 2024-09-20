@@ -20,29 +20,29 @@ const defaultConfig: Partial<JAC.Config> = {
     ],
     newEventFields: [
         {
-            field: "title",
+            name: "title",
             title: "Title",
             placeholder: "Add a title",
             type: "string"
         },
         {
-            field: "start",
+            name: "start",
             title: "Start",
             type: "time"
         },
         {
-            field: "end",
+            name: "end",
             title: "End",
             type: "time"
         },
         {
-            field: "description",
+            name: "description",
             title: "Description",
             placeholder: "Add a description",
             type: "string"
         },
         {
-            field: "allDay",
+            name: "allDay",
             title: "All Day",
             type: "checkbox"
         }
@@ -53,11 +53,9 @@ const defaultConfig: Partial<JAC.Config> = {
     contrastCheck: true,
     contrastMin: 2,
     nowIndicator: true,
-    sourceFiltersOpenDefault: true,
     eventTemplatesOpenDefault: true,
-    eventFiltersOpenDefault: true,
     searchOpenDefault: true,
-    sideMenuOpen: false,
+    sideMenuOpen: false
 };
 
 
@@ -86,7 +84,6 @@ const parseConfig = (cfg: string) => {
             return event;
         });
 
-        config.events = events;
         return config;
     } catch(err) {
         console.error(err);

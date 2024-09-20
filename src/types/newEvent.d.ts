@@ -1,11 +1,11 @@
 declare global {
     namespace JAC {
         interface NewEventField {
-            field: string;
+            name: string;
             title?: string;
             placeholder?: string;
             type?: React.InputHTMLAttributes<HTMLInputElement>['type']|'dropdown';
-            default?: string;
+            defaultValue?: string;
             search?: boolean;
             searchScript?: string;
 
