@@ -57,6 +57,7 @@ const defaultConfig: Partial<JAC.Config> = {
     eventTemplatesOpenDefault: true,
     eventFiltersOpenDefault: true,
     searchOpenDefault: true,
+    sideMenuOpen: false,
 };
 
 

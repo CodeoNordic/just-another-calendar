@@ -154,8 +154,8 @@
         opacity: .7;
     }
 
-    .fc-col-header-cell.fc-day { // for multiMonthYear, conflicts with other views
-        //border-bottom: 1px solid rgba(0, 0, 0, .3) !important;
+    .fc-multimonth-header-table { // for multiMonthYear, conflicts with other views
+        border-bottom: 1px solid rgba(0, 0, 0, .3) !important;
     }
 
     .fc-timeline-slot.fc-timeline-slot-label.fc-day {

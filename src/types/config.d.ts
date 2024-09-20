@@ -4,6 +4,8 @@ declare global {
         interface Config {
             events: JAC.Event[];
 
+            sideMenuOpen?: boolean;
+
             eventTemplates?: EventTemplate[];
             eventTemplatesOpenDefault?: boolean;
             
@@ -68,7 +70,7 @@ declare global {
                 
                 onDateSelected: string;
                 onEventChange: string;
-                onFilterChange: string;
+                onEventFilterChange: string;
                 onSourceFilterChange: string;
 
                 newEvent?: string;

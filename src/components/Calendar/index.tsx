@@ -28,10 +28,7 @@ const Calendar: FC = () => {
     if (!config) return null;
 
     return <div className="calendar">
-        <FullCalendar
-            events={events}
-            date={date}
-        />
+        <FullCalendar />
     </div>
 }
 

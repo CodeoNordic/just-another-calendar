@@ -24,8 +24,7 @@ const SourceFilters: FC = () => {
 
                 return {
                     ...prev, 
-                    sourceFilters: newFilters,
-                    events: [...config.events || []]
+                    sourceFilters: newFilters
                 } as JAC.Config;
             });
         }

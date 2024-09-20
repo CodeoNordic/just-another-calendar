@@ -9,7 +9,7 @@ declare global {
     
         /**
          * Use clientOnly and _filter if the filter should be handled only in the web component.
-         * Otherwise, 'onFilterChange' will be ran.
+         * Otherwise, 'onEventFilterChange' will be ran.
         */
         type EventFilter = WithFilter<{
             id: string;

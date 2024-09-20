@@ -41,12 +41,7 @@ import { weekDays } from '@utils/calendarDates';
 import dateToObject from '@utils/dateToObject';
 import { useCalendarRef } from '@context/CalendarRefProvider';
 
-interface Props {
-    events?: JAC.Event[];
-    date?: DateInput;
-}
-
-const FullCalendar: FC<Props> = props => {
+const FullCalendar: FC = () => {
     const calendarRef = useCalendarRef();
 
     const [config, setConfig] = useConfigState() as [JAC.Config, Function];
@@ -128,7 +123,7 @@ const FullCalendar: FC<Props> = props => {
 
     const eventsBase: EventSourceInput = useMemo(
         () => mapEvents(config),
-        [props.events]
+        [config.events, config.sourceFilters, config.eventFilters, config.search, config.searchBy]
     );
 
     useEffect(() => {

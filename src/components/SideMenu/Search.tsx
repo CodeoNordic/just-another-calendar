@@ -15,7 +15,10 @@ const Search: FC = () => {
             <input type="text" placeholder={config.translations?.searchPlaceholder ?? "Search"}
                 value={config.search || ""}
                 onChange={e => {
-                    setConfig((prev: JAC.Config | null) => ({...prev, search: e.target.value, events: [...config.events]}) as JAC.Config)
+                    if () {
+                        
+                    }
+                    setConfig((prev: JAC.Config | null) => ({...prev, search: e.target.value}) as JAC.Config)
                 }}
             />
         </Collapse>

@@ -26,13 +26,12 @@ const EventFilters: FC = () => {
 
                 return {
                     ...prev, 
-                    eventFilters: newFilters,
-                    events: [...config.events]
+                    eventFilters: newFilters
                 } as JAC.Config;
             });
         }
 
-        performScript("onFilterChange", {
+        performScript("onEventFilterChange", {
             ...filter,
             enabled: !filter.enabled || false
         });

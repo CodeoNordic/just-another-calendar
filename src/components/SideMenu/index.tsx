@@ -8,15 +8,20 @@ import EventFilters from './EventFilters';
 import Search from './Search';
 import SourceFilters from './SourceFilters';
 import EventTemplates from './EventTemplates';
+import { useConfigState } from '@context/Config';
 
 
 
 const SideMenu: FC = () => {
-    const [open, setOpen] = useState<boolean>(false);
+    const [config, setConfig] = useConfigState();
+    
+    const setOpen = (open: boolean) => {
+        setConfig((prev: JAC.Config | null) => ({...prev, sideMenuOpen: open} as JAC.Config));
+    }
 
-    return <div className={combineClasses('side-menu', open && 'open')}>
+    return <div className={combineClasses('side-menu', config?.sideMenuOpen && 'open')}>
         <button className="toggle-button" onClick={() => {
-            setOpen(!open);
+            setOpen(!config?.sideMenuOpen);
             window.dispatchEvent(new Event('resize'));
         }}>
             <ChevronIcon />
