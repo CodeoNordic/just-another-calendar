@@ -10,6 +10,7 @@ import Field from './Field';
 
 const Event: FC<JAC.Event> = ({ children, ...props }) => {
     // An event does not render without the config being present
+
     const config = useConfig()!;
     const {
         onPointerMove,
@@ -44,6 +45,8 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
 
         return comp;
     }, [props, config.defaultEventComponent, config.eventComponents]);
+
+    if (!Object.keys(props).length) return null;
 
     if (!component) {
         console.warn('A component was not found for the following event', props);

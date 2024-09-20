@@ -241,7 +241,6 @@ const FullCalendar: FC = () => {
 
             // Renderer for each event
             eventContent={props => <Event
-                component={config.defaultEventComponent}
                 {...(props.event.extendedProps.event ?? {}) as JAC.Event}
             />}
 
