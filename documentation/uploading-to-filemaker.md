@@ -6,11 +6,11 @@
 [widget.json](../source-code/widget.json) is by default configured to run a script named "UploadHTML" on the
 currently selected FileMaker file. The [demo file](../Demo.fmp12) includes an example on how this script can be set up.
 
-**Make sure you have [NodeJS](https://nodejs.org/en/download) installed. (check by running `npm -v`)**
+**Make sure you have [NodeJS](https://nodejs.org/en/download) installed. (check by running `node -v` and `npm -v`)**
 
 To upload the module, open a terminal in the same directory as [upload.js](../upload.js) directory, and run the following commands:
 ```sh
-npm i open@8.2.1    # the script requires the 'open' library to run the fmp protocol
+npm i open@8.2.1    # 'open' from NPM is used for the fmp protocol
 node upload.js
 ```
 
