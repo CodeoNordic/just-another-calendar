@@ -152,8 +152,7 @@ yesNo(`The current version of ${package.name} is ${version}.\nDo you wish to upd
         'testdata.json',
         'testdata_min.json',
         'tsconfig.json',
-        'upload.js',
-        'widget.json',
+        'widget.json'
     ];
 
     sourceCodeFiles.forEach(name => {
@@ -164,6 +163,7 @@ yesNo(`The current version of ${package.name} is ${version}.\nDo you wish to upd
     addFile('Demo.fmp12');
     addFile('README.md');
     addFile('codeo-logo.png');
+    addFile('upload.js');
 
     // Inject the codeo license into the HTML
     if (!fs.existsSync(indexPath)) {

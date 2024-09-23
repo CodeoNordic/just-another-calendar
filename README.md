@@ -16,7 +16,7 @@
 ## Disclaimer
 Function examples will be written in JavaScript. However, these should be called from FileMaker using the `[Perform JavaScript In Web Viewer]` script step.
 
-It is recommended to check the [`_filter`](./documentation/_filter.md) definition
+It is recommended to check the [`_filter definition`](./documentation/_filter.md)
 before continuing, as this is used in various areas of the calendar.
 
 ---
@@ -35,7 +35,7 @@ You may contact our development team for consultation/freelancing regarding this
 - Company: Codeo Norge AS
 - Email: support@codeo.no
 - Developers:
-    - Andreas Haandlykken: ah@codeo.no (CEO and FileMaker developer)
+    - Andreas Haandlykken: ah@codeo.no (CEO of [Codeo Norway](https://codeo.no) and FileMaker developer)
     - Joakim Isaksen: ji@codeo.no (React developer)
     - Vetle Emanuel Lindbråten: vel@codeo.no (React developer)
 

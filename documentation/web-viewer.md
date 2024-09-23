@@ -3,7 +3,7 @@
 
 ---
 
-Granted that the built version contains only one HTML-file, setting up the web viewer can be done in three simple steps:
+Setting up the web viewer can be done in three simple steps:
 
 1. Fetch the HTML-code, for instance through a text field in a record
 2. Use the `[Set Web Viewer]` step, and set the URL to the source code
