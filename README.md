@@ -16,6 +16,9 @@
 ## Disclaimer
 Function examples will be written in JavaScript. However, these should be called from FileMaker using the `[Perform JavaScript In Web Viewer]` script step.
 
+It is recommended to check the [`_filter`](./documentation/_filter.md) definition
+before continuing, as this is used in various areas of the calendar.
+
 ---
 For JavaScript developers:
 - [Installation](./documentation/for-javascript-developers/installation.md)

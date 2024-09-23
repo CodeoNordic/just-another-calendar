@@ -20,7 +20,7 @@ const { execSync } = require('child_process');
 const { join } = require('path');
 const { createInterface } = require('readline/promises');
 
-if (!fs.existsSync(fcLicenseFileName)) throw new Error(`${fcLicenseFileName} was not found`);
+if (!fs.existsSync(fcLicenseFileName)) throw new Error(`${fcLicenseFileName} is required, as it will be injected into index.html`);
 const fcLicense = fs.readFileSync(fcLicenseFileName, 'utf-8').toString();
 
 const package = require('./package.json');
@@ -63,36 +63,55 @@ yesNo(`The current version of ${package.name} is ${version}.\nDo you wish to upd
         );
     }
 
+    const outputDirectory = join(__dirname, 'zip');
+    const liteDirectory = join(outputDirectory, 'lite');
+
     const fileName = `${package.name}-v${version}.zip`;
     const fileNameLite = `${package.name}-v${version}-lite.zip`;
+    
+    const fileLocation = join(outputDirectory, fileName);
+    const fileLocationLite = join(liteDirectory, fileNameLite);
 
     const existingFiles = [];
-    fs.existsSync(fileName) && existingFiles.push(fileName);
-    fs.existsSync(fileNameLite) && existingFiles.push(fileNameLite);
-
+    fs.existsSync(fileLocation) && existingFiles.push(fileName);
+    fs.existsSync(fileLocationLite) && existingFiles.push(fileNameLite);
+    
     if (existingFiles.length) {
         answer = await yesNo(`${existingFiles.join(' and ')} already exist${existingFiles.length === 1? 's':''}.\nDo you still wish to continue?`);
         if (!answer) process.exit(0);
+    }
+
+    const genDist = () => {
+        logInfo('Building distribution version...');
+        execSync('npm run build');
+        logInfo('Build finished. Zipping files...');
     }
 
     // Create the distribution build
     const indexPath = join('dist', 'index.html');
     if (fs.existsSync(indexPath)) {
         answer = await yesNo('Do you want to generate a new dist version of index.html?');
-        if (answer) {
-            logInfo('Building distribution version...');
-            execSync('npm run build');
-            logInfo('Build finished. Zipping files...');
-        }
+        if (answer) genDist();
 
         else logInfo('Zipping files...');
     }
 
-    const output = fs.createWriteStream(fileName);
+    else {
+        answer = await yesNo('index.html was not found. Do you want to generate a new version of it?');
+        if (answer)
+            genDist();
+        else
+            throw new Error('Cannot continue without a valid index.html');
+    }
+
+    if (!fs.existsSync(outputDirectory)) fs.mkdirSync(outputDirectory);
+    if (!fs.existsSync(liteDirectory)) fs.mkdirSync(liteDirectory);
+
+    const output = fs.createWriteStream(fileLocation);
     const archive = archiver('zip');
 
     // Minified
-    const outputLite = fs.createWriteStream(fileNameLite);
+    const outputLite = fs.createWriteStream(fileLocationLite);
     const archiveLite = archiver('zip');
 
     const addFile = (name, dest = name, sourceCodeOnly = false) => {
@@ -124,6 +143,7 @@ yesNo(`The current version of ${package.name} is ${version}.\nDo you wish to upd
     archiveLite.glob('*.md', { cwd: 'documentation' }, { prefix: 'documentation/' });
 
     const sourceCodeFiles = [
+        '.gitignore',
         '.parcelrc',
         '.posthtmlrc',
         'bun.lockb',
