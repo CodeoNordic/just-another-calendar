@@ -15,7 +15,7 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
     if (!config) return null
 
     const toggleFilter = (filter: JAC.EventFilter) => {
-        if (filter.clientOnly) {
+        if (!filter.script || !config.scriptNames.onEventFilterChange) {
             return setConfig(prev => {
                 const newFilters = prev?.eventFilters?.map(f => {
                     if (f.id === filter.id) {
@@ -31,10 +31,17 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
             });
         }
 
-        performScript("onEventFilterChange", {
-            ...filter,
-            enabled: !filter.enabled || false
-        });
+        if (filter.script) {
+            performScript(filter.script, {
+                ...filter,
+                enabled: !filter.enabled || false
+            });
+        } else {
+            performScript("onEventFilterChange", {
+                ...filter,
+                enabled: !filter.enabled || false
+            });
+        }
     }
 
     return <Collapse top={<>

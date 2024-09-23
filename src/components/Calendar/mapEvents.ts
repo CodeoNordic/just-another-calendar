@@ -43,11 +43,11 @@ export default function mapEvents(config: JAC.Config) {
 
         if (typeof filterId === 'string') 
             filteredOut = config.eventFilters?.some(filter => {
-                return !filter.enabled && filter.id == filterId && filter.clientOnly;
+                return !filter.enabled && filter.id == filterId && !filter.script && !config.scriptNames.onEventFilterChange;
             }) || false;
         else if (filterId instanceof Array)  
             filteredOut = filterId?.every(id => {
-                return config.eventFilters?.some(filter => filter.id == id && !filter.enabled && filter.clientOnly); 
+                return config.eventFilters?.some(filter => filter.id == id && !filter.enabled && !filter.script && !config.scriptNames.onEventFilterChange); 
             });
     
         
