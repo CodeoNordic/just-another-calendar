@@ -164,6 +164,7 @@ yesNo(`The current version of ${package.name} is ${version}.\nDo you wish to upd
     addFile('README.md');
     addFile('codeo-logo.png');
     addFile('upload.js');
+    archiveLite.file('widget.json');
 
     // Inject the codeo license into the HTML
     if (!fs.existsSync(indexPath)) {

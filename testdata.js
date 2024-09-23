@@ -23,12 +23,11 @@ init(JSON.stringify({
             allDay: false,
             tooltip: 'TEST TOOLTIP JOAKIM',
             resourceId: '1F',
-            filterId: 'filter1',
+            filterId: ['filter1', 'source1'],
             colors: {
                 background: '#000000',
                 border: '#000000'
-            },
-            source: 'source1'
+            }
         },
 
         {
@@ -40,8 +39,7 @@ init(JSON.stringify({
             end: '2024-07-18T13:00',
             allDay: false,
             resourceId: '2F',
-            filterId: 'filter2',
-            source: 'source2'
+            filterId: ['filter2', 'source2']
         },
 
         {
@@ -54,8 +52,7 @@ init(JSON.stringify({
             allDay: false,
             _component: "compact",
             resourceId: '2F',
-            filterId: 'filter2',
-            source: 'source1'
+            filterId: ['filter2', 'source1']
         },
 
         {
@@ -68,8 +65,7 @@ init(JSON.stringify({
             allDay: false,
             tooltip: 'TEST TOOLTIP JOAKIM',
             resourceId: '1F',
-            filterId: ['filter3', 'filter2'],
-            source: ['source3', 'source2']
+            filterId: ['filter3', 'filter2', 'source3', 'source2']
         },
 
         {
@@ -80,8 +76,7 @@ init(JSON.stringify({
             start: '2024-07-19T9:00',
             end: '2024-07-19T9:45',
             resourceId: '3F',
-            filterId: 'filter3',
-            source: 'source2'
+            filterId: ['filter3', 'source2']
         },
 
         {
@@ -94,8 +89,7 @@ init(JSON.stringify({
             allDay: true,
             _component: "compact",
             resourceId: '2F',
-            filterId: 'filter1',
-            source: 'source3'
+            filterId: ['source3', 'filter1']
         }
     ],
 
@@ -131,64 +125,69 @@ init(JSON.stringify({
         {
           id: "filter1",
           title: "Låst filter",
+          areaName: "filters",
+
           color: "#AAEEAA",
           
           enabled: true, 
           locked: true,
-          
-          clientOnly: true
         },
         {
           id: "filter2",
           title: "Ulåst filter",
+          areaName: "filters",
+
           color: "#ff0000",
           
           enabled: true, 
           locked: false, 
-          
-          clientOnly: true
         },
         {
           id: "filter3",
           title: "Ulåst filter (default av)",
+          areaName: "filters",
+          
           color: "#0000ff",
           
           enabled: false,
           locked: false,
-          
-          clientOnly: true
+        },
+        {
+            id: "source1",
+            title: "Kilde 1",
+            areaName: "sources",
+            color: "#ff0000",
+
+            enabled: true,
+            locked: false,
+        },
+        {
+            id: "source2",
+            title: "Kilde 2",
+            areaName: "sources",
+            color: "#00ff00",
+
+            enabled: true,
+            locked: false,
+        },
+        {
+            id: "source3",
+            title: "Kilde 3",
+            areaName: "sources",
+            color: "#0000ff",
+
+            enabled: true,
+            locked: false,
         }
     ],
-    sourceFilters: [
+    eventFilterAreas: [
         {
-          id: "source1",
-          title: "Låst kilde",
-          color: "#AAEEee",
-          
-          enabled: true, 
-          locked: true,
-          
-          clientOnly: true
+            name: "filters",
+            title: "Filtrer",
         },
         {
-          id: "source2",
-          title: "Ulåst kilde",
-          color: "#ff0055",
-          
-          enabled: true, 
-          locked: false, 
-          
-          clientOnly: true
-        },
-        {
-          id: "source3",
-          title: "Ulåst kilde (default av)",
-          color: "#0000ff",
-          
-          enabled: false,
-          locked: false,
-          
-          clientOnly: true
+            name: "sources",
+            title: "Kilder",
         }
     ],
     searchBy: ["FirstName", "start"],
