@@ -25,9 +25,9 @@ declare global {
 
             /** The order in which the filters should be displayed */
             sort?: number;
-    
-            /** If the filter is client only, _filter must be defined, as it will filter locally */
-            clientOnly?: boolean;
+
+            /** script for own filtering */
+            script?: string;
         }>;
 
         interface SourceFilter {

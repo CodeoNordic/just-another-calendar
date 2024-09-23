@@ -106,7 +106,6 @@ init(JSON.stringify({
             {
                 template: "{FirstName} {Time:start}"
             },
-
             {
                 value: "ButtonText",
                 type: "button",
