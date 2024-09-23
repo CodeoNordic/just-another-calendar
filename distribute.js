@@ -76,9 +76,17 @@ yesNo(`The current version of ${package.name} is ${version}.\nDo you wish to upd
     }
 
     // Create the distribution build
-    logInfo('Building distribution version...');
-    execSync('npm run build');
-    logInfo('Build finished. Zipping files...');
+    const indexPath = join('dist', 'index.html');
+    if (fs.existsSync(indexPath)) {
+        answer = await yesNo('Do you want to generate a new dist version of index.html?');
+        if (answer) {
+            logInfo('Building distribution version...');
+            execSync('npm run build');
+            logInfo('Build finished. Zipping files...');
+        }
+
+        else logInfo('Zipping files...');
+    }
 
     const output = fs.createWriteStream(fileName);
     const archive = archiver('zip');
@@ -138,8 +146,12 @@ yesNo(`The current version of ${package.name} is ${version}.\nDo you wish to upd
     addFile('codeo-logo.png');
 
     // Inject the codeo license into the HTML
-    const indexPath = join('dist', 'index.html');
-    if (!fs.existsSync(indexPath)) throw new Error('index.html was not found');
+    if (!fs.existsSync(indexPath)) {
+        archive.destroy();
+        archiveLite.destroy();
+
+        throw new Error('index.html was not found');
+    }
 
     const base64License = btoa(fcLicense);
     const base64WindowKey = btoa('codeoFcLicense');
