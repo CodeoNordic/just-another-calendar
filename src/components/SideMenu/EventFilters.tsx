@@ -48,7 +48,7 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
     </>}
     collapsed={props.openDefault}>
         {props.filters?.map((filter) => {
-            const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", undefined /*Maybe add actual background later*/, config.contrastMin) 
+            const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", "#f5f5f5", config.contrastMin) 
                 && config.contrastCheck !== false;
 
             const iconStyles = {
@@ -82,11 +82,9 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
 }
 
 const EventFilters: FC = () => {
-    const [config, setConfig] = useConfigState();
+    const [config, ] = useConfigState();
 
     if (!config?.eventFilters) return null
-
-
 
     const sortedFilters = useMemo(() => {
         const copy = [...config.eventFilters || []];
@@ -96,9 +94,9 @@ const EventFilters: FC = () => {
 
     return <div>
         <div className="divider" />        
-        {config.eventFilterAreas && config.eventFilterAreas?.map((area) => {
-            return <EventFilterArea key={area.name} filters={sortedFilters?.filter((filter) => filter.areaName === area.name)} header={area.title} openDefault={area.openDefault}/>
-        }) || <EventFilterArea filters={sortedFilters} />}
+        {config.eventFilterAreas && config.eventFilterAreas?.map((area) => 
+            <EventFilterArea key={area.name} filters={sortedFilters?.filter((filter) => filter.areaName === area.name)} header={area.title} openDefault={area.openDefault}/>
+        ) || <EventFilterArea filters={sortedFilters} />}
     </div>
 }
 
