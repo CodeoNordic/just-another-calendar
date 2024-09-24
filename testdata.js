@@ -184,10 +184,12 @@ init(JSON.stringify({
         {
             name: "filters",
             title: "Filtrer",
+            openDefault: true
         },
         {
             name: "sources",
             title: "Kilder",
+            openDefault: false
         }
     ],
     searchBy: ["FirstName", "start"],
@@ -284,8 +286,6 @@ init(JSON.stringify({
             }
         } 
     ],
-    sourceFiltersOpenDefault: false,
-    eventFiltersOpenDefault: false,
     searchOpenDefault: false,
     eventTemplatesOpenDefault: false,
     newEventFields: [
