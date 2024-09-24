@@ -51,7 +51,7 @@ If the date and time is separated, you may (if required) use a `+` to combine th
 ### 3. Eval (JavaScript Code)
 Run your own code to dynamically display a certain value.
 
-The passed JavaScript **MUST be a valid function.**
+The passed JavaScript **must be a callable function.**
 
 The first parameter is the event itself, and the second parameter is the config.
 
