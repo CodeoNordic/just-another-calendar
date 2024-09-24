@@ -38,43 +38,39 @@ export default function mapEvents(config: JAC.Config) {
             allDay: Boolean(event.allDay)
         }
     }).filter(ev => {
-        const filterId = ev.extendedProps.event.filterId;
+        const filterIds = ev.extendedProps.event.filterId;
         let filteredOut = false 
 
-        if (typeof filterId === 'string') 
-            filteredOut = config.eventFilters?.some(filter => {
-                return !filter.enabled && filter.id == filterId && !filter.script && !config.scriptNames.onEventFilterChange;
-            }) || false;
-        else if (filterId instanceof Array){
-            const filters = config.eventFilterAreas?.map(area => {
-                return config.eventFilters?.filter(filter => filter.areaName == area.name);
-            });
-            
-            filteredOut = filters?.some((filterArr) => {
-                console.log("0 ", filterArr)
-                console.log("1 ", filterId?.every(id => {
-                    console.log("2 ", filterArr?.some(filter => {
-                        console.log(filter.id, id)
-                        return filter.id == id && !filter.enabled && !filter.script && !config.scriptNames.onEventFilterChange
-                    }))
-                    return filterArr?.some(filter => filter.id == id && !filter.enabled && !filter.script && !config.scriptNames.onEventFilterChange); 
-                }))
-                return filterId?.every(id => {
-                    return filterArr?.some(filter => filter.id == id && !filter.enabled && !filter.script && !config.scriptNames.onEventFilterChange); 
-                });
-            }) || false;
+        if (typeof filterIds === 'string' && !config.scriptNames.onEventFilterChange && config.eventFilters) 
+            filteredOut = config.eventFilters.some(filter => 
+                !filter.enabled && filter.id == filterIds && !filter.script
+            );
+        else if (filterIds instanceof Array && !config.scriptNames.onEventFilterChange && config.eventFilters) {
+            if (config.eventFilterAreas) {
+                const filters = config.eventFilterAreas.map(area => // filters ordered in array of filters for each area
+                    config.eventFilters?.filter(filter => filter.areaName == area.name)
+                );
+
+                const filtersEvent = filters.map(filterArr => // filters for event ordered the same as above
+                    filterIds?.filter(filterId =>filterArr?.some(filter => filter.id === filterId))
+                );
+
+                filteredOut = filters.some((filterArr, i) => // change to every if all different filters have to be off for event to filter out
+                    // if no filters for area, return false so it doesn't return true and filter out
+                    filtersEvent[i].length == 0 ? false : filtersEvent[i].every(id => // change to some if only one of same filter have to be off for event to filter out
+                        filterArr?.some(filter => filter.id == id && !filter.enabled && !filter.script) 
+                    )  
+                );
+            } else {
+                filteredOut = filterIds.every(id => 
+                    config.eventFilters?.some(filter => filter.id == id && !filter.enabled && !filter.script)
+                );
+            }
         }  
             
-            
-            /*
-            filteredOut = filterId?.every(id => {
-                return config.eventFilters?.some(filter => filter.id == id && !filter.enabled && !filter.script && !config.scriptNames.onEventFilterChange); 
-            });
-            */
-
-        const filteredSearch = config.searchBy ? (config?.searchBy).every((field) => {
-            return config.search && !ev.extendedProps.event[field]?.toLowerCase().includes(config.search.toLowerCase());
-        }) : false;
+        const filteredSearch = config.searchBy ? (config?.searchBy).every((field) =>
+            config.search && !ev.extendedProps.event[field]?.toLowerCase().includes(config.search.toLowerCase())
+        ) : false;
 
         if (filteredOut || filteredSearch) return false;
 

@@ -15,8 +15,18 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
     if (!config) return null
 
     const toggleFilter = (filter: JAC.EventFilter) => {
-        if (!filter.script || !config.scriptNames.onEventFilterChange) {
-            return setConfig(prev => {
+        if (filter.script) {
+            performScript(filter.script, {
+                ...filter,
+                enabled: !filter.enabled || false
+            });
+        } else if (config.scriptNames.onEventFilterChange){
+            performScript("onEventFilterChange", {
+                ...filter,
+                enabled: !filter.enabled || false
+            });
+        } else {
+            setConfig(prev => {
                 const newFilters = prev?.eventFilters?.map(f => {
                     if (f.id === filter.id) {
                         f.enabled = !f.enabled;
@@ -28,18 +38,6 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
                     ...prev, 
                     eventFilters: newFilters
                 } as JAC.Config;
-            });
-        }
-
-        if (filter.script) {
-            performScript(filter.script, {
-                ...filter,
-                enabled: !filter.enabled || false
-            });
-        } else {
-            performScript("onEventFilterChange", {
-                ...filter,
-                enabled: !filter.enabled || false
             });
         }
     }
