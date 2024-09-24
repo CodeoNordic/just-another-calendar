@@ -55,7 +55,7 @@ export default function mapEvents(config: JAC.Config) {
                     filterIds?.filter(filterId =>filterArr?.some(filter => filter.id === filterId))
                 );
 
-                filteredOut = filters.some((filterArr, i) => // change to every if all different filters have to be off for event to filter out
+                filteredOut = filters.some((filterArr, i) => // change to every if all different types of filters have to be off for event to filter out
                     // if no filters for area, return false so it doesn't return true and filter out
                     filtersEvent[i].length == 0 ? false : filtersEvent[i].every(id => // change to some if only one of same filter have to be off for event to filter out
                         filterArr?.some(filter => filter.id == id && !filter.enabled && !filter.script) 
