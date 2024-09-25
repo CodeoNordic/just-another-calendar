@@ -14,9 +14,7 @@ const Search: FC = () => {
         collapsed={!config.searchOpenDefault}>
             <input type="text" placeholder={config.translations?.searchPlaceholder ?? "Search"}
                 value={config.search || ""}
-                onChange={e => { 
-                    setConfig((prev: JAC.Config | null) => ({...prev, search: e.target.value}) as JAC.Config)
-                }}
+                onChange={e => setConfig(prev => ({...prev, search: e.target.value}) as JAC.Config)}
             />
         </Collapse>
     </div>

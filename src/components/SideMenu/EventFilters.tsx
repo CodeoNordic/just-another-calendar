@@ -43,42 +43,45 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
         }
     }
 
-    return <Collapse top={<>
-        <div>{props.header ?? "Filters"}</div>
-    </>}
-    collapsed={props.openDefault}>
-        {props.filters?.map((filter) => {
-            const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", "#f5f5f5", config.contrastMin) 
-                && config.contrastCheck !== false;
+    return <div>
+        <div className="divider" /> 
+        <Collapse top={<>
+            <div>{props.header ?? "Filters"}</div>
+        </>}
+        collapsed={props.openDefault}>
+            {props.filters?.map((filter) => {
+                const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", "#f5f5f5", config.contrastMin) 
+                    && config.contrastCheck !== false;
 
-            const iconStyles = {
-                backgroundColor: filter.color || "#3788d8",
-                border: notEnoughContrast 
-                    ? "1px solid #000" 
-                    : `1px solid ${filter.color || "#3788d8"}`,
-                fill: notEnoughContrast ? "#000" : "#fff"
-            }
+                const iconStyles = {
+                    backgroundColor: filter.color || "#3788d8",
+                    border: notEnoughContrast 
+                        ? "1px solid #000" 
+                        : `1px solid ${filter.color || "#3788d8"}`,
+                    fill: notEnoughContrast ? "#000" : "#fff"
+                }
 
-            return (<div 
-                className="filter-item" 
-                key={filter.id}  
-                onClick={() => !filter.locked && toggleFilter(filter)}
-                style={{
-                    opacity: (filter.enabled && !filter.locked) ? 1 : 0.5,
-                    cursor: filter.locked ? "not-allowed" : "pointer"
-                }}
-            >
-                {filter.enabled ? 
-                <Checkmark className="filter-checkbox" style={iconStyles}/> :
-                <Crossmark className="filter-checkbox" style={iconStyles}/>}
-                
-                <p style={{
-                    color: notEnoughContrast ? "#000" : filter.color || "#3788d8"
-                }}>{filter.title}</p>
-                {filter.locked && <Padlock className="filter-lock"/>}
-            </div>
-        )})}
-    </Collapse>
+                return (<div 
+                    className="filter-item" 
+                    key={filter.id}  
+                    onClick={() => !filter.locked && toggleFilter(filter)}
+                    style={{
+                        opacity: (filter.enabled && !filter.locked) ? 1 : 0.5,
+                        cursor: filter.locked ? "not-allowed" : "pointer"
+                    }}
+                >
+                    {filter.enabled ? 
+                    <Checkmark className="filter-checkbox" style={iconStyles}/> :
+                    <Crossmark className="filter-checkbox" style={iconStyles}/>}
+                    
+                    <p style={{
+                        color: notEnoughContrast ? "#000" : filter.color || "#3788d8"
+                    }}>{filter.title}</p>
+                    {filter.locked && <Padlock className="filter-lock"/>}
+                </div>
+            )})}
+        </Collapse>
+    </div>
 }
 
 const EventFilters: FC = () => {
@@ -92,8 +95,7 @@ const EventFilters: FC = () => {
         return copy;
     }, [config.eventFilters]);
 
-    return <div>
-        <div className="divider" />        
+    return <div>        
         {config.eventFilterAreas && config.eventFilterAreas?.map((area) => 
             <EventFilterArea key={area.name} filters={sortedFilters?.filter((filter) => filter.areaName === area.name)} header={area.title} openDefault={area.openDefault}/>
         ) || <EventFilterArea filters={sortedFilters} />}
