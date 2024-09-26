@@ -24,7 +24,6 @@ const NewEvent: FC<NewEventProps> = props => {
     const [position, setPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [arrowPos, setArrowPos] = useState<{ x: number, y: number, dir: number }>({ x: 0, y: 0, dir: 0 })
     const [visible, setVisible] = useState(false);
-    const [moved, setMoved] = useState(false);
 
     const calendarRef = useCalendarRef();
 
@@ -113,6 +112,7 @@ const NewEvent: FC<NewEventProps> = props => {
 
     const addEvent = () => {
         setConfig((prev) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
+        console.log(newEvent);
         config?.scriptNames?.eventCreated && performScript(config.scriptNames.eventCreated, newEvent);
         stopNewEvent();
     }
@@ -142,7 +142,6 @@ const NewEvent: FC<NewEventProps> = props => {
                 y: e.clientY - rect.top,
             });
             setIsDragging(true);
-            setMoved(true);
         }
     };
 

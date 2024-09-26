@@ -220,12 +220,11 @@ init(JSON.stringify({
             textColor: "#ffffff",
             event: {
                 FirstName: "Joakim",
-                filterId: 'filter1',
+                filterId: ['filter1', 'source1'],
                 colors: {
                     background: '#ff0000',
                     border: '#ff0000'
-                },
-                source: 'source1'
+                }
             }
         },
         {
@@ -234,12 +233,11 @@ init(JSON.stringify({
             textColor: "#ffffff",
             event: {
                 FirstName: "Joakim Isaksen",
-                filterId: 'filter2',
+                filterId: ['filter2', 'source2'],
                 colors: {
                     background: '#00ff00',
                     border: '#00ff00'
-                },
-                source: 'source2'
+                }
             }
         },
         {
@@ -248,12 +246,11 @@ init(JSON.stringify({
             textColor: "#ffffff",
             event: {
                 FirstName: "Joakim Isaksen +",
-                filterId: 'filter2',
+                filterId: ['filter2', 'source1'],
                 colors: {
                     background: '#0000ff',
                     border: '#0000ff'
-                },
-                source: 'source1'
+                }
             }
         },
         {
@@ -263,12 +260,11 @@ init(JSON.stringify({
             event: {
                 duration: "02:00",
                 FirstName: "test testesen",
-                filterId: 'filter3',
+                filterId: ['filter3', 'source3'],
                 colors: {
                     background: '#ff00ff',
                     border: '#ff00ff'
-                },
-                source: 'source3'
+                }
             }
         },
         {
@@ -277,12 +273,11 @@ init(JSON.stringify({
             textColor: "#ffffff",
             event: {
                 FirstName: "Vetle :)",
-                filterId: 'filter3',
+                filterId: ['filter3', 'source2'],
                 colors: {
                     background: '#00ffff',
                     border: '#00ffff'
-                },
-                source: 'source2'
+                }
             }
         } 
     ],

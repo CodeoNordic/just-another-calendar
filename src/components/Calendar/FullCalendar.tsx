@@ -379,6 +379,15 @@ const FullCalendar: FC = () => {
                     calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
                 }
 
+                setNewEvent(prev => ({
+                    ...prev,
+                    id: randomUUID(),
+                    start: start.toISOString(),
+                    end: end.toISOString(),
+                    resourceId: info.resource?._resource.id,
+                    ...event
+                }));
+
                 setTimeout(() => {
                     setNewEvent(prev => ({
                         ...prev,
@@ -405,7 +414,8 @@ const FullCalendar: FC = () => {
                             ...dateToObject(end),
                             time: end.toTimeString().split(' ')[0]
                         },
-                        resourceId: info.resource?.id
+                        resourceId: info.resource?.id,
+                        ...newEvent
                     });
                 }
 
