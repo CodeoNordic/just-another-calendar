@@ -74,9 +74,14 @@ declare global {
                 onEventFilterChange: string;
                 onSourceFilterChange: string;
 
+                poll: string;
+
                 newEvent?: string;
                 eventCreated?: string;
             };
+
+            nextPollMs: number; // Polls once after this time
+            pollIntervalMs: number; // Polls every x ms
 
             customCSS?: string;
             styles?: {
