@@ -35,7 +35,7 @@ For FileMaker Pro developers:
 - [Event templates](./documentation/event-templates.md)
 
 ## Contact (support)
-You may contact our development team for consultation/freelancing regarding this module.
+You may contact our development team for consulting/freelancing regarding this module.
 
 - Company: Codeo Norge AS
 - Email: support@codeo.no

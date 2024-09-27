@@ -1,14 +1,13 @@
-import { useEffect } from 'react';
 import { useConfigState } from '@context/Config';
+import { useCreateMethod } from '@utils/createMethod';
 
-import createMethod from '@utils/createMethod';
 import searchArray from '@utils/searchArray';
 
 export default function useUpdateEvent() {
     const [, setConfig] = useConfigState();
 
-    useEffect(createMethod('updateEvent', (find, data, autocreate = false) => setConfig(config => {
-        if (!config || !config.events) return null;
+    useCreateMethod('updateEvent', (find, data, autocreate = false) => setConfig(config => {
+        if (!config || !config.events) return config;
         const copy = [...config.events];
 
         
@@ -42,5 +41,5 @@ export default function useUpdateEvent() {
             ...config,
             events: [...copy]
         }
-    })), []);
+    }));
 }

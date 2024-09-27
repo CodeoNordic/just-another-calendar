@@ -40,7 +40,7 @@ Check the [event component definition](./event-components.md) for more informati
 
     "eventComponents": [
         {
-            "name": "YourConsultationComponent",
+            "name": "YourMeetingComponent",
             "fields": [
                 {
                     "type": "text",

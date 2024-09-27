@@ -34,13 +34,16 @@ declare global {
         */
         updateEvent(find: Partial<JAC.Event>, data: JAC.Event, autocreate?: boolean): void;
 
-        /** Set the current date to show. */
-        /** @deprecated use setConfigValue('date', value) */
-        setCurrentDate(date?: string): void;
-
-        /** Changes the calendar view */
-        /** @deprecated use setConfigValue('view', value) */
-        setView(view: string): void;
+        /**
+         * Update a specific filter
+         * @param find Either the array index of the filter, its ID, or values of the filter object
+         * @param data The values of the filter to update
+         * @example ```ts
+         * // Lock the first filter
+         * updateFilter(0, JSON.stringify({locked: true}));
+         * ```
+         */
+        updateFilter(find: string|number|Partial<JAC.EventFilter>, data: Partial<JAC.EventFilter>): void;
 
         /** Revert changes to an event */
         revert(id: string): void;

@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useConfigState } from '@context/Config';
 
-import createMethod from '@utils/createMethod';
+import { useCreateMethod } from '@utils/createMethod';
 import searchArray from '@utils/searchArray';
-
-
 
 export default function useAddEvents() {
     const [, setConfig] = useConfigState();
@@ -28,7 +26,6 @@ export default function useAddEvents() {
         }
     })
 
-    useEffect(() => createMethod('addEvents', addEvents), []);
-    useEffect(() => createMethod('addEvent', addEvents), []);
+    useCreateMethod('addEvents|addEvent', addEvents);
 }
 
