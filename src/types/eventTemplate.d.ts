@@ -5,6 +5,7 @@ declare global {
             backgroundColor?: string;
             textColor?: string;
             event: JAC.Event;
+            locked?: boolean;
         }
     }
 }

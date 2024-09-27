@@ -114,7 +114,7 @@ const FullCalendar: FC = () => {
 
     const eventsBase: EventSourceInput = useMemo(
         () => mapEvents(config),
-        [config.events, config.eventFilters, config.search, config.searchBy]
+        [config.events, config.eventFilters, config.searchFields]
     );
 
     useEffect(() => {

@@ -54,7 +54,6 @@ const defaultConfig: Partial<JAC.Config> = {
     contrastMin: 2,
     nowIndicator: true,
     eventTemplatesOpenDefault: true,
-    searchOpenDefault: true,
     sideMenuOpen: false
 };
 

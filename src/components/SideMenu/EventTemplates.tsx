@@ -25,7 +25,10 @@ const EventTemplates: FC = () => {
                         background: template.backgroundColor || "#3788d8",
                         color: calculateContrast(template.textColor || "#fff", template.backgroundColor || "#3788d8", config?.contrastMin) 
                             ? template.textColor || "#fff" 
-                            : "#000"
+                            : "#000",
+                        pointerEvents: template.locked ? "none" : "auto",
+                        opacity: template.locked ? 0.5 : 1,
+                        cursor: template.locked ? "not-allowed" : "grab"
                     }}>
                     {template.title}
                 </div>

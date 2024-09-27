@@ -16,10 +16,7 @@ declare global {
                 openDefault?: boolean;
             }];
             
-            // fields in event that should be searched
-            searchBy?: string[];
-            search?: string;
-            searchOpenDefault?: boolean;
+            searchFields?: SearchField[];
             
             contrastCheck?: boolean;
             contrastMin?: number;
@@ -72,7 +69,7 @@ declare global {
                 onDateSelected: string;
                 onEventChange: string;
                 onEventFilterChange: string;
-                onSourceFilterChange: string;
+                onSearch: string;
 
                 poll: string;
 
