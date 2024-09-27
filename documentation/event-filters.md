@@ -76,7 +76,7 @@ FileMaker script.
             "id": "filter2",
             "title": "Consulting",
 
-            "color": "#ff0000",
+            "color": "#4499cc",
 
             "enabled": true,
             "locked": false,
@@ -136,7 +136,7 @@ the second event will be hidden only when both filters are disabled.
         {
             "id": "filter2",
             "title": "Filter 2",
-            "color": "#ff0000",
+            "color": "#4499cc",
 
             "script": "[TRG] = Enable/Disable Filter2"
         }

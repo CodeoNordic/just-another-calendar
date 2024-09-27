@@ -58,7 +58,8 @@ The first parameter is the event itself, and the second parameter is the config.
 Example:
 ```json
 {
-    "eval": "(event, config) => config.hidePersonalInfo? event.patientReference: event.patientName"
+    // You can pass custom values to both the config and the events
+    "eval": "(event, config) => config.HidePersonalInfo? event.PatientReference: event.PatientName"
 }
 ```
 

@@ -1,8 +1,6 @@
 import moment from 'moment';
 import { weekDays } from './calendarDates';
 
-
-
 // Source: https://www.w3resource.com/javascript-exercises/javascript-date-exercise-24.php
 export default function weekNumber(dt: Date) 
 {

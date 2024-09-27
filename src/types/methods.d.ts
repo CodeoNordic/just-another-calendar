@@ -35,15 +35,15 @@ declare global {
         updateEvent(find: Partial<JAC.Event>, data: JAC.Event, autocreate?: boolean): void;
 
         /**
-         * Update a specific filter
+         * Update a specific event filter
          * @param find Either the array index of the filter, its ID, or values of the filter object
          * @param data The values of the filter to update
          * @example ```ts
          * // Lock the first filter
-         * updateFilter(0, JSON.stringify({locked: true}));
+         * updateEventFilter(0, JSON.stringify({locked: true}));
          * ```
          */
-        updateFilter(find: string|number|Partial<JAC.EventFilter>, data: Partial<JAC.EventFilter>): void;
+        updateEventFilter(find: string|number|Partial<JAC.EventFilter>, data: Partial<JAC.EventFilter>): void;
 
         /** Revert changes to an event */
         revert(id: string): void;

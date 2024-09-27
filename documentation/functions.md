@@ -142,5 +142,19 @@ If the search returns more than one event, a warning will be logged to the conso
 
 **The entire event's JSON can be passed as the second parameter**, meaning that updating an event in the calendar is very simple.
 
+### updateEventFilter(search, data)
+Update a specific [event filter](./event-filters.md). Useful when you want to lock/unlock a filter.
+
+The search parameter can be either the filter's index in the array (number), the event filter's ID (string),
+or an object which matches one or more of the filter's values.
+
+Example:
+```js
+// Lock the first event filter
+updateEventFilter(0, JSON.stringify({ locked: true }));
+```
+
 ### revert(id)
 Revert/undo an action made in the web viewer, such as moving an event.
+
+This method has limited functionality.

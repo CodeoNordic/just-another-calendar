@@ -23,7 +23,7 @@
     "upload:clean": "npm run build && npm run upload",
     "b:upload:clean": "bun run b:build && bun run b:upload",
     "dist": "node distribute.js",
-    "b:dist": "node distribute.js"
+    "b:dist": "bun distribute.js"
   },
   "engines": {
     "node": ">=20"
