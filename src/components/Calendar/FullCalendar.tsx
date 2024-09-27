@@ -85,13 +85,6 @@ const FullCalendar: FC = () => {
 
         window.debug = api;
 
-        const cleanupSetView = createMethod('setView', view => api.changeView(view));
-        const cleanupSetCurrentDate = createMethod('setCurrentDate', str => {
-            const date = dateFromString(str) || new Date();
-            api.gotoDate(date);
-            setCurrentDate(date);
-        });
-
         // Automatically open/close resource groups on update
         const resourceListener = (resources: ResourceApi[]) => {
             resources.forEach(resource => {
@@ -107,8 +100,6 @@ const FullCalendar: FC = () => {
         
         api.on('resourcesSet', resourceListener);
         return () => {
-            cleanupSetView();
-            cleanupSetCurrentDate();
             api.off('resourcesSet', resourceListener);
         }
     }, [calendarRef]);
