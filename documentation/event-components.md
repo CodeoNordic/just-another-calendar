@@ -78,11 +78,11 @@ that the JavaScript code passed is correct.
     ],
 
     "events": {
-        "id": "1",
+        "id": "abcd-efgh-ijkl-mnop",
         "resourceId": "room6",
 
-        "start": "2024-11-19T07:00:00.000Z", // 09:00 in Malmö, Sweden
-        "end": "2024-11-19T08:00:00.000Z", // 10:00 in Malmö, Sweden
+        "start": "2024-11-19T07:00:00.000Z",
+        "end": "2024-11-19T08:00:00.000Z",
 
         // Additional custom fields to be used in an event component
         "title": "Just Another Calendar",
@@ -110,3 +110,7 @@ that the JavaScript code passed is correct.
     ]
 }
 ```
+
+Each field may also include a [`_filter`](./_filter.md). Codeo uses this to dynamically display
+patient names/references based on a boolean which decides if personal info may be shown or not,
+making the solution highly GDPR-compliant.

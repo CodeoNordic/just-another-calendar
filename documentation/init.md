@@ -130,6 +130,22 @@ Example:
 }
 ```
 
+### `eventFilterAreas` (array)
+The list of areas that [event filters](./event-filters.md) can be grouped into.
+
+Example:
+```json
+{
+    "eventFilterAreas": [
+        {
+            "name": "area1", // Unique name
+            "title": "Area 1", // Title displayed in the menu
+            "openDefault": true // Whether the area should be opened or collapsed by default
+        }
+    ]
+}
+```
+
 **Default value:** `true`
 
 ### `search` (string)

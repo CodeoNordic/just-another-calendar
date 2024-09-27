@@ -8,11 +8,6 @@ const useSetConfigValue = () => {
         ...prev,
         [k]: v
     })));
-
-    useCreateMethod('setConfigProp', (k, v) => setConfig(prev => prev && ({
-        ...prev,
-        [k]: v
-    })));
 }
 
 export default useSetConfigValue;

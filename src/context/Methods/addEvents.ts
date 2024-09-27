@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useConfigState } from '@context/Config';
 
-import createMethod from '@utils/createMethod';
+import { useCreateMethod } from '@utils/createMethod';
 import searchArray from '@utils/searchArray';
-
-
 
 export default function useAddEvents() {
     const [, setConfig] = useConfigState();
@@ -23,12 +21,11 @@ export default function useAddEvents() {
                 // If _filter is defined, the event should only be included if no existing events match it
                 ...(param instanceof Array? param: [param]).filter(event => !event._filter || !Boolean(
                     searchArray(events, event._filter).length
-                ))
+                )).map(({ _filter, ...ev }) => ev)
             ]
         }
     })
 
-    useEffect(() => createMethod('addEvents', addEvents), []);
-    useEffect(() => createMethod('addEvent', addEvents), []);
+    useCreateMethod('addEvents|addEvent', addEvents);
 }
 
