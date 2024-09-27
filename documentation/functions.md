@@ -21,6 +21,52 @@ setConfigValue('view', 'resourceTimeGridDay');
 ### addEvents(events) (alias: addEvent)
 Add one or more events to the calendar.
 
+An optional [`_filter`](./_filter.md) can be added to specify a criteria
+that other events must not match in order for the event to be added.
+
+The event ID is checked by default, so you don't need to add a filter for this.
+
+Example:
+```js
+// Add one event to the calendar
+addEvents(
+    JSON.stringify({
+        id: "abcd-efgh-ijkl-mnop",
+        start: "2024-11-19T07:00:00.000Z",
+        end: "2024-11-19T08:00:00.000Z",
+
+        // Additional fields not used by the calendar
+        PatientName: "Joakim Isaksen"
+    })
+)
+
+// Add two events
+addEvents(
+    JSON.stringify([
+        {
+            id: "abcd-efgh-ijkl-mnop",
+            start: "2024-11-19T07:00:00.000Z",
+            end: "2024-11-19T08:00:00.000Z",
+
+            PatientName: "Joakim Isaksen"
+        },
+
+        {
+            id: "pomn-lkji-hgfe-dcba",
+            start: "2024-11-19T07:00:00.000Z",
+            end: "2024-11-19T08:00:00.000Z",
+
+            PatientName: "Andreas Haandlykken",
+
+            // Only add this event if no other event has the 'PatientName' as 'Andreas Haandlykken'
+            _filter: {
+                PatientName: "Andreas Haandlykken"
+            }
+        }
+    ])
+)
+```
+
 ### removeEvents(search, [limit])
 Remove one or more events from the calendar, specified by one or more searches, with an optional limit on how many events can be removed at once.
 

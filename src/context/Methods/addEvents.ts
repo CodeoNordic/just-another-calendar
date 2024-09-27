@@ -23,7 +23,7 @@ export default function useAddEvents() {
                 // If _filter is defined, the event should only be included if no existing events match it
                 ...(param instanceof Array? param: [param]).filter(event => !event._filter || !Boolean(
                     searchArray(events, event._filter).length
-                ))
+                )).map(({ _filter, ...ev }) => ev)
             ]
         }
     })

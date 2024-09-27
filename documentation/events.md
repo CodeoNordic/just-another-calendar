@@ -5,6 +5,10 @@ The minimum requirement for each event is a unique `id` (string), and a start+en
 If you are using a [FullCalendar view](./init.md#view-string), each event must also have
 an associated `resourceId` (string or array of strings).
 
+You can add any amount of additional fields, as long as they do not conflict with fields
+already in use by the calendar. It is recommended to avoid using `camelCase`-casing for
+additional fields, as the calendar uses this format. 
+
 ## Start+End
 Due to a diversity in preference, there are multiple ways of defining a date/time range for events:
 
@@ -46,8 +50,8 @@ ISO timestamps.
             "end": "2024-11-19T08:00:00.000Z", // 10:00 in Malmö, Sweden
 
             // Additional custom fields to be used in an event component
-            "title": "Just Another Calendar",
-            "sponsor": "Andreas Haandlykken"
+            "Title": "Just Another Calendar",
+            "Sponsor": "Andreas Haandlykken"
         }
     ]
 }

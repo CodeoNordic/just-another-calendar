@@ -29,6 +29,11 @@ For FileMaker Pro developers:
 - [Initialising the Web Viewer](./documentation/web-viewer.md)
 - [Callable Functions from FileMaker](./documentation/functions.md)
 
+- [Event definition](./documentation/events.md)
+- [Event components](./documentation/event-components.md)
+- [Event buttons](./documentation/event-buttons.md)
+- [Event templates](./documentation/event-templates.md)
+
 ## Contact (support)
 You may contact our development team for consultation/freelancing regarding this module.
 
