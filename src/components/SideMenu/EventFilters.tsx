@@ -48,7 +48,7 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
         <Collapse top={<>
             <div>{props.header ?? "Filters"}</div>
         </>}
-        collapsed={props.openDefault}>
+        collapsed={props.openDefault === false}>
             {props.filters?.map((filter) => {
                 const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", "#f5f5f5", config.contrastMin) 
                     && config.contrastCheck !== false;

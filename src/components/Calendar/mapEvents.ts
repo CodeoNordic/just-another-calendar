@@ -69,10 +69,10 @@ export default function mapEvents(config: JAC.Config) {
         }  
             
         const filteredSearch = config.searchFields ? config.searchFields.some(searchField => {
-            if (!searchField.search || !searchField.searchBy) return false;
+            if (!searchField.search || !searchField.searchBy || searchField.script || config.scriptNames.onSearch) return false;
 
             return searchField.searchBy?.some(field => 
-                ev.extendedProps.event[field]?.toLowerCase().includes(searchField.search?.toLowerCase())
+                !ev.extendedProps.event[field]?.toLowerCase().includes(searchField.search?.toLowerCase())
             );
         }) : false;
 

@@ -192,15 +192,33 @@ init(JSON.stringify({
             openDefault: false
         }
     ],
-    searchBy: ["FirstName", "start"],
+    searchFields: [
+        {
+            searchBy: [
+                "FirstName"
+            ],
+
+            title: "Søk etter navn",
+            placeholder: "Søk",
+            
+            openDefault: true
+        },
+        {
+            searchBy: [
+                "start",
+                "end"
+            ],
+
+            title: "Søk etter tid",
+            placeholder: "Søk",
+            
+            openDefault: true
+        }
+    ],  
     calendarStartTime: "08:00",
     calendarEndTime: "16:15",
     locale: "en",
     translations: {
-        searchHeader: "Søk",
-        searchPlaceholder: "Søk",
-        filtersHeader: "Filtre",
-        sourceHeader: "Kilder",
         allDaySlot: "Hele dagen",
         weekNumberHeader: "U",
         eventCreationHeader: "Ny Avtale",
@@ -281,7 +299,6 @@ init(JSON.stringify({
             }
         } 
     ],
-    searchOpenDefault: false,
     eventTemplatesOpenDefault: false,
     newEventFields: [
     {
