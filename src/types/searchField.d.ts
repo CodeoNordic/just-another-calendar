@@ -7,7 +7,7 @@ declare global {
             placeholder?: string; // Placeholder text for the search field
             
             openDefault?: boolean; // Whether the search field is open by default
-            search?: string; // The current search string
+            value?: string; // The current search string
 
             script?: string; // Script to run when the search field is changed for searching in FileMaker
         }

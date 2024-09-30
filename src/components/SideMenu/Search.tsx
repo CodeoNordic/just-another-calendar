@@ -8,7 +8,7 @@ const Search: FC = () => {
     if (!config?.searchFields) return null;
 
 
-    const setSearch = (searchField: JAC.SearchField, newSearch: string, index: number) => {
+    const setSearch = (searchField: JAC.SearchField, newValue: string, index: number) => {
         // priority is script from filter > script from config > client side toggle
         if (searchField.script) {
             performScript(searchField.script, {
@@ -23,7 +23,7 @@ const Search: FC = () => {
                 return {
                     ...prev,
                     searchFields: prev?.searchFields?.map((field, i) => 
-                        i === index ? { ...field, search: newSearch } : field
+                        i === index ? { ...field, value: newValue } : field
                     )
                 } as JAC.Config;
             });
@@ -37,7 +37,7 @@ const Search: FC = () => {
         </>}
         collapsed={searchField.openDefault === false}>
             <input type="text" placeholder={searchField.placeholder ?? "Search"}
-                value={searchField.search || ""}
+                value={searchField.value || ""}
                 onChange={e => setSearch(searchField, e.target.value, index)}
             />
         </Collapse>
