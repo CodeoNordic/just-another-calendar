@@ -23,6 +23,7 @@ The Licensee may not:
 - Redistribute, resell, sublicense, or otherwise make the Software (or modified versions of it) available as a standalone product or module, whether for free or for profit.
 - Include the Software as part of a tool, template, library, or software development kit (SDK) designed for reuse by third parties.
 - Use the Software to create products that directly compete with the Software or offer similar functionality for the purpose of resale or distribution.
+- Use the Software, including its Source Code or any part thereof, to train, develop, or improve any machine learning models, artificial intelligence systems, or similar automated processes.
 
 ## 3. Modifications
 The Licensee is permitted to modify the **source code version** for internal use and to integrate the modified Software into their own software products. However, any modifications made to the Software do not transfer any rights to the Licensee beyond those expressly provided by this License. The modified Software is subject to the same terms and conditions as the original version.
@@ -37,12 +38,12 @@ The Licensee is encouraged, but not required, to include an attribution or credi
 ## 5. Support, Updates, and Subscription Renewal
 Upon purchase, the Licensee is entitled to one year of software updates from the date of purchase, as specified below:
 
-### 5.1. Support (Freelancing Service):
-The Licensor offers optional support services on a freelance, on-demand basis. This support is not included with the purchase of the Software and must be contracted separately.
+### 5.1. Support:
+The Licensor offers optional support services on an on-demand basis. This support is not included with the purchase of the Software and must be contracted separately.
 
 Support services may include troubleshooting, customization, or implementation assistance. The terms, availability, and fees for such services will be defined in a separate agreement or contract between the Licensor and the Licensee at the time of request.
 
-For more information or to request support, the Licensee should contact the Licensor at support@codeo.no.
+For more information, the Licensee should contact the Licensor at sales@codeo.no.
 
 ### 5.2. Updates:
 The Licensee will have access to all Software updates released within one (1) year from the date of purchase. Updates may include bug fixes, performance improvements, and new features. Access to updates beyond this period requires the purchase of a subscription renewal or a new license.

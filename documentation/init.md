@@ -120,16 +120,6 @@ The list of available event filters.
 
 Check the [event filters definition](./event-filters.md) for more information.
 
-### `eventFiltersOpenDefault` (boolean)
-Controls whether the event filters area should be open or collapsed by default.
-
-Example:
-```json
-{
-    "eventFiltersOpenDefault": true
-}
-```
-
 ### `eventFilterAreas` (array)
 The list of areas that [event filters](./event-filters.md) can be grouped into.
 
@@ -148,37 +138,46 @@ Example:
 
 **Default value:** `true`
 
-### `search` (string)
-Controls the currently set search text. Useful for resetting the search.
+### `searchFields` (array)
+A list of search fields that should be available in the side-menu.
 
-Example:
+Search fields can either be client-only, or call a script that should update the event list.
+
 ```json
 {
-    "search": "Joakim"
+    "events": [
+        {
+            "id": "abcd-efgh-ijkl-mnop",
+
+            "Title": "Just Another Calendar",
+            "Sponsor": "Andreas Haandlykken"
+        }
+    ],
+
+    "searchFields": [
+        {
+            "searchBy": ["YourCustomName"], // List of values to use from an event when searching client-side
+
+            "title": "Search by Name", // Optional text displayed above the search field, area is not collapsible if this field is empty
+            "placeholder": "Type a name...", // Placeholder text shown when the field is empty
+
+            "openDefault": false, // Whether or not the area should be opened by default
+            "value": "", // The current search value, not required
+
+            "script": "[TRG] = EVNT Search" // Optional script to run when searching
+        },
+
+        {
+            "eval": "(input, event, config) => event.Title.toLowerCase() === input.toLowerCase()", // JS function to check if an event matches the search
+
+            "title": "Search by title",
+            "placeholder": "Type a title...",
+
+            "openDefault": true
+        }
+    ]
 }
 ```
-
-### `searchBy` (array)
-Controls which values to use from an event when searching.
-
-Example:
-```json
-{
-    "searchBy": ["title", "tooltip"]
-}
-```
-
-### `searchOpenDefault` (boolean)
-Controls whether the search area is open by default.
-
-Example:
-```json
-{
-    "searchOpenDefault": true
-}
-```
-
-**Default value:** `true`
 
 ### `contrastCheck` (boolean)
 Controls whether or not the built-in contrast checker should be used when displaying certain elements,
@@ -444,3 +443,34 @@ Check the [icon definition](./icons.md) for more information.
 The list of available popup-buttons to display when hovering over events.
 
 Check the [event button definition](./event-buttons.md) for more information.
+
+### `nextPollMs` (number)
+When this value is set, the module will run the `poll` script defined in [`scriptNames`](#scriptnames-object),
+after a delay in milliseconds. Every time this number is set again, it will queue another poll.
+
+`nextPollMs` is particularly useful for controlled polling, meaning you can account for
+the time a FileMaker script takes to run, preventing cases where the script may run
+before the previous script has finished.
+
+For instance, you can set this value once, and set it again once the polling script has finished.
+
+```json
+{
+    "nextPollMs": 3000
+}
+```
+
+### `pollIntervalMs` (number)
+Assign an interval in milliseconds for how often the module should run the `poll` script defined
+in [`scriptNames`](#scriptnames-object).
+
+This polling is continuous, meaning that if you set this value to 10 000, it will run the `poll`
+script every 10 seconds.
+
+Consider using [`nextPollMs`](#nextpollms-number) if possible, as it will likely be more consistent. 
+
+```json
+{
+    "pollIntervalMs": 10000
+}
+```
