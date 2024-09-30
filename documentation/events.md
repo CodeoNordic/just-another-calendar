@@ -46,8 +46,8 @@ ISO timestamps.
             "id": "1",
             "resourceId": "room6",
 
-            "start": "2024-11-19T07:00:00.000Z", // 09:00 in Malmö, Sweden
-            "end": "2024-11-19T08:00:00.000Z", // 10:00 in Malmö, Sweden
+            "start": "2024-11-19T07:00:00.000Z",
+            "end": "2024-11-19T08:00:00.000Z",
 
             // Additional custom fields to be used in an event component
             "Title": "Just Another Calendar",

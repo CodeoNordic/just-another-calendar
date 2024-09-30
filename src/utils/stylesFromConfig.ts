@@ -8,7 +8,7 @@ const map: { [k in keyof Styles]: string } = {
     tooltip: '#tooltip'
 }
 
-const styleLine = (selector: string, style: JAC.TextStyle) => {
+export const styleLine = (selector: string, style: JAC.TextStyle) => {
     const rules: string[] = [];
 
     style.font && rules.push(`${selector} {font-family:${style.font} !important;}`);

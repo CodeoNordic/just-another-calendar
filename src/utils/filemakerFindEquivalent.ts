@@ -16,7 +16,7 @@ function greaterOrLessThan(a: string, b: string, operator: '<'|'>'|'<='|'>=') {
         const dateA = dateFromString(a);
         const dateB = dateFromString(b);
 
-        if (dateA && dateB) {
+        if ((dateA instanceof Date) && (dateB instanceof Date)) {
             valueA = dateA.valueOf();
             valueB = dateB.valueOf();
         }

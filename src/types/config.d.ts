@@ -75,7 +75,7 @@ declare global {
 
                 newEvent?: string;
                 eventCreated?: string;
-            };
+            } & Record<string & {}, string>;
 
             nextPollMs: number; // Polls once after this time
             pollIntervalMs: number; // Polls every x ms
