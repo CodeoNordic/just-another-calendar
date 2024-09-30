@@ -9,6 +9,8 @@ declare global {
             openDefault?: boolean; // Whether the search field is open by default
             value?: string; // The current search string
 
+            eval?: string; // JavaScript to run when the search field is changed
+
             script?: string; // Script to run when the search field is changed for searching in FileMaker
         }
     }

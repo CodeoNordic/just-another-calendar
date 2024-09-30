@@ -69,6 +69,22 @@ export default function mapEvents(config: JAC.Config) {
         }  
             
         const filteredSearch = config.searchFields ? config.searchFields.some(searchField => {
+            if (searchField.eval) {
+                try {
+                const func = eval(searchField.eval);
+                if (typeof func !== 'function') throw new Error('Eval result was not a function')
+            
+                const result = func(searchField.value, ev.extendedProps.event, window._config);
+
+                return !Boolean(result);
+
+                } catch(err) {
+                    console.error('Failed to parse eval for the following field', searchField);
+                    console.error(err);
+                    return false;
+                }
+            }
+ 
             if (!searchField.value || !searchField.searchBy || searchField.script || config.scriptNames.onSearch) return false;
 
             return searchField.searchBy?.every(field => 
