@@ -305,7 +305,7 @@ const FullCalendar: FC = () => {
                     if (target === button || button.contains(target)) return;
                 }
 
-                performScript('editEvent', info.event.id);
+                performScript('editEvent', info.event.extendedProps!.event);
             }}
 
             eventChange={info => {
