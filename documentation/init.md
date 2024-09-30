@@ -142,6 +142,8 @@ Example:
 A list of search fields that should be available in the side-menu.
 
 Search fields can either be client-only, or call a script that should update the event list.
+If a search field does not have one of the following values: `searchBy`, `eval`, or `script`,
+it will not be included in the list, and a warning will be issued to the console.
 
 ```json
 {

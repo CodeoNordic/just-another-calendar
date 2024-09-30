@@ -24,6 +24,7 @@ const archiver = require('archiver');
 const { spawn } = require('child_process');
 const { join } = require('path');
 const { createInterface } = require('readline/promises');
+const { globSync } = require('glob');
 
 if (!fs.existsSync(fcLicenseFileName)) throw new Error(`${fcLicenseFileName} is required, as it will be injected into index.html`);
 const fcLicense = fs.readFileSync(fcLicenseFileName, 'utf-8').toString();
@@ -31,7 +32,9 @@ const fcLicense = fs.readFileSync(fcLicenseFileName, 'utf-8').toString();
 const packageJson = require('./package.json');
 if (typeof packageJson !== 'object') throw new Error('package.json was not parsed as an object');
 
-const copyrightNotice = `Copyright © ${new Date().getFullYear()} ${packageJson.author?.name ?? 'Unknown'}. All rights reserved`;
+const copyrightTemplate = `Copyright © {year} ${packageJson.author.name ?? 'Unknown'}. All rights reserved`;
+const copyrightNotice = copyrightTemplate.replace('{year}', String(new Date().getFullYear()));
+
 const title = `${packageJson.name} distribution tool`;
 
 const dashes = Array.from(new Array(Math.max(copyrightNotice.length, title.length) + 1)).map(() => '').join('-')
@@ -64,7 +67,10 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
     if (updateVersion) {
         answer = await stdInterface.question('Please write the new version (x.x.x)\n> ') || "";
 
-        const numbers = answer.split('.');
+        const numbers = answer
+            .split('.')
+            .map(str => str.replace(/\D*/g, ''));
+        
         if (
             numbers.length !== 3 ||
             !numbers.every(n => Number.isFinite(Number(n)))
@@ -76,7 +82,7 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         const replacedPackageContent = packageContent.replace(
             /"version":(\s)*"(\d\.){2}\d"/m,
             `"version":$1"${version}"`
-        );
+        ).replace(/\r\n/g, '\n');
 
         fs.writeFileSync(
             './package.json',
@@ -84,6 +90,78 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
             { encoding: 'utf-8' }
         );
     }
+
+    // Check for patch notes
+    const patchNotesPath = join(__dirname, 'documentation', 'patch-notes');
+    
+    const currentPatchNotes = `${version}.md`;
+    const currentPatchNotesPath = join(patchNotesPath, currentPatchNotes);
+    const currentPatchNotesExist = fs.existsSync(currentPatchNotesPath);
+
+    if (!currentPatchNotesExist) {
+        answer = await yesNo(`Patch notes for v${version} was not found. Do you still wish to continue?`);
+        if (!answer) process.exit(0);
+    }
+
+    // Patchnotes
+    const allPatchNotes = globSync('*.md', { cwd: patchNotesPath });
+
+    const patchNoteValues = {
+        name: packageJson.name,
+        title: packageJson.title,
+        version,
+        author: packageJson.author.name
+    }
+
+    const commentRegex = /<!--.*?-->($|(\r?\n))/g;
+    const trimRegex = /(^(\r?\n)+)|((\r?\n)+$)/g;
+
+    // TODO get contents
+    const patchNoteMap = allPatchNotes.map(fileName => {
+        let content = fs.readFileSync(join(patchNotesPath, fileName), 'utf-8');
+
+        content = content.replace(/\{[\w\d-]+\}/g, str => {
+            const key = str.substring(1, str.length - 1);
+            if (key.startsWith('copyright-')) return copyrightTemplate.replace('{year}', key.substring('copyright-'.length));
+            
+            return String(patchNoteValues[key] ?? str);
+        });
+
+        const jsTokensStart = Array.from(
+            content.matchAll(/<!--( )*\[JSONLY START\]( )*-->($|(\r?\n))/g)
+        );
+
+        const jsTokensEnd = Array.from(
+            content.matchAll(/<!--( )*\[JSONLY END\]( )*-->($|(\r?\n))/g)
+        );
+
+        if (jsTokensStart.length !== jsTokensEnd.length)
+            throw new Error(`${fileName} has invalid JS ONLY markers. There are ${jsCountStart.length} start markers, but ${jsCountEnd.length} end markers.`);
+
+        let contentLite = content
+        //let contentLite = content.replace(/(^|(\r?\n))<!-- *\[JSONLY START\] *-->[^$]*?<!-- *\[JSONLY END\] *-->$|(\r?\n)/g, '');
+        for (let i = 0; i < jsTokensStart.length; i++) {
+            const startToken = jsTokensStart[i];
+            const endToken = jsTokensEnd[i];
+
+            contentLite = contentLite.substring(0, startToken.index) + contentLite.substring(endToken.index + (endToken[0].length));
+        }
+
+        content = content
+            .replace(commentRegex, '')
+            .replace(trimRegex, '');
+
+        contentLite = contentLite
+            .replace(commentRegex, '')
+            .replace(trimRegex, '');
+
+        return {
+            fileName,
+            content,
+            contentLite,
+            isCurrent: fileName === currentPatchNotes
+        }
+    });
 
     const outputDirectory = join(__dirname, 'zip');
     const liteDirectory = join(outputDirectory, 'lite');
@@ -108,10 +186,6 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
     const zipFiles = async () => {
         if (!fs.existsSync(outputDirectory)) fs.mkdirSync(outputDirectory);
         if (!fs.existsSync(liteDirectory)) fs.mkdirSync(liteDirectory);
-
-        process.on('beforeExit', (exitCode) => {
-            exitCode === 0 && console.log(`${greenBackground}%s${resetText}`, `Distribution finished!${updateVersion? 'Remember to push package.json changes to GitHub.':''}`);
-        });
 
         const comment = `${packageJson.name}-v${version}, ${copyrightNotice}`;
 
@@ -144,12 +218,6 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         archiveLite.pipe(outputLite);
 
         archive.directory('src/', 'source-code');
-        archive.directory('documentation/', 'documentation');
-
-        archiveLite.glob('**/*', {
-            cwd: 'documentation',
-            ignore: ['for-javascript-developers', 'for-javascript-developers/**/*']
-        }, { prefix: 'documentation/' });
 
         const sourceCodeFiles = [
             '.gitignore',
@@ -183,6 +251,34 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         const readmeContentLite = readmeContent.replace(/For +JavaScript +Developers:[^$]*For +FileMaker +(Pro )?Developers:\n?/mi, '');
         archiveLite.append(readmeContentLite, { name: 'README.md' });
 
+        // Documentation
+        archive.glob('**/*', {
+            cwd: 'documentation',
+            ignore: [
+                'patch-notes',
+                'patch-notes/**/*'
+            ]
+        }, { prefix: 'documentation/' });
+
+        archiveLite.glob('**/*', {
+            cwd: 'documentation',
+            ignore: [
+                'patch-notes',
+                'patch-notes/**/*',
+                'for-javascript-developers',
+                'for-javascript-developers/**/*'
+            ]
+        }, { prefix: 'documentation/' });
+
+        // Add patch notes
+        patchNoteMap.forEach(patchNote => {
+            const prefix = patchNote.isCurrent? 'patch-notes/': 'patch-notes/previous/';
+            const name = patchNote.isCurrent? 'latest.md': patchNote.fileName;
+
+            archive.append(patchNote.content, { name, prefix });
+            archiveLite.append(patchNote.contentLite, { name, prefix });
+        });
+
         // Inject the codeo license into the HTML
         if (!fs.existsSync(indexPath)) {
             archive.destroy();
@@ -202,6 +298,12 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
 
         await archive.finalize();
         await archiveLite.finalize();
+
+        process.on('beforeExit', (exitCode) => {
+            exitCode === 0 && console.log(
+                `${greenBackground}%s${resetText}`, `Distribution finished!${updateVersion? 'Remember to push package.json changes to GitHub.':''}`
+            );
+        });
 
         stdInterface.close();
     }
