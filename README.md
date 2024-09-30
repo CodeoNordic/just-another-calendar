@@ -20,6 +20,7 @@ It is recommended to check the [`_filter definition`](./documentation/_filter.md
 before continuing, as this is used in various areas of the calendar.
 
 ---
+
 For JavaScript developers:
 - [Installation](./documentation/for-javascript-developers/installation.md)
 - [Building the module](./documentation/for-javascript-developers/building.md)

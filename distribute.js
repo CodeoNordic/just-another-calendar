@@ -170,10 +170,18 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
 
         addFile('LICENSE.md');
         addFile('Demo.fmp12');
-        addFile('README.md');
         addFile('codeo-logo.png');
         addFile('upload.js');
         archiveLite.file('widget.json');
+        
+        // README
+        addFile('README.md', 'README.md', true);
+
+        const readmePath = join(__dirname, 'README.md');
+        const readmeContent = fs.readFileSync(readmePath, 'utf-8');
+
+        const readmeContentLite = readmeContent.replace(/For +JavaScript +Developers:[^$]*For +FileMaker +(Pro )?Developers:\n?/mi, '');
+        archiveLite.append(readmeContentLite, { name: 'README.md' });
 
         // Inject the codeo license into the HTML
         if (!fs.existsSync(indexPath)) {
