@@ -146,7 +146,10 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         archive.directory('src/', 'source-code');
         archive.directory('documentation/', 'documentation');
 
-        archiveLite.glob('*.md', { cwd: 'documentation' }, { prefix: 'documentation/' });
+        archiveLite.glob('**/*', {
+            cwd: 'documentation',
+            ignore: ['for-javascript-developers', 'for-javascript-developers/**/*']
+        }, { prefix: 'documentation/' });
 
         const sourceCodeFiles = [
             '.gitignore',
