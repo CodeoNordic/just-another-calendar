@@ -5,7 +5,7 @@ in E.G the event filter, event component etc.
 
 Each value in the `_filter` object will be compared with each event,
 and has support for [lodash.get](https://lodash.com/docs/4.17.15#get) syntax.
-In practice, this means that if and entire event is passed as a `_filter`, it
+In practice, this means that if an entire event is passed as a `_filter`, it
 will work, but only that specific event will satisfy the criteria, granted that
 its `id` is 100% unique.
 

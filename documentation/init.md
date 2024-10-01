@@ -378,7 +378,7 @@ Example:
 ### `newEventFields` (array)
 Controls which input fields to display in the built-in event-creation popup.
 
-Check the [event creation documentation](./event-creation.md) for more information.
+Check the [event creation documentation](./creating-events-from-calendar.md) for more information.
 
 ### `newEventMovable` (boolean)
 Controls whether the new event popup can be moved around in the web viewer.

@@ -5,9 +5,11 @@ However, the calendar has built-in support for this.
 You are able to define a list of fields to be displayed
 upon selecting a time range for a new event.
 
+If the field is nested, you can access it by typing out the path, like for example `colors.background`.  
+
 **Note:** The `start` and `end` field-names will be automatically
 filled in with the selected time-range. If you wish to use these,
-the fields must be of the type `datetime`.
+the fields must be of the type `time`.
 
 The `type` value is passed to the HTML `<input>` element, but there is also custom support for
 a `dropdown` type, used for selection.
@@ -22,6 +24,19 @@ Example:
             "placeholder": "Write a title...",
             "defaultValue": "Untitled Event"
         },
+
+        {
+            "name": "start",
+            "title": "Start",
+            "type": "time"
+        },
+
+        {
+            "name": "colors.background",
+            "title": "Kant-farge",
+            "type": "color",
+            "default": "#3788d8"
+        },  
 
         {
             "name": "room",
