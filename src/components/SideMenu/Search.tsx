@@ -10,9 +10,7 @@ const Search: FC = () => {
 
     const setSearch = (searchField: JAC.SearchField, newValue: string, index: number) => {
         // priority is script from filter > script from config > client side toggle 
-        if (typeof searchField.eval === 'string' && searchField.eval.length > 0) {
-            return;
-        } else if (searchField.script) {
+        if (searchField.script) {
             performScript(searchField.script, {
                 searchField, newValue, index
             });

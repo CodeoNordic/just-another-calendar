@@ -69,7 +69,7 @@ export default function mapEvents(config: JAC.Config) {
         }  
             
         const filteredSearch = config.searchFields ? config.searchFields.some(searchField => {
-            if (searchField.eval) {
+            if (searchField.eval && searchField.value) {
                 try {
                 const func = eval(searchField.eval);
                 if (typeof func !== 'function') throw new Error('Eval result was not a function')
