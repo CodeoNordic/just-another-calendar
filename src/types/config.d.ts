@@ -12,7 +12,7 @@ declare global {
             eventFilters?: EventFilter[];
             eventFilterAreas?: [{
                 name: string;
-                title: string;
+                title?: string;
                 openDefault?: boolean;
             }];
             

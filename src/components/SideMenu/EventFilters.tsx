@@ -97,7 +97,7 @@ const EventFilters: FC = () => {
 
     return <div>        
         {config.eventFilterAreas && config.eventFilterAreas?.map((area) => 
-            <EventFilterArea key={area.name} filters={sortedFilters?.filter((filter) => filter.areaName === area.name)} header={area.title} openDefault={area.openDefault}/>
+            <EventFilterArea key={area.name} filters={sortedFilters?.filter((filter) => filter.areaName === area.name)} header={area.title || "Filter"} openDefault={area.openDefault}/>
         ) || <EventFilterArea filters={sortedFilters} />}
     </div>
 }

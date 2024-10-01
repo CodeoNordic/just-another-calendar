@@ -29,21 +29,7 @@ declare global {
             /** script for own filtering */
             script?: string;
         }>;
-
-        interface SourceFilter {
-            id: string
-            title?: string;
-            color?: string;
-
-            enabled?: boolean;
-
-            locked?: boolean;
-
-            sort?: number;
-
-            clientOnly?: boolean;
-        }
-    
+        
         interface TextStyle {
             font?: string;
             size?: string;

@@ -121,7 +121,7 @@ The list of available event filters.
 Check the [event filters definition](./event-filters.md) for more information.
 
 ### `eventFilterAreas` (array)
-The list of areas that [event filters](./event-filters.md) can be grouped into.
+The list of areas that [event filters](./event-filters.md) can be grouped into. The only required field is `name`.
 
 Example:
 ```json
@@ -136,7 +136,9 @@ Example:
 }
 ```
 
-**Default value:** `true`
+**Default value for title:** `Filter`
+
+**Default value for openDefault:** `Filter`
 
 ### `searchFields` (array)
 A list of search fields that should be available in the side-menu.
@@ -198,9 +200,11 @@ Sets the level of contrast that is required for the contrast check to activate.
 Example:
 ```json
 {
-    "contrastMin": 2    
+    "contrastMin": 3.5    
 }
 ```
+
+**Default value:** `2`
 
 ### `fullCalendarLicense` (string)
 Your developer license to fullcalendar, if needed.
@@ -227,6 +231,8 @@ Example:
 }
 ```
 
+**Default value:** `en`
+
 ### `translations` (object)
 Translation table for various labels in the calendar.
 
@@ -234,9 +240,6 @@ Example:
 ```json
 {
     "weekNumberHeader": "U", // Defaults to 'W' for 'Week'
-    
-    "searchHeader": "Søk", // Defaults to 'Search'
-    "searchPlaceholder": "Søk", // Defaults to 'Search'
 
     "eventTemplatesHeader": "Avtalemaler", // Defaults to 'Event Templates'
 
@@ -361,7 +364,16 @@ Example:
 **Default value:** `08:00` and `21:15`
 
 ### `eventCreation` (boolean)
-Controls whether or not the built-in
+Controls whether or not events are able to be created by dragging in the calendar.
+
+Example:
+```json
+{
+    "eventCreation": false
+}
+```
+
+**Default value:** `true`
 
 ### `newEventFields` (array)
 Controls which input fields to display in the built-in event-creation popup.

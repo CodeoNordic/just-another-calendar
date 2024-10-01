@@ -11,6 +11,8 @@ Each event template may also include a `locked` value, which controls whether or
 drag the template into the calendar. This is useful if you want to prevent dragging E.G an event from
 a waiting-list twice.
 
+It is also possible to give an event template a `duration` value in the event field, which specifies the duration of the event when dragged in, in hh:mm format.
+
 ```json
 {
     // Config
@@ -26,6 +28,7 @@ a waiting-list twice.
                     "background": "#4499cc",
                     "textColor": "#ffffff"
                 },
+                "duration": "02:00",
 
                 "YourCustomEventType": "consulting"
             }
