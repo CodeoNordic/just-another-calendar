@@ -197,8 +197,6 @@ init(JSON.stringify({
             searchBy: [
                 "FirstName"
             ],
-
-            title: "Søk etter navn",
             placeholder: "Søk",
             
             openDefault: true
@@ -213,6 +211,14 @@ init(JSON.stringify({
             placeholder: "Søk",
             
             openDefault: true
+        },
+        {
+            title: "Søk etter helt navn (eval test)",
+            placeholder: "Søk",
+            
+            openDefault: true,
+
+            eval: "(input, event, config) => event.FirstName.toLowerCase() === input.toLowerCase()"
         }
     ],  
     calendarStartTime: "08:00",
