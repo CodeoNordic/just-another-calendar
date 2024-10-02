@@ -162,6 +162,9 @@ init(JSON.stringify({
             locked: false,
         },
         {
+            "divider": true
+        },
+        {
             id: "source2",
             title: "Kilde 2",
             areaName: "sources",

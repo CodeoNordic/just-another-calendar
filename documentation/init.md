@@ -41,6 +41,39 @@ Controls which [FullCalendar view](https://fullcalendar.io/docs/initialView) sho
 Although FullCalendar has an `initialView` value, this calendar will automatically update the
 view if the value is changed in the config through E.G [`setConfigValue`](./functions.md#setconfigvaluekey-value)
 
+#### All Different Views
+
+**Time Grid**
+- `timeGridDay`
+- `timeGridWeek`
+- `resourceTimeGridDay`
+- `resourceTimeGridWeek`
+
+**Day Grid**
+- `dayGridDay`
+- `dayGridWeek`
+- `dayGridMonth`
+- `dayGridYear`
+- `resourceDayGridDay`
+- `resourceDayGridWeek`
+- `resourceDayGridMonth`
+
+**List**
+- `listDay`
+- `listWeek`
+- `listMonth`
+- `listYear`
+
+**Resource Timeline**
+- `resourceTimeline`
+- `resourceTimelineDay`
+- `resourceTimelineWeek`
+- `resourceTimelineMonth`
+- `resourceTimelineYear`
+
+**Other**
+- `multiMonthYear`
+
 Example:
 ```json
 {
