@@ -229,6 +229,10 @@ indicated by a padlock icon for locked filters. This can be used to temporarily
 or permanently disable the user's access to control the filters, E.G whenever
 changes are being made, or the calendar is fetching data.
 
+The filters can also have a `sort` value. This controls the order that the filters appers, with the lowest numbers first and the ones without at the end. 
+
+The last value a filter can have is `divider`. This makes the filter a divider instead, if you want clearer separation between two filters.
+
 ## Filtering in the calendar with filterId
 Each event can have a `filterId` value. This can be either a string or an array which specifies
 which filters the event is controlled by. This is the easiest filtering to set up, and is recommended for most cases.
@@ -269,9 +273,14 @@ the second event will be hidden only when both filters are disabled.
         },
 
         {
+            "divider": true // will show up as an divider instead
+        }
+
+        {
             "id": "filter2",
             "title": "Filter 2",
-            "color": "#4499cc"
+            "color": "#4499cc",
+            "sort": 1 // Will be ordered before "filter 1"
         }
     ]
 }
@@ -280,9 +289,6 @@ the second event will be hidden only when both filters are disabled.
 ## Grouping event filters into areas
 If you have many filters of varying categories, you may group these by specifying an `areaName` per filter.
 These areas must already be defined in the [config](./init.md#eventfilterareas-array).
-
-By default, the filters will be ordered depending on their placement in the array, but this can be overwritten
-by specifying a `sort` number for one or more filters.
 
 ```json
 {
@@ -334,8 +340,7 @@ by specifying a `sort` number for one or more filters.
             "color": "#ffdd88",
             "enabled": true,
 
-            "areaName": "consulting",
-            "sort": 1 // Will be ordered before "Customer Consulting"
+            "areaName": "consulting"
         }
     ]
 }
@@ -345,7 +350,6 @@ by specifying a `sort` number for one or more filters.
 The other ways of filtering is [`_filter`](./_filter.md) in the filters, `script` in the filters and the `onFilterChange` script defined in the [config scriptnames](./script-names.md).
 
 here is an example of both [`_filter`](./_filter.md) and `script` being used.
-
 
 ```json
 {

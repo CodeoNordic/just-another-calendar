@@ -85,5 +85,14 @@
 
             margin: 16px 0;
         }
+
+        .filter-divider {
+            width: calc(100% - 16px);
+            height: 1px;
+
+            background-color: rgba(0, 0, 0, .3);
+
+            margin: 16px 8px;
+        }
     }
 }

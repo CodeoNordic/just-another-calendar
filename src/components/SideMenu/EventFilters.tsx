@@ -49,7 +49,7 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
             <div>{props.header ?? "Filters"}</div>
         </>}
         collapsed={props.openDefault === false}>
-            {props.filters?.map((filter) => {
+            {props.filters?.map((filter, index) => {
                 const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", "#f5f5f5", config.contrastMin) 
                     && config.contrastCheck !== false;
 
@@ -61,9 +61,11 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
                     fill: notEnoughContrast ? "#000" : "#fff"
                 }
 
+                if (filter.divider) return <div key={index} className="filter-divider" />;
+
                 return (<div 
                     className="filter-item" 
-                    key={filter.id}  
+                    key={index}  
                     onClick={() => !filter.locked && toggleFilter(filter)}
                     style={{
                         opacity: (filter.enabled && !filter.locked) ? 1 : 0.5,
@@ -90,8 +92,12 @@ const EventFilters: FC = () => {
     if (!config?.eventFilters) return null
 
     const sortedFilters = useMemo(() => {
-        const copy = [...config.eventFilters || []];
-        copy.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+        const copy = [...(config.eventFilters || [])];
+        copy.sort((a, b) => {
+            const sortA = a.sort !== undefined ? a.sort : Infinity;
+            const sortB = b.sort !== undefined ? b.sort : Infinity;
+            return sortA - sortB;
+        });
         return copy;
     }, [config.eventFilters]);
 
