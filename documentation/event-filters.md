@@ -218,7 +218,7 @@ In a calendar with a lot of events, it may be difficult to find what you
 are looking for. Event filters allow the user to only display the events
 they want, based on developer-defined criteria.
 
-Each time a filter is clicked, the filter will either use `filterId` from the events, do a call to the `onFilterChange` script defined in the [config scriptnames](./init.md), 
+Each time a filter is clicked, the filter will either use `filterId` from the events, do a call to the `onFilterChange` script defined in the [config scriptnames](./script-names.md), 
 or the `script` value from the filter. The priority goes `script` > `eventFilterChanged` > `filterId`.
 
 Filters can also have an `enabled` value. This value tells
@@ -229,75 +229,9 @@ indicated by a padlock icon for locked filters. This can be used to temporarily
 or permanently disable the user's access to control the filters, E.G whenever
 changes are being made, or the calendar is fetching data.
 
-## Filtering in the calendar
-If you are using `filterId` in the events to filter, 
-
-In very specific cases, you may want to combine this with calls to a FileMaker script.
-The way this works is tat the client filter will run simultaneously whilst calling the
-FileMaker script.
-
-```json
-{
-    // Config
-    "events": [
-        {
-            "id": "abcd-efgh-ijkl-mnop",
-
-            "start": "2024-11-19T07:00:00.000Z",
-            "end": "2024-11-19T08:00:00.000Z",
-
-            "YourCustomEventType": "meeting"
-        },
-
-        {
-            "id": "ponm-lkji-hgfe-dcba",
-
-            "start": "2024-11-19T07:00:00.000Z",
-            "end": "2024-11-19T08:00:00.000Z",
-
-            "YourCustomEventType": "consulting"
-        }
-    ],
-
-    "eventFilters": [
-        // Client only filter
-        {
-            "id": "filter1",
-            "title": "Meeting",
-
-            "color": "#aaeeaa",
-
-            "enabled": true,
-            "locked": false,
-
-            "clientOnly": true,
-            "_filter": {
-                "YourCustomEventType": "==meeting"
-            }
-        },
-
-        // Runs a FileMaker script
-        {
-            "id": "filter2",
-            "title": "Consulting",
-
-            "color": "#4499cc",
-
-            "enabled": true,
-            "locked": false,
-
-            "script": "[TRG] = Enable/Disable Consulting"
-        }
-    ]
-}
-```
-
-## Filtering by pre-determining the filter ID (optional)
+## Filtering in the calendar with filterId
 Each event can have a `filterId` value. This can be either a string or an array which specifies
-which filters the event is controlled by. The purpose of doing this, is that it eliminates the
-need for complex [`_filter`](./_filter.md) objects.
-
-This can also be combined with client-only filters, but in most cases this isn't necessary.
+which filters the event is controlled by. This is the easiest filtering to set up, and is recommended for most cases.
 
 ---
 
@@ -328,34 +262,24 @@ the second event will be hidden only when both filters are disabled.
     ],
 
     "eventFilters": [
-        // Client-only
         {
             "id": "filter1",
             "title": "Filter 1",
-            "color": "#aaeeaa",
-
-            "clientOnly": true
+            "color": "#aaeeaa"
         },
 
-        // Not client-only, will run a FileMaker script
         {
             "id": "filter2",
             "title": "Filter 2",
-            "color": "#4499cc",
-
-            "script": "[TRG] = Enable/Disable Filter2"
+            "color": "#4499cc"
         }
     ]
 }
 ```
 
----
-
 ## Grouping event filters into areas
 If you have many filters of varying categories, you may group these by specifying an `areaName` per filter.
 These areas must already be defined in the [config](./init.md#eventfilterareas-array).
-
-> If no event filter areas are specified, a default one will be created with the name "Event Filters"
 
 By default, the filters will be ordered depending on their placement in the array, but this can be overwritten
 by specifying a `sort` number for one or more filters.
@@ -412,6 +336,67 @@ by specifying a `sort` number for one or more filters.
 
             "areaName": "consulting",
             "sort": 1 // Will be ordered before "Customer Consulting"
+        }
+    ]
+}
+```
+
+## Filtering in other ways
+The other ways of filtering is [`_filter`](./_filter.md) in the filters, `script` in the filters and the `onFilterChange` script defined in the [config scriptnames](./script-names.md).
+
+here is an example of both [`_filter`](./_filter.md) and `script` being used.
+
+
+```json
+{
+    // Config
+    "events": [
+        {
+            "id": "abcd-efgh-ijkl-mnop",
+
+            "start": "2024-11-19T07:00:00.000Z",
+            "end": "2024-11-19T08:00:00.000Z",
+
+            "YourCustomEventType": "meeting"
+        },
+
+        {
+            "id": "ponm-lkji-hgfe-dcba",
+
+            "start": "2024-11-19T07:00:00.000Z",
+            "end": "2024-11-19T08:00:00.000Z",
+
+            "YourCustomEventType": "consulting"
+        }
+    ],
+
+    "eventFilters": [
+        // Client only filter
+        {
+            "id": "filter1",
+            "title": "Meeting",
+
+            "color": "#aaeeaa",
+
+            "enabled": true,
+            "locked": false,
+
+            "_filter": {
+                "YourCustomEventType": "==meeting"
+            }
+        },
+
+        // Runs a FileMaker script
+        {
+            "id": "filter2",
+            "title": "Consulting",
+
+            "color": "#4499cc",
+
+            "enabled": true,
+            "locked": false,
+
+            "script": "[TRG] = Enable/Disable Consulting"
         }
     ]
 }
