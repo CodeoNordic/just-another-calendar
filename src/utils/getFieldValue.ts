@@ -1,6 +1,19 @@
 import get from 'lodash.get';
 import dateFromString from './dateFromString';
 
+/**
+ * Parses the key and returns the value from the event
+ * @param event The event to get the value from
+ * @param key The key to get the value from
+ * @returns The value of the key
+ * @example
+ * ```js
+ * templateKey(event, 'FirstName'); // 'John'
+ * templateKey(event, 'Date:StartDate'); // '01 January'
+ * templateKey(event, 'Time:StartDate+StartTime'); // '12:00'
+ * templateKey(event, 'Eval:({StartDate}) => new Date(StartDate).toLocaleDateString()'); // '01 January'
+ * ```
+*/
 export function templateKey(event: JAC.Event, key: string) {
     // If the key starts with 'Date:' return a formatted date
     if (key.toLowerCase().startsWith('date:')) return new Date(
@@ -46,9 +59,17 @@ export function templateKey(event: JAC.Event, key: string) {
 }
 
 /**
- * Parses the field definition and returns the desired value
+ * Parses the field definition and returns the desired value from the event
  * 
  * _filter should be handled before this function is ran
+ * @param event The event to get the value from
+ * @param field The field definition
+ * @returns The value of the field
+ * @example
+ * ```js
+ * getFieldValue(event, { value: 'FirstName' }); // 'John'
+ * getFieldValue(event, { template: '{FirstName} {LastName}' }); // 'John Doe'
+ * ```	
 */
 export default function getFieldValue(event: JAC.Event, field: Pick<JAC.EventField, 'eval'|'htmlTemplate'|'template'|'value'>) {
     if (typeof field.eval === 'string' && field.eval.length > 0) {

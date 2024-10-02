@@ -2,6 +2,7 @@ import tinycolor from "tinycolor2";
 import rgbaToRgb from "rgba-to-rgb";
 
 /**
+ * calculates the luminance of a color from 0 to 1
  * @param r red value
  * @param g green value
  * @param b blue value
@@ -29,6 +30,7 @@ export function luminance(r: number, g:number, b:number) {
 }
 
 /**
+ * calculates the contrast ratio between two colors from 1 to 21
  * @param rgb1 first color in rgb format
  * @param rgb2 second color in rgb format"
  * @returns contrast ratio between two colors
@@ -47,10 +49,11 @@ export function contrast(rgb1: [number, number, number], rgb2: [number, number, 
 }
 
 /**
+ * calculates the contrast between two colors and checks if it is greater than contrastMin
  * @param color color to check contrast (any valid css color)
  * @param bg background color (any valid css color), default is white
  * @param contrastMin minimum contrast value, default is 2
- * @returns true if the contrast is greater than contrastMin
+ * @returns if the contrast is greater than contrastMin
  * @example
  * ```ts
  * calculateContrast("#000", "white"); // true

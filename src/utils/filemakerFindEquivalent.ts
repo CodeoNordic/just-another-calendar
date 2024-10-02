@@ -1,5 +1,19 @@
 import dateFromString from './dateFromString';
 
+/**
+ * Compare two values using FileMaker's find logic
+ * @param a the first value to compare
+ * @param b the second value to compare
+ * @param operator the operator to use
+ * @returns if the comparison is true  
+ * @example
+ * ```ts
+ * greaterOrLessThan('1', '2', '<'); // true
+ * greaterOrLessThan('1', '2', '>'); // false
+ * greaterOrLessThan('2', '2', '<='); // true
+ * greaterOrLessThan('1', '2', '>='); // false
+ * ```
+ */
 function greaterOrLessThan(a: string, b: string, operator: '<'|'>'|'<='|'>=') {
     let valueA: string|number = a;
     let valueB: string|number = b;

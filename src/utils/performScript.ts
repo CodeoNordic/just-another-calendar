@@ -4,6 +4,14 @@ export const loadCallbacks: VoidFunction[] = [];
 /**
  * Performs a FileMaker script
  * @param key The key of the script as per `JAC.Config`
+ * @param param The parameter to pass to the script
+ * @param option The option to pass to the script
+ * @param directScriptName Whether to use the key as the script name directly
+ * @returns The result of the script, or an error message
+ * @example
+ * ```ts
+ * performScript('onJsError', 'An error occurred');
+ * ```
  */
 export default function performScript(
     key: string & keyof JAC.Config['scriptNames'] | (string & {}),

@@ -1,3 +1,13 @@
+/**
+ * create a date object from a string
+ * @param str the string to convert to a date
+ * @returns the date object or undefined if the string is invalid
+ * @example
+ * ```ts
+ * dateFromString('2021-01-01T00:00:00Z'); // Date('2021-01-01T00:00:00Z')
+ * dateFromString('Hello World!'); // undefined
+ * ```
+ */
 export default function dateFromString(str?: string) {
     if (!str) return;
     str = str.trim();
