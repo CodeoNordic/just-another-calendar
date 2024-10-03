@@ -52,7 +52,7 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
             {props.filters?.map((filter, index) => {
                 const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", "#f5f5f5", config.contrastMin) 
                     && config.contrastCheck !== false;
-
+                
                 const iconStyles = {
                     backgroundColor: filter.color || "#3788d8",
                     border: notEnoughContrast 
@@ -93,11 +93,7 @@ const EventFilters: FC = () => {
 
     const sortedFilters = useMemo(() => {
         const copy = [...(config.eventFilters || [])];
-        copy.sort((a, b) => {
-            const sortA = a.sort !== undefined ? a.sort : Infinity;
-            const sortB = b.sort !== undefined ? b.sort : Infinity;
-            return sortA - sortB;
-        });
+        copy.sort((a, b) => (a.sort || Infinity) - (b.sort || Infinity));
         return copy;
     }, [config.eventFilters]);
 

@@ -162,7 +162,8 @@ init(JSON.stringify({
             locked: false,
         },
         {
-            "divider": true
+            divider: true,
+            areaName: "sources",
         },
         {
             id: "source2",
@@ -328,18 +329,18 @@ init(JSON.stringify({
         name: "colors.border",
         title: "Kant-farge",
         type: "color",
-        default: "#3788d8"
+        defaultValue: "#3788d8"
     },
     {
         name: "colors.background",
         title: "Bakgrunnsfarge",
         type: "color",
-        default: "#3788d8"
+        defaultValue: "#3788d8"
     },
     {
         name: "filterId",
         title: "Filtrerings-id",
-        default: "filter2",
+        defaultValue: "filter2",
         type: "dropdown",
         dropdownItems: [
             {

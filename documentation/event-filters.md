@@ -218,8 +218,8 @@ In a calendar with a lot of events, it may be difficult to find what you
 are looking for. Event filters allow the user to only display the events
 they want, based on developer-defined criteria.
 
-Each time a filter is clicked, the filter will either use `filterId` from the events, do a call to the `onFilterChange` script defined in the [config scriptnames](./script-names.md), 
-or the `script` value from the filter. The priority goes `script` > `eventFilterChanged` > `filterId`.
+Each time a filter is clicked, the filter will either use `filterId` from the events, do a call to the `onEventFilterChange` script defined in the [config scriptnames](./script-names.md), 
+or the `script` value from the filter. The priority goes `script` > `onEventFilterChange` > `_filter` > `filterId`.
 
 Filters can also have an `enabled` value. This value tells
 the calendar whether or not the filter is currently switched on.

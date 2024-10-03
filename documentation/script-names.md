@@ -13,7 +13,7 @@ The following example uses Codeo's script name format:
         "dateSelected": "[TRG] = Date Select", // When a date is selected in the side-menu
 
         "eventChanged": "[TRG] = EVNT Change", // When an event changes, E.G dragged to another time range
-        "eventFilterChanged": "[TRG] = Filter Change", // When an event filter is clicked
+        "onEventFilterChange": "[TRG] = Filter Change", // When an event filter is clicked
 
         "poll": "[TRG] = Poll Changes" // Runs multiple times depending on the polling values set in the config
     }

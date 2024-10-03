@@ -362,14 +362,7 @@ const FullCalendar: FC = () => {
                 const duration = event.duration.split(':') as [string, string];
                 const end = new Date(start.getTime()); 
                 end.setMinutes(end.getMinutes() + Number(duration[1]) + Number(duration[0]) * 60);
-
-                if (start.getHours() === 0) {
-                    const startNew = start.toISOString(); 
-                    calendarRef.current?.getApi().select({start: startNew, end: undefined, allDay: false, resourceId: info.resource?._resource.id});
-                } else {
-                    calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
-                }
-
+                
                 setNewEvent(prev => ({
                     ...prev,
                     id: randomUUID(),
@@ -380,6 +373,13 @@ const FullCalendar: FC = () => {
                 }));
 
                 setTimeout(() => {
+                    if (start.getHours() === 0) {
+                        const startNew = start.toISOString(); 
+                        calendarRef.current?.getApi().select({start: startNew, end: undefined, allDay: false, resourceId: info.resource?._resource.id});
+                    } else {
+                        calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
+                    }    
+
                     setNewEvent(prev => ({
                         ...prev,
                         id: randomUUID(),
@@ -406,7 +406,7 @@ const FullCalendar: FC = () => {
                             time: end.toTimeString().split(' ')[0]
                         },
                         resourceId: info.resource?.id,
-                        ...newEvent
+                        event: newEvent
                     });
                 }
 
