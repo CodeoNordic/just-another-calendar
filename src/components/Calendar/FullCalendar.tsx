@@ -48,6 +48,7 @@ const FullCalendar: FC = () => {
 
     const [creatingEvent, setCreatingEvent] = useState(false);
     const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
+    const [createTemplate, setCreateTemplate] = useState<boolean>(false);
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
     //const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
@@ -372,6 +373,8 @@ const FullCalendar: FC = () => {
                     ...event
                 }));
 
+                setCreateTemplate(true);
+
                 setTimeout(() => {
                     if (start.getHours() === 0) {
                         const startNew = start.toISOString(); 
@@ -388,6 +391,8 @@ const FullCalendar: FC = () => {
                         resourceId: info.resource?._resource.id,
                         ...event
                     }));
+
+                    setCreateTemplate(false);
                 }, 0);
             }}
             
@@ -406,7 +411,7 @@ const FullCalendar: FC = () => {
                             time: end.toTimeString().split(' ')[0]
                         },
                         resourceId: info.resource?.id,
-                        event: newEvent
+                        event: createTemplate ? newEvent : null
                     });
                 }
 
