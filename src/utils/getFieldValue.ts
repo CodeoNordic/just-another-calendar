@@ -125,7 +125,10 @@ export default function getFieldValue(event: JAC.Event, field: Pick<JAC.EventFie
         if (
             (typeof field.template !== 'string' || field.template.length === 0) && 
             (typeof field.eval !== 'string' || field.eval.length === 0)
-        ) console.warn("The following field definition has no key to determine its value. One of three keys must be defined: 'value', 'template', 'eval'", field);
+        ) !window._config!.ignoreWarnings && console.warn(
+            "The following field definition has no key to determine its value. One of three keys must be defined: 'value', 'template', 'eval'",
+            field
+        );
         
         return null;
     }

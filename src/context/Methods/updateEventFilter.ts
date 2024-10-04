@@ -18,7 +18,7 @@ export default function useUpdateEventFilter() {
             ? copy.find(f => searchObject(f, find)) : undefined;
 
         if (!filter) {
-            console.warn('The following find returned no results when attempting to update a filter', find);
+            !config.ignoreWarnings && console.warn('The following find returned no results when attempting to update a filter', find);
             return config;
         }
 

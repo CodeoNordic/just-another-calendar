@@ -4,6 +4,7 @@ declare global {
             weekNumberHeader?: string;
             
             eventTemplatesHeader?: string;
+            eventFiltersHeader?: string;
 
             allDaySlot?: string;
 

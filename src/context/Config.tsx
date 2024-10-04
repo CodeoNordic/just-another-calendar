@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import getEventsFromObject from '@utils/getEventsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
+import { v4 as randomUUID } from 'uuid';
+
 const defaultConfig: Partial<JAC.Config> = {
     defaultEventComponent: "default",
     eventComponents: [
@@ -53,7 +55,7 @@ const defaultConfig: Partial<JAC.Config> = {
     contrastCheck: true,
     contrastMin: 2,
     nowIndicator: true,
-    eventTemplatesOpenDefault: true,
+    eventTemplatesOpen: true,
     sideMenuOpen: false
 };
 
@@ -68,6 +70,20 @@ const parseConfig = (cfg: string) => {
             (config as RSAny)[key] ??= defaultConfig[key as keyof JAC.Config];
         });
 
+        const assignedTemplates: JAC.EventTemplate[] = [];
+        config.eventTemplates?.forEach(template => {
+            if (!template.event.id) {
+                template.event.id = randomUUID();
+                assignedTemplates.push(template);
+            }
+        });
+
+        if (assignedTemplates.length && !config.ignoreWarnings) {
+            const multiple = assignedTemplates.length > 1;
+            console.warn(`The following template${multiple?'s':''} had no ID in ${multiple? 'their':'its'} event. A random UUID has been assigned for ${multiple? 'each one':'it'}.`);
+            console.warn(multiple? assignedTemplates: assignedTemplates[0]);
+        }
+
         let configWarned = false;
         config.events = events.map(event => {
             if (event._config !== undefined) {
@@ -75,7 +91,7 @@ const parseConfig = (cfg: string) => {
                 delete event._config;
 
                 if (!configWarned) {
-                    console.warn('One or more events has the _config key defined. This was automatically remapped to __config due to the initial key being used by JAC');
+                    !config.ignoreWarnings && console.warn('One or more events has the _config key defined. This was automatically remapped to __config due to the initial key being used by JAC');
                     configWarned = true;
                 }
             }

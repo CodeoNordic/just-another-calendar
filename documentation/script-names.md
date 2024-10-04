@@ -6,16 +6,29 @@ The following example uses Codeo's script name format:
 ```json
 {
     "scriptNames": {
-        "editEvent": "[TRG] = EVNT Edit", // When an event is clicked
-        "createEvent": "[TRG] = EVNT Create", // When a new event should be created in FileMaker
-        "newEventCreated": "[TRG] = EVNT New Created", // When a new event is created with the popup
+        "onJsError": "[TRG] = JavaScript Error", // Runs when an unhandled JS error occurs
 
-        "dateSelected": "[TRG] = Date Select", // When a date is selected in the side-menu
+        "onEventClick": "[TRG] = EVNT Edit", // Runs when an event is clicked
+        "onRangeSelected": "[TRG] = EVNT Create", // Runs when a time/date range is selected in the calendar
+        "onEventCreated": "[TRG] = EVNT Create Popup", // Runs when an event is created wither with the built-in popup or by dragging a template
 
-        "eventChanged": "[TRG] = EVNT Change", // When an event changes, E.G dragged to another time range
-        "onEventFilterChange": "[TRG] = Filter Change", // When an event filter is clicked
+        "onSearch": "[TRG] = EVNT Search", // Runs when a search is performed
 
-        "poll": "[TRG] = Poll Changes" // Runs multiple times depending on the polling values set in the config
+        "dateSelected": "[TRG] = Date Select", // Runs when a date is selected in the side-menu
+
+        "onEventChange": "[TRG] = EVNT Change", // Runs when an event changes, E.G dragged to another time range
+        "onEventFilterChange": "[TRG] = Filter Change", // Runs when an event filter is clicked
+
+        "poll": "[TRG] = Poll Changes", // Runs multiple times depending on the polling values set in the config
+
+        "onSideMenuOpened": "[TRG] = SideMenu Opened", // Runs when the side menu is opened
+        "onSideMenuClosed": "[TRG] = SideMenu Closed", // Runs when the side menu is closed
+
+        "onEventFilterAreaOpened": "[TRG] = EVNT Filter Area Opened", // Runs when an event filter area is opened
+        "onEventFilterAreaClosed": "[TRG] = EVNT Filter Area Closed", // Runs when an event filter area is closed
+
+        "onEventTemplateAreaOpened": "[TRG] = EVNT Template Area Opened", // Runs when an event template area is opened
+        "onEventTemplateAreaClosed": "[TRG] = EVNT Template Area Closed" // Runs when an event template area is closed
     }
 }
 ```

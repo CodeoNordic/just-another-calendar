@@ -130,6 +130,12 @@ declare global {
             fields?: EventField[];
             htmlTemplate?: string;
         }>;
+
+        interface Area {
+            name: string;
+            title?: string;
+            open?: boolean;
+        }
     }
 }
 

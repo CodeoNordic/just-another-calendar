@@ -24,6 +24,7 @@ Example:
 - Fixed a bug where something happens
 
 <!-- SINGLE LINE COMMENTS MARKED WITH [JSONLY START] AND [JSONLY END] WILL ONLY BE INCLUDED IN SOURCE CODE NOTES -->
+<!-- ENSURE THAT THERE'S AN EQUAL AMOUNT OF START AND END TOKENS, OR THE DISTRIBUTE SCRIPT WILL ERROR -->
 <!-- [JSONLY START] -->
 ## Source Code Changes
 This area should include relevant changes to the source code, for JavaScript developers.

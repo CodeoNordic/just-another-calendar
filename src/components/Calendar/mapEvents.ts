@@ -4,7 +4,7 @@ import datesFromEvent from '@utils/datesFromEvent';
 export default function mapEvents(config: JAC.Config) {
     return config.events.map((event, i) => {
         if (!event.id) {
-            console.warn(`The following event does not have an associated ID, and will instead use its array index`, event);
+            !config.ignoreWarnings && console.warn(`The following event does not have an associated ID, and will instead use its array index`, event);
             event.id = String(i);
         }
 
@@ -94,8 +94,8 @@ export default function mapEvents(config: JAC.Config) {
 
         if (filteredOut || filteredSearch) return false;
 
-        if (!ev.start || !ev.end) {
-            console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.event);
+        if ((!ev.start || !ev.end)) {
+            !config.ignoreWarnings && console.warn(`The following event has an invalid start and/or end date`, ev.extendedProps.event);
             return false;
         }
 

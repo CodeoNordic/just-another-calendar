@@ -5,6 +5,10 @@ However, the calendar has built-in support for this.
 You are able to define a list of fields to be displayed
 upon selecting a time range for a new event.
 
+When an event is created using the built-in popup, the `onEventCreated` script defined in [`scriptNames`](./script-names.md)
+is ran. An ID is automatically assigned for the event, which can later be updated
+by using the [`updateEvent()`](./functions.md#updateeventsearch-data-autocreate) function.
+
 If the field is nested, you can access it by typing out the path, like for example `colors.background`.  
 
 **Note:** The `start` and `end` field-names will be automatically
@@ -33,7 +37,7 @@ Example:
 
         {
             "name": "colors.background",
-            "title": "Kant-farge",
+            "title": "Edge color",
             "type": "color",
             "default": "#3788d8"
         },  

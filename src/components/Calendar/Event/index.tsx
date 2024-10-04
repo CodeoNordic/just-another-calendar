@@ -28,13 +28,13 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
         
         if (props._component) {
             comp = config.eventComponents?.find(c => c.name === props._component);
-            if (!comp) console.warn(`A component by the name ${props._component} was not found`, props);
+            if (!comp && !config.ignoreWarnings) console.warn(`A component by the name ${props._component} was not found`, props);
         }
 
         else {
             const matchingComponents = config.eventComponents?.filter(c => c._filter && searchObject(props, c._filter)) || [];
             if (matchingComponents.length > 1)
-                console.warn(`More than one event component had a positive match for the following event. The first one (${matchingComponents[0].name}) will be used.`, props);
+                !config.ignoreWarnings && console.warn(`More than one event component had a positive match for the following event. The first one (${matchingComponents[0].name}) will be used.`, props);
 
             comp = matchingComponents[0];
         }
@@ -49,7 +49,7 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
     if (!Object.keys(props).length) return null;
 
     if (!component) {
-        console.warn('A component was not found for the following event', props);
+        !config.ignoreWarnings && console.warn('A component was not found for the following event', props);
         return null;
     }
     

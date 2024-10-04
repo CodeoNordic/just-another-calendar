@@ -9,7 +9,7 @@ import Padlock from "jsx:@svg/padlock.svg";
 import Checkmark from "jsx:@svg/checkmark.svg";
 import Crossmark from "jsx:@svg/crossmark.svg";
 
-const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefault?: boolean}> = props => {
+const EventFilterArea: FC<JAC.Area & {filters: JAC.EventFilter[]; index?: number}> = props => {
     const [config, setConfig] = useConfigState();
     
     if (!config) return null
@@ -46,9 +46,23 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
     return <div>
         <div className="divider" /> 
         <Collapse top={<>
-            <div>{props.header ?? "Filters"}</div>
+            <div>{props.title ?? "Filters"}</div>
         </>}
-        collapsed={props.openDefault === false}>
+        onChange={collapsed => {
+            const param = {
+                title: props.title,
+                name: props.name,
+                open: !collapsed,
+                filters: props.filters,
+                index: props.index
+            };
+
+            if (!collapsed && config!.scriptNames!.onEventFilterAreaOpened)
+                performScript('onEventFilterAreaOpened', param);
+            else if (collapsed && config!.scriptNames!.onEventFilterAreaClosed)
+                performScript('onEventFilterAreaClosed', param);
+        }}
+        collapsed={props.open === false}>
             {props.filters?.map((filter, index) => {
                 const notEnoughContrast = !calculateContrast(filter.color || "#3788d8", "#f5f5f5", config.contrastMin) 
                     && config.contrastCheck !== false;
@@ -88,7 +102,6 @@ const EventFilterArea: FC<{filters: JAC.EventFilter[], header?: string, openDefa
 
 const EventFilters: FC = () => {
     const [config, ] = useConfigState();
-
     if (!config?.eventFilters) return null
 
     const sortedFilters = useMemo(() => {
@@ -98,9 +111,9 @@ const EventFilters: FC = () => {
     }, [config.eventFilters]);
 
     return <div>        
-        {config.eventFilterAreas && config.eventFilterAreas?.map((area) => 
-            <EventFilterArea key={area.name} filters={sortedFilters?.filter((filter) => filter.areaName === area.name)} header={area.title || "Filter"} openDefault={area.openDefault}/>
-        ) || <EventFilterArea filters={sortedFilters} />}
+        {config.eventFilterAreas && config.eventFilterAreas?.map((area, i) => 
+            <EventFilterArea key={i} index={i} name={area.name} filters={sortedFilters?.filter((filter) => filter.areaName === area.name)} title={area.title || "Filter"} open={area.open}/>
+        ) || <EventFilterArea index={0} name="default" title={config!.translations?.eventFiltersHeader ?? "Filters"} filters={sortedFilters} />}
     </div>
 }
 

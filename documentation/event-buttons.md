@@ -4,6 +4,8 @@ These buttons are fully dynamic, and are specified using the `eventButtons` arra
 
 Each button should have an [`icon`](./icons.md) and an associated `script` to run when clicked.
 
+**Note:** These scripts should NOT be keys of [`scriptNames`](./script-names.md).
+
 Buttons may also include a [`_filter`](./_filter.md) to specify which events may
 include the button. This is especially useful for displaying different buttons
 depending on the type of event.

@@ -114,7 +114,12 @@ init(JSON.stringify({
         }]
     }],
 
-    scriptNames: {},
+    scriptNames: {
+        onEventFilterAreaOpened: '[TRG] = EVNT Filter Area Opened',
+        onEventFilterAreaClosed: '[TRG] = EVNT Filter Area Closed',
+        onEventTemplateAreaOpened: '[TRG] = EVNT Template Area Opened',
+        onEventTemplateAreaClosed: '[TRG] = EVNT Template Area Closed'
+    },
     eventButtons: [
         {
             icon: 'clock',
@@ -188,12 +193,12 @@ init(JSON.stringify({
         {
             name: "filters",
             title: "Filtrer",
-            openDefault: true
+            open: true
         },
         {
             name: "sources",
             title: "Kilder",
-            openDefault: false
+            open: false
         }
     ],
     searchFields: [
@@ -203,7 +208,7 @@ init(JSON.stringify({
             ],
             placeholder: "Søk",
             
-            openDefault: true
+            open: true
         },
         {
             searchBy: [
@@ -214,13 +219,13 @@ init(JSON.stringify({
             title: "Søk etter tid",
             placeholder: "Søk",
             
-            openDefault: true
+            open: true
         },
         {
             title: "Søk etter helt navn (eval test)",
             placeholder: "Søk",
             
-            openDefault: true,
+            open: true,
 
             eval: "(input, event, config) => event.FirstName.toLowerCase() === input.toLowerCase()"
         }
@@ -266,7 +271,8 @@ init(JSON.stringify({
                     background: '#00ff00',
                     border: '#00ff00'
                 }
-            }
+            },
+            areaName: 'area1'
         },
         {
             title: "Test 3",
@@ -279,7 +285,8 @@ init(JSON.stringify({
                     background: '#0000ff',
                     border: '#0000ff'
                 }
-            }
+            },
+            areaName: 'area1'
         },
         {
             title: "Test 4",
@@ -293,7 +300,8 @@ init(JSON.stringify({
                     background: '#ff00ff',
                     border: '#ff00ff'
                 }
-            }
+            },
+            areaName: 'area2'
         },
         {
             title: "Test 5",
@@ -306,10 +314,23 @@ init(JSON.stringify({
                     background: '#00ffff',
                     border: '#00ffff'
                 }
-            }
+            },
+            areaName: 'area2'
         } 
     ],
-    eventTemplatesOpenDefault: false,
+    eventTemplateAreas: [
+        {
+            name: 'area1',
+            title: 'Template area 1',
+            open: true
+        },
+
+        {
+            name: 'area2',
+            title: 'Template area 2',
+            open: false
+        }
+    ],
     newEventFields: [
     {
         name: "FirstName",

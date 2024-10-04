@@ -24,7 +24,7 @@ export default function performScript(
             performScript(key, param, option);
         });
 
-        console.warn(`Script ${key} was called before the config was loaded, a load callback was added`);
+        !window._config!.ignoreWarnings && console.warn(`Script ${key} was called before the config was loaded, a load callback was added`);
         return true;
     }
 
@@ -34,7 +34,7 @@ export default function performScript(
         const scriptName = directScriptName? key: window._config?.scriptNames?.[key as keyof JAC.Config['scriptNames']];
         if (typeof scriptName !== 'string') {
             const msg = `Script name of the key '${key}' was not found in the config`;
-            (key !== 'onJsError') && console.warn(msg);
+            (key !== 'onJsError') && !window._config!.ignoreWarnings && console.warn(msg);
             return msg;
         }
 

@@ -69,7 +69,7 @@ const FullCalendar: FC = () => {
         if (!calendarRef.current || !date) return;
         const api = calendarRef.current.getApi();
 
-        (date !== api.getDate()) && api.gotoDate(date);
+        (date !== api.getDate()) && setTimeout(() => api.gotoDate(date), 0);
         config.date && setCurrentDate(date);
     }, [calendarRef, config!.date]);
 
@@ -306,7 +306,7 @@ const FullCalendar: FC = () => {
                     if (target === button || button.contains(target)) return;
                 }
 
-                performScript('editEvent', info.event.extendedProps!.event);
+                performScript('onEventClick', info.event.extendedProps!.event);
             }}
 
             eventChange={info => {
@@ -331,16 +331,25 @@ const FullCalendar: FC = () => {
 
                 const buttons = eventButtons(event);
 
-                setDropdown(prev => ({
-                    ...prev,
-                    eventId: event?.id,
-                    x: rect.left + rect.width,
-                    // Move the dropdown up slightly if there's space for it
-                    y: rect.top + rect.height - (
+                const x = rect.left + rect.width;
+
+                // Move the dropdown up slightly if there's space for it
+                let y = rect.top + rect.height - (
                     (
                         Math.min(rect.width, rect.height) >= (50) ||
                         (rect.height >= 100)
-                    )? 34: 2),
+                    )? 34: 2
+                );
+
+                // Ensure the dropdown isn't too far down on the screen
+                if (y > (window.innerHeight - 32))
+                    y -= 32;
+
+                setDropdown(prev => ({
+                    ...prev,
+                    eventId: event?.id,
+                    x,
+                    y,
                     buttons,
                     visible: true
                 }))
@@ -396,12 +405,20 @@ const FullCalendar: FC = () => {
                 }, 0);
             }}
             
-            selectable={config.eventCreation}
+            selectable={
+                config.eventCreation ||
+                (Boolean(config.scriptNames.onRangeSelected)/* && Boolean(config.eventTemplates?.length)*/) ||
+                Boolean(config.scriptNames.onEventCreated)}
             select={info => {
-                if (config.scriptNames?.createEvent) {
+                if (newEvent && config.scriptNames?.onEventCreated) {
+                    performScript('onEventCreated', newEvent)
+                }
+
+                else if (config.scriptNames?.onRangeSelected) {
                     const start = info.start;
                     const end = info.end;
-                    return performScript("createEvent", {
+                    console.log(newEvent);
+                    performScript("onRangeSelected", {
                         start: {
                             ...dateToObject(start),
                             time: start.toTimeString().split(' ')[0]
@@ -414,6 +431,8 @@ const FullCalendar: FC = () => {
                         event: createTemplate ? newEvent : null
                     });
                 }
+
+                if (!config.eventCreation) return;
 
                 document.querySelector('.calendar-highlight')?.remove();
                 const arrow = document.querySelector('.create-arrow') as HTMLElement | null;

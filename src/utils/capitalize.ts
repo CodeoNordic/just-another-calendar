@@ -9,7 +9,8 @@
  * capitalize('hello world', true); // 'Hello world'
  * ```
  */
-export default function capitalize(str: string, firstOnly: boolean = false) {
+export default function capitalize(str?: string, firstOnly: boolean = false) {
+    if (!str) return '';
     if (firstOnly) return str.substring(0, 1).toUpperCase() + str.substring(1);
 
     return str.split(' ')

@@ -4,9 +4,7 @@ import performScript from "@utils/performScript";
 
 const Search: FC = () => {
     const [config, setConfig] = useConfigState();
-
     if (!config?.searchFields) return null;
-
 
     const setSearch = (searchField: JAC.SearchField, newValue: string, index: number) => {
         // priority is script from filter > script from config > client side toggle 
@@ -33,7 +31,7 @@ const Search: FC = () => {
     return <div>
         {config.searchFields.map((searchField, index) => {
             if (!searchField.searchBy && !searchField.eval && !searchField.script) {
-                console.warn('Search field is missing searchBy, eval and script, will not be used.', searchField);
+                !config.ignoreWarnings && console.warn('Search field is missing searchBy, eval and script, will not be used.', searchField);
                 return null;
             };
             
@@ -41,7 +39,7 @@ const Search: FC = () => {
         {searchField.title ? <Collapse top={<>
             <div>{searchField.title}</div>
         </>}
-        collapsed={searchField.openDefault === false}>
+        collapsed={searchField.open === false}>
             <input type="text" placeholder={searchField.placeholder ?? "Search"}
                 value={searchField.value || ""}
                 onChange={e => setSearch(searchField, e.target.value, index)}

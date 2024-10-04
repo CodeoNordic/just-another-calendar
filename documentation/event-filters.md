@@ -8,7 +8,7 @@ unless the filter has its own `script` value, or its `clientOnly` value is set t
 in which case the filter will be handled in the web viewer, without any script calls.
 
 If a filter does not have the `clientOnly` value set to `true`, AND the filter does
-not have a `script` value, the `onFilterChange` script defined in the [config scriptnames](./init.md)
+not have a `script` value, the `onEventFilterChange` script defined in [`scriptNames`](./script-names.md)
 will be used.
 
 Filters can also have an `enabled` value. This value tells
@@ -161,13 +161,13 @@ by specifying a `sort` number for one or more filters.
         {
             "id": "meeting",
             "title": "Meeting",
-            "openDefault": true
+            "open": true
         },
 
         {
             "id": "consulting",
             "title": "Consulting",
-            "openDefault": false
+            "open": false
         }
     ],
 
@@ -296,13 +296,13 @@ These areas must already be defined in the [config](./init.md#eventfilterareas-a
         {
             "id": "meeting",
             "title": "Meeting",
-            "openDefault": true
+            "open": true
         },
 
         {
             "id": "consulting",
             "title": "Consulting",
-            "openDefault": false
+            "open": false
         }
     ],
 

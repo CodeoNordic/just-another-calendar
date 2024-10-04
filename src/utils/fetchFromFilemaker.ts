@@ -46,14 +46,14 @@ export default async function fetchFromFileMaker<T = RSAny>(
                     .catch(rej)
             });
 
-            console.warn(`Script key ${scriptKey} was fetched before the config was loaded, a load callback was added`);
+            !window._config!.ignoreWarnings && console.warn(`Script key ${scriptKey} was fetched before the config was loaded, a load callback was added`);
         });
     }
 
     // Get the script name
-    const scriptName = window._config.scriptNames?.[scriptKey];
+    const scriptName = window._config!.scriptNames?.[scriptKey];
     if (typeof scriptName !== 'string') {
-        console.warn(`Script name of the key '${scriptKey}' was not found in the config`);
+        !window._config!.ignoreWarnings && console.warn(`Script name of the key '${scriptKey}' was not found in the config`);
         return null
     }
 

@@ -136,13 +136,13 @@ in the calendar.
 
 Check the [event templates definition](./event-templates.md) for more information.
 
-### `eventTemplatesOpenDefault` (boolean)
-Controls whether the event templates area should be open or collapsed by default.
+### `eventTemplatesOpen` (boolean)
+Controls whether or not the event templates area should be open.
 
 Example:
 ```json
 {
-    "eventTemplatesOpenDefault": true
+    "eventTemplatesOpen": true
 }
 ```
 
@@ -163,15 +163,11 @@ Example:
         {
             "name": "area1", // Unique name
             "title": "Area 1", // Title displayed in the menu
-            "openDefault": true // Whether the area should be opened or collapsed by default
+            "open": true // Whether the area should be opened or collapsed
         }
     ]
 }
 ```
-
-**Default value for title:** `Filter`
-
-**Default value for openDefault:** `Filter`
 
 ### `searchFields` (array)
 A list of search fields that should be available in the side-menu.
@@ -198,7 +194,7 @@ it will not be included in the list, and a warning will be issued to the console
             "title": "Search by Name", // Optional text displayed above the search field, area is not collapsible if this field is empty
             "placeholder": "Type a name...", // Placeholder text shown when the field is empty
 
-            "openDefault": false, // Whether or not the area should be opened by default
+            "open": false, // Whether or not the area should be opened
             "value": "", // The current search value, not required
 
             "script": "[TRG] = EVNT Search" // Optional script to run when searching
@@ -210,7 +206,7 @@ it will not be included in the list, and a warning will be issued to the console
             "title": "Search by title",
             "placeholder": "Type a title...",
 
-            "openDefault": true
+            "open": true
         }
     ]
 }
@@ -274,7 +270,7 @@ Example:
 {
     "weekNumberHeader": "U", // Defaults to 'W' for 'Week'
 
-    "eventTemplatesHeader": "Avtalemaler", // Defaults to 'Event Templates'
+    "eventTemplatesHeader": "Avtalemaler", // Defaults to 'Event Templates', only used if no areas are defined
 
     "eventCreationHeader": "Ny avtale", // Defaults to 'New Event'
     "eventCreationConfirm": "Lagre", // Defaults to 'Save'
@@ -519,5 +515,15 @@ Consider using [`nextPollMs`](#nextpollms-number) if possible, as it will likely
 ```json
 {
     "pollIntervalMs": 10000
+}
+```
+
+### `sideMenuOpen` (boolean)
+Controls whether or not the side menu should currently be opened. Should be used together with
+the `onSideMenuOpened` and `onSideMenuClosed` scripts defined in [`scriptNames`](#scriptnames-object).
+
+```json
+{
+    "sideMenuOpen": false
 }
 ```

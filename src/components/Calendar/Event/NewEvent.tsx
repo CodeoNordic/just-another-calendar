@@ -113,7 +113,7 @@ const NewEvent: FC<NewEventProps> = props => {
     const addEvent = () => {
         setConfig((prev) => ({...prev, events: [...config!.events, newEvent]} as JAC.Config));
         console.log(newEvent);
-        config?.scriptNames?.eventCreated && performScript(config.scriptNames.eventCreated, newEvent);
+        config?.scriptNames?.onEventCreated && performScript('onEventCreated', newEvent);
         stopNewEvent();
     }
 
@@ -232,8 +232,10 @@ const NewEvent: FC<NewEventProps> = props => {
                             <p>{field.title ?? field.name}</p>
                             {field.type === "dropdown" ? <select 
                                 className='dropdown-input'
-                                value={get(newEvent as JAC.Event, field.name)} 
+                                value={get(newEvent as JAC.Event, field.name) || ''}
+                                data-test={console.log(get(newEvent as JAC.Event, field.name))}
                                 onChange={e => setNewEventField(field.name, e.target.value)}
+                                multiple={field.multiple}
                             >
                                 {field.dropdownItems?.map(item => {
                                     return typeof item === "string" 

@@ -13,6 +13,8 @@ declare global {
                 value: string;
                 label: string;
             }[] | string[];
+
+            multiple?: boolean;
         }
     }
 }
