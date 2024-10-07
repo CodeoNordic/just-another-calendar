@@ -32,7 +32,7 @@ const SideMenu: FC = () => {
         </button>
 
         <div className="wrapper">
-            <DatePicker />
+            {!config!.datePickerDisabled && <DatePicker />}
             <Search />
             <EventFilters />
             <EventTemplates />

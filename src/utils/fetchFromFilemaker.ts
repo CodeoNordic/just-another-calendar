@@ -1,6 +1,8 @@
 import { v4 as randomUUID } from 'uuid';
 import performScript, { loadCallbacks } from './performScript';
 
+import { warn } from '@utils/log';
+
 const promises = new Map<string, { resolve: (data: any) => void; reject: (err?: any) => void}>();
 
 window.onScriptResult = (uuid, data) => {
@@ -46,14 +48,14 @@ export default async function fetchFromFileMaker<T = RSAny>(
                     .catch(rej)
             });
 
-            !window._config!.ignoreWarnings && console.warn(`Script key ${scriptKey} was fetched before the config was loaded, a load callback was added`);
+            warn(`Script key ${scriptKey} was fetched before the config was loaded, a load callback was added`);
         });
     }
 
     // Get the script name
     const scriptName = window._config!.scriptNames?.[scriptKey];
     if (typeof scriptName !== 'string') {
-        !window._config!.ignoreWarnings && console.warn(`Script name of the key '${scriptKey}' was not found in the config`);
+        warn(`Script name of the key '${scriptKey}' was not found in the config`);
         return null
     }
 

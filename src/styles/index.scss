@@ -36,4 +36,12 @@ body {
     &:has(.side-menu.open) {
         grid-template-columns: 1fr 6fr;
     }
+
+    &:not(:has(.side-menu)) {
+        grid-template-columns: 1fr;
+
+        .fc-view-harness {
+            margin-left: 0 !important;
+        }
+    }
 }

@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useConfig } from '@context/Config';
+import { useMemo, useState, useCallback } from 'react';
+import { useConfig, useConfigState } from '@context/Config';
 
 import Collapse from './Collapse';
 import performScript from '@utils/performScript';
@@ -14,7 +14,7 @@ import ArrowDown from 'jsx:@svg/arrow-down.svg';
 import combineClasses from '@utils/combineClasses';
 
 const DatePicker: FC = () => {
-    const config = useConfig();
+    const [config, setConfig] = useConfigState();
 
     const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
     const selectedDate = useMemo(() => {
@@ -31,7 +31,20 @@ const DatePicker: FC = () => {
 
     // Calculate the dates of the current month
     const dates = useMemo(() => getCalendarDates(selectedMonth, config?.firstDayOfWeek), [selectedMonth, config?.firstDayOfWeek]);
-    const allDates = [...dates.start, ...dates.middle, ...dates.end]
+    const allDates = [...dates.start, ...dates.middle, ...dates.end];
+
+    const onDateSelected = useCallback((selected: Date) => {
+        if (!config?.scriptNames?.onDateSelected) return setConfig(prev => {
+            if (!prev) return null;
+
+            return {
+                ...prev,
+                date: selected.toISOString()
+            }
+        });
+
+        performScript('onDateSelected', dateToObject(selected));
+    }, [config?.scriptNames?.onDateSelected]);
 
     const weekNumbers = useMemo(() => {
         const nums: number[] = [];
@@ -79,7 +92,7 @@ const DatePicker: FC = () => {
                     {dates.start.map((date, i) => <button
                         key={i}
                         className="extra-date"
-                        onClick={() => performScript('onDateSelected', dateToObject(date))}
+                        onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
                     </button>)}
@@ -87,7 +100,7 @@ const DatePicker: FC = () => {
                     {dates.middle.map((date, i) => <button
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
-                        onClick={() => performScript('onDateSelected', dateToObject(date))}
+                        onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
                     </button>)}
@@ -95,7 +108,7 @@ const DatePicker: FC = () => {
                     {dates.end.map((date, i) => <button
                         key={i}
                         className="extra-date"
-                        onClick={() => performScript('onDateSelected', dateToObject(date))}
+                        onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
                     </button>)}

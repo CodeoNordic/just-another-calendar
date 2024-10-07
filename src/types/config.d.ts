@@ -3,9 +3,14 @@ declare global {
         // Define the web config here
         interface Config {
             ignoreWarnings?: boolean;
+            ignoreInfo?: boolean;
+
             events: JAC.Event[];
 
             sideMenuOpen?: boolean;
+            sideMenuDisabled?: boolean;
+
+            datePickerDisabled?: boolean;
             
             eventFilters?: EventFilter[];
             eventFilterAreas?: Area[];
@@ -48,6 +53,7 @@ declare global {
 
             calendarStartTime?: string;
             calendarEndTime?: string;
+            initialScrollTime?: string;
 
 
             // Fields from JAC.Event that appear when creating new events

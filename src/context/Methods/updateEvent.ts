@@ -2,6 +2,7 @@ import { useConfigState } from '@context/Config';
 import { useCreateMethod } from '@utils/createMethod';
 
 import searchArray from '@utils/searchArray';
+import { warn } from '@utils/log';
 
 export default function useUpdateEvent() {
     const [, setConfig] = useConfigState();
@@ -14,7 +15,7 @@ export default function useUpdateEvent() {
         const events = searchArray(copy, find);
         if (!events.length) {
             if (!autocreate) {
-                !config.ignoreWarnings && console.warn(`updateEvent find returned 0 results`);
+                warn(`updateEvent find returned 0 results`);
                 return config;
             }
 
@@ -26,7 +27,7 @@ export default function useUpdateEvent() {
         }
 
         if (events.length > 1) {
-            !config.ignoreWarnings && console.warn(`updateEvent find returned more than 1 result`);
+            warn(`updateEvent find returned more than 1 result`);
             return config;
         }
 

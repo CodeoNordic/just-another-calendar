@@ -1,7 +1,6 @@
 import { useConfigState } from '@context/Config';
 import { useCreateMethod } from '@utils/createMethod';
 
-import searchArray from '@utils/searchArray';
 import searchObject from '@utils/searchObject';
 
 export default function useRemoveEvents() {
@@ -12,20 +11,36 @@ export default function useRemoveEvents() {
         const { events, ...rest } = prev;
 
         if (!search || !events) return { ...prev, events: [] };
+        if (!Number.isFinite(limit) || ((limit ?? Infinity) < 1))
+            limit = Infinity;
 
-        if (!Number.isFinite(limit) || (limit! < 1)) return {
+        let deleted = 0;
+
+        // If the search is a string, remove the event ID
+        if (typeof search === 'string') return {
             ...rest,
-            events: searchArray(events, search, true)
+            events: events.filter((ev) => {
+                if (ev.id === search && deleted < limit!) {
+                    deleted++;
+                    return false;
+                }
+
+                return true;
+            })
         }
 
         return {
             ...rest,
             events: events.filter((event, i) => {
-                if (i >= limit!) return true;
-                return !searchObject(event, search)
+                if (searchObject(event, search) && deleted < limit!) {
+                    deleted++;
+                    return false;
+                }
+
+                return true;
             })
         }
     });
     
-    useCreateMethod('removeEvents|removeEvent', removeEvents);
+    useCreateMethod('removeEvents|removeEvent|deleteEvents|deleteEvent', removeEvents);
 }

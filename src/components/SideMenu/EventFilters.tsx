@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import Collapse from "./Collapse";
-import { useConfigState } from "@context/Config";
+import { useConfig, useConfigState } from "@context/Config";
 import calculateContrast from "@utils/contrast";
 import performScript from "@utils/performScript";
 
@@ -11,19 +11,22 @@ import Crossmark from "jsx:@svg/crossmark.svg";
 
 const EventFilterArea: FC<JAC.Area & {filters: JAC.EventFilter[]; index?: number}> = props => {
     const [config, setConfig] = useConfigState();
-    
-    if (!config) return null
+    if (!config) return null;
 
     const toggleFilter = (filter: JAC.EventFilter) => {
+        const { _initialIndex, ...rest } = filter;
+
         // priority is script from filter > script from config > client side toggle
         if (filter.script) {
             performScript(filter.script, {
                 ...filter,
+                index: _initialIndex,
                 enabled: !filter.enabled || false
             });
         } else if (config.scriptNames.onEventFilterChange){
             performScript("onEventFilterChange", {
                 ...filter,
+                index: _initialIndex,
                 enabled: !filter.enabled || false
             });
         } else {
@@ -44,7 +47,7 @@ const EventFilterArea: FC<JAC.Area & {filters: JAC.EventFilter[]; index?: number
     }
 
     return <div>
-        <div className="divider" /> 
+        {!config!.datePickerDisabled && <div className="divider" />}
         <Collapse top={<>
             <div>{props.title ?? "Filters"}</div>
         </>}
@@ -101,18 +104,33 @@ const EventFilterArea: FC<JAC.Area & {filters: JAC.EventFilter[]; index?: number
 }
 
 const EventFilters: FC = () => {
-    const [config, ] = useConfigState();
-    if (!config?.eventFilters) return null
+    const config = useConfig()!;
 
     const sortedFilters = useMemo(() => {
-        const copy = [...(config.eventFilters || [])];
-        copy.sort((a, b) => (a.sort || Infinity) - (b.sort || Infinity));
-        return copy;
+        if (!config.eventFilters) return null;
+
+        return [...(config.eventFilters || [])]
+            .map((f, i) => {
+                f._initialIndex = i;
+                return f;
+            })
+            .sort((a, b) => (a.sort || Infinity) - (b.sort || Infinity));
     }, [config.eventFilters]);
 
+    const mappedAreas = useMemo<(JAC.Area & { filters: JAC.EventFilter[] })[]|null>(() => {
+        if (!config.eventFilterAreas?.length || !sortedFilters?.length) return null;
+
+        return config.eventFilterAreas.map(area => ({
+            ...area,
+            filters: sortedFilters.filter(f => f.areaName === area.name)
+        })).filter(area => !!area.filters?.length);
+    }, [config.eventFilterAreas, sortedFilters]);
+
+    if (!sortedFilters?.length) return null;
+
     return <div>        
-        {config.eventFilterAreas && config.eventFilterAreas?.map((area, i) => 
-            <EventFilterArea key={i} index={i} name={area.name} filters={sortedFilters?.filter((filter) => filter.areaName === area.name)} title={area.title || "Filter"} open={area.open}/>
+        {mappedAreas?.map((area, i) => 
+            <EventFilterArea key={i} index={i} name={area.name} filters={area.filters} title={area.title || "Filter"} open={area.open}/>
         ) || <EventFilterArea index={0} name="default" title={config!.translations?.eventFiltersHeader ?? "Filters"} filters={sortedFilters} />}
     </div>
 }

@@ -233,7 +233,6 @@ const NewEvent: FC<NewEventProps> = props => {
                             {field.type === "dropdown" ? <select 
                                 className='dropdown-input'
                                 value={get(newEvent as JAC.Event, field.name) || ''}
-                                data-test={console.log(get(newEvent as JAC.Event, field.name))}
                                 onChange={e => setNewEventField(field.name, e.target.value)}
                                 multiple={field.multiple}
                             >

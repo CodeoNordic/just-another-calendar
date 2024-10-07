@@ -116,7 +116,6 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
     const commentRegex = /<!--.*?-->($|(\r?\n))/g;
     const trimRegex = /(^(\r?\n)+)|((\r?\n)+$)/g;
 
-    // TODO get contents
     const patchNoteMap = allPatchNotes.map(fileName => {
         let content = fs.readFileSync(join(patchNotesPath, fileName), 'utf-8');
 
@@ -128,18 +127,17 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         });
 
         const jsTokensStart = Array.from(
-            content.matchAll(/<!--( )*\[JSONLY START\]( )*-->($|(\r?\n))/g)
+            content.matchAll(/<!--( )*\[?JSONLY START\]?( )*-->($|(\r?\n))/g)
         );
 
         const jsTokensEnd = Array.from(
-            content.matchAll(/<!--( )*\[JSONLY END\]( )*-->($|(\r?\n))/g)
+            content.matchAll(/<!--( )*\[?JSONLY END\]?( )*-->($|(\r?\n))/g)
         );
 
         if (jsTokensStart.length !== jsTokensEnd.length)
             throw new Error(`${fileName} has invalid JS ONLY markers. There are ${jsCountStart.length} start markers, but ${jsCountEnd.length} end markers.`);
 
-        let contentLite = content
-        //let contentLite = content.replace(/(^|(\r?\n))<!-- *\[JSONLY START\] *-->[^$]*?<!-- *\[JSONLY END\] *-->$|(\r?\n)/g, '');
+        let contentLite = content;
         for (let i = 0; i < jsTokensStart.length; i++) {
             const startToken = jsTokensStart[i];
             const endToken = jsTokensEnd[i];

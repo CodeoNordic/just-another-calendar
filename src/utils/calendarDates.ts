@@ -8,6 +8,29 @@ export const weekDays: string[] = [
     'sat'
 ];
 
+export const isWeekendDay = (date: Date) => {
+    if (!window._config) return false;
+
+    let firstDay = window._config?.firstDayOfWeek!;
+    if (typeof firstDay === 'string')
+        firstDay = weekDays.indexOf(firstDay.toLowerCase().substring(0, 3));
+
+    if (firstDay < 0) firstDay = 0;
+
+    let firstWeekendDay = firstDay + 5;
+    let secondWeekendDay = firstDay + 6;
+
+    if (firstWeekendDay > 6) {
+        firstDay -= 7;
+        secondWeekendDay -= 7;
+    }
+
+    else if (secondWeekendDay > 6)
+        secondWeekendDay -= 7;
+
+    return [firstWeekendDay, secondWeekendDay].includes(date.getDay());
+}
+
 /** Get all the dates that should be displayed on a calendar for a particular month */
 export default function getCalendarDates(date: Date, firstDay: string|number = 'mon'): ({ middle: Date[]; start: Date[]; end: Date[] }) {
     // Splicing from index and down, insert prev

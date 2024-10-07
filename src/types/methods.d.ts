@@ -14,9 +14,9 @@ declare global {
         addEvents(data: WithFilter<JAC.Event>|WithFilter<JAC.Event>[]): void;
         addEvent(data: WithFilter<JAC.Event>|WithFilter<JAC.Event>[]): void;
 
-        /** Remove one, more or all events. Limit should be set to 1 when removing a specific event */
+        /** Remove one, more or all events. Limit should be set to 1 when removing a specific event. If a string is passed, it is considered as the event ID. */
         removeEvents(
-            search?: Partial<JAC.Event>|(Partial<JAC.Event>[]),
+            search?: Partial<JAC.Event>|(Partial<JAC.Event>[])|string,
             limit?: number
         ): void;
 
@@ -47,6 +47,9 @@ declare global {
 
         /** Revert changes to an event */
         revert(id: string): void;
+
+        /** Scrolls to a specific time in the calendar */
+        scrollToTime(time: string): void;
     }
 }
 

@@ -16,7 +16,6 @@ and types must be inside a `declare global` statement.
 Type definition files must also have an `export` statement at the end. Exporting an empty
 object suffices here.
 
-Example:
 ```ts
 declare global {
     namespace JAC {

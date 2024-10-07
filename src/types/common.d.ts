@@ -1,5 +1,8 @@
 declare global {
-    interface Window { debug?: RSAny; }
+    interface Window {
+        debug?: RSAny;
+        fullCalendar?: import('@fullcalendar/core').CalendarApi;
+    }
     
     type RSAny = Record<string, any>;
     type RSS = Record<string, string>;

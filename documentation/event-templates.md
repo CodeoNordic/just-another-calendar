@@ -50,8 +50,89 @@ It is also possible to give an event template a `duration` value in the event fi
             }
         },
 
-        // E.G An event without a set time
+        // An event in a waiting list
         {
+            "title": "P-001 Joakim Isaksen",
+            "backgroundColor": "#777799",
+            "textColor": "#ffffff",
+
+            "event": {
+                // Pre-determined ID
+                "id": "abcd-efgh-ijkl-mnop",
+
+                "colors": {
+                    "background": "#777799",
+                    "textColor": "#ffffff"
+                },
+
+                "YourCustomEventType": "consulting"
+            }
+        }
+    ]
+}
+```
+## Grouping event templates into areas
+If you have many templates of varying categories, you may group these by specifying an `areaName` per template.
+These areas must already be defined in the [config](./init.md#eventtemplateareas-array).
+
+```json
+{
+    "eventTemplateAreas": [
+        {
+            "id": "templates",
+            "title": "Templates",
+            "open": true
+        },
+
+        {
+            "id": "waitingList",
+            "title": "Waiting List",
+            "open": false
+        }
+    ],
+
+    "eventTemplates": [
+        // Consulting
+        {
+            "areaName": "templates",
+
+            "title": "Consulting",
+            "backgroundColor": "#4499cc",
+            "textColor": "#ffffff",
+
+            "event": {
+                "colors": {
+                    "background": "#4499cc",
+                    "textColor": "#ffffff"
+                },
+                "duration": "02:00",
+
+                "YourCustomEventType": "consulting"
+            }
+        },
+
+        // Meeting
+        {
+            "areaName": "templates",
+
+            "title": "Meeting",
+            "backgroundColor": "#aaeeaa",
+            "textColor": "#000000",
+
+            "event": {
+                "colors": {
+                    "background": "#aaeeaa",
+                    "textColor": "#000000"
+                },
+
+                "YourCustomEventType": "meeting"
+            }
+        },
+
+        // An event in a waiting list
+        {
+            "areaName": "waitingList",
+
             "title": "P-001 Joakim Isaksen",
             "backgroundColor": "#777799",
             "textColor": "#ffffff",

@@ -61,7 +61,7 @@ const App: React.FC = () => {
     return <EventDropdownProvider>
         <CalendarRefProvider>
             <div className="app-wrapper">
-                <SideMenu />
+                {!config?.sideMenuDisabled && <SideMenu />}
                 <Calendar />
             </div>
         </CalendarRefProvider>

@@ -2,6 +2,8 @@ import { useConfigState } from "@context/Config";
 import Collapse from "./Collapse";
 import performScript from "@utils/performScript";
 
+import { warn } from '@utils/log';
+
 const Search: FC = () => {
     const [config, setConfig] = useConfigState();
     if (!config?.searchFields) return null;
@@ -31,7 +33,7 @@ const Search: FC = () => {
     return <div>
         {config.searchFields.map((searchField, index) => {
             if (!searchField.searchBy && !searchField.eval && !searchField.script) {
-                !config.ignoreWarnings && console.warn('Search field is missing searchBy, eval and script, will not be used.', searchField);
+                warn('Search field is missing searchBy, eval and script, will not be used.', searchField);
                 return null;
             };
             

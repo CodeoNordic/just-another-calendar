@@ -4,6 +4,8 @@ import { useCreateMethod } from '@utils/createMethod';
 import searchObject from '@utils/searchObject';
 import set from 'lodash.set';
 
+import { warn } from '@utils/log';
+
 export default function useUpdateEventFilter() {
     const [, setConfig] = useConfigState();
 
@@ -18,7 +20,7 @@ export default function useUpdateEventFilter() {
             ? copy.find(f => searchObject(f, find)) : undefined;
 
         if (!filter) {
-            !config.ignoreWarnings && console.warn('The following find returned no results when attempting to update a filter', find);
+            warn('The following find returned no results when attempting to update a filter', find);
             return config;
         }
 

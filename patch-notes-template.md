@@ -12,7 +12,6 @@
 This feature is an example feature used to perform a specific action in the calendar.
 It should include a description of its functionality, along with example usage, if applicable.
 
-Example:
 ```json
 {
     // Config
@@ -23,11 +22,14 @@ Example:
 ## Bug Fixes
 - Fixed a bug where something happens
 
-<!-- SINGLE LINE COMMENTS MARKED WITH [JSONLY START] AND [JSONLY END] WILL ONLY BE INCLUDED IN SOURCE CODE NOTES -->
+## Other
+- Improved the function `functionName(a, b)`, which can now also take in parameter `b`
+
+<!-- CONTENT WRAPPED WITH SINGLE LINE COMMENTS [JSONLY START] AND [JSONLY END] WILL ONLY BE INCLUDED IN SOURCE CODE NOTES -->
 <!-- ENSURE THAT THERE'S AN EQUAL AMOUNT OF START AND END TOKENS, OR THE DISTRIBUTE SCRIPT WILL ERROR -->
 <!-- [JSONLY START] -->
 ## Source Code Changes
 This area should include relevant changes to the source code, for JavaScript developers.
 
-- Added a parameter to the React Hook ExampleHook
+- Added a prop to the React Hook ExampleHook
 <!-- [JSONLY END] -->

@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { useConfig, useConfigState } from '@context/Config';
+import { useConfigState } from '@context/Config';
 
 import { useCreateMethod } from '@utils/createMethod';
 import { v4 as randomUUID } from 'uuid';
@@ -29,7 +29,6 @@ import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import multiMonthPlugin from '@fullcalendar/multimonth'
 
 // Import utils
-import createMethod from '@utils/createMethod';
 import dateFromString from '@utils/dateFromString';
 import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
@@ -37,7 +36,7 @@ import searchObject from '@utils/searchObject';
 
 import NewEvent from './Event/NewEvent';
 import set from 'lodash.set';
-import { weekDays } from '@utils/calendarDates';
+import { isWeekendDay, weekDays } from '@utils/calendarDates';
 import dateToObject from '@utils/dateToObject';
 import { useCalendarRef } from '@context/CalendarRefProvider';
 
@@ -82,9 +81,9 @@ const FullCalendar: FC = () => {
 
     useEffect(() => {
         if (!calendarRef.current) return;
-        const api = calendarRef.current.getApi();
 
-        window.debug = api;
+        const api = calendarRef.current.getApi();
+        window.fullCalendar = api;
 
         // Automatically open/close resource groups on update
         const resourceListener = (resources: ResourceApi[]) => {
@@ -103,6 +102,22 @@ const FullCalendar: FC = () => {
         return () => {
             api.off('resourcesSet', resourceListener);
         }
+    }, [calendarRef]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (!calendarRef.current || !config?.initialScrollTime) return;
+            const api = calendarRef.current.getApi();
+
+            api.scrollToTime(config.initialScrollTime);
+        }, 0);
+    }, [calendarRef, config?.initialScrollTime]);
+
+    useCreateMethod('scrollToTime', time => {
+        if (!calendarRef.current || !time) return;
+        const api = calendarRef.current.getApi();
+
+        api.scrollToTime(time);
     }, [calendarRef]);
 
     useCreateMethod('revert', id => {
@@ -152,7 +167,7 @@ const FullCalendar: FC = () => {
 
             expandRows
 
-            weekends={new Date(currentDate).getDay() > 5? true: (config.showWeekends || false)}
+            weekends={(typeof config!.showWeekends === 'boolean')? config.showWeekends: isWeekendDay(currentDate)}
 
             // Add plugins
             plugins={[

@@ -13,7 +13,6 @@ Each field can be defined in three separate ways:
 ### 1. Value
 Reads the specified key from the event.
 
-Example:
 ```json
 {
     "value": "FirstName"
@@ -24,7 +23,6 @@ Example:
 Parse a string template where anything wrapper in curly brackets `{` and `}`
 will inject the event's field values.
 
-Example:
 ```json
 {
     "template": "Full name: {FirstName} {LastName}"
@@ -55,7 +53,6 @@ The passed JavaScript **must be a callable function.**
 
 The first parameter is the event itself, and the second parameter is the config.
 
-Example:
 ```json
 {
     // You can pass custom values to both the config and the events

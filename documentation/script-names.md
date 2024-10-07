@@ -14,7 +14,7 @@ The following example uses Codeo's script name format:
 
         "onSearch": "[TRG] = EVNT Search", // Runs when a search is performed
 
-        "dateSelected": "[TRG] = Date Select", // Runs when a date is selected in the side-menu
+        "dateSelected": "[TRG] = Date Select", // Runs when a date is clicked in the side-menu's date picker.
 
         "onEventChange": "[TRG] = EVNT Change", // Runs when an event changes, E.G dragged to another time range
         "onEventFilterChange": "[TRG] = Filter Change", // Runs when an event filter is clicked

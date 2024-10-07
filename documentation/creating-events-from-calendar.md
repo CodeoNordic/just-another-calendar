@@ -18,7 +18,6 @@ the fields must be of the type `time`.
 The `type` value is passed to the HTML `<input>` element, but there is also custom support for
 a `dropdown` type, used for selection.
 
-Example:
 ```json
 {
     "newEventFields": [

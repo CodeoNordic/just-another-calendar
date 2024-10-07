@@ -8,6 +8,8 @@ import { templateKey } from '@utils/getFieldValue';
 import BackgroundEvent from './Background';
 import Field from './Field';
 
+import { warn } from '@utils/log';
+
 const Event: FC<JAC.Event> = ({ children, ...props }) => {
     // An event does not render without the config being present
 
@@ -28,13 +30,13 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
         
         if (props._component) {
             comp = config.eventComponents?.find(c => c.name === props._component);
-            if (!comp && !config.ignoreWarnings) console.warn(`A component by the name ${props._component} was not found`, props);
+            if (!comp) warn(`A component by the name ${props._component} was not found`, props);
         }
 
         else {
             const matchingComponents = config.eventComponents?.filter(c => c._filter && searchObject(props, c._filter)) || [];
             if (matchingComponents.length > 1)
-                !config.ignoreWarnings && console.warn(`More than one event component had a positive match for the following event. The first one (${matchingComponents[0].name}) will be used.`, props);
+                warn(`More than one event component had a positive match for the following event. The first one (${matchingComponents[0].name}) will be used.`, props);
 
             comp = matchingComponents[0];
         }
@@ -49,7 +51,7 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
     if (!Object.keys(props).length) return null;
 
     if (!component) {
-        !config.ignoreWarnings && console.warn('A component was not found for the following event', props);
+        warn('A component was not found for the following event', props);
         return null;
     }
     

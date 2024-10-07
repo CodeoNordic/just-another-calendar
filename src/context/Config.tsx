@@ -4,6 +4,7 @@ import getEventsFromObject from '@utils/getEventsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
 import { v4 as randomUUID } from 'uuid';
+import { info, warn } from '@utils/log';
 
 const defaultConfig: Partial<JAC.Config> = {
     defaultEventComponent: "default",
@@ -56,7 +57,8 @@ const defaultConfig: Partial<JAC.Config> = {
     contrastMin: 2,
     nowIndicator: true,
     eventTemplatesOpen: true,
-    sideMenuOpen: false
+    sideMenuOpen: false,
+    ignoreWarnings: false
 };
 
 
@@ -78,10 +80,10 @@ const parseConfig = (cfg: string) => {
             }
         });
 
-        if (assignedTemplates.length && !config.ignoreWarnings) {
+        if (assignedTemplates.length) {
             const multiple = assignedTemplates.length > 1;
-            console.warn(`The following template${multiple?'s':''} had no ID in ${multiple? 'their':'its'} event. A random UUID has been assigned for ${multiple? 'each one':'it'}.`);
-            console.warn(multiple? assignedTemplates: assignedTemplates[0]);
+            info(`The following template${multiple?'s':''} had no ID in ${multiple? 'their':'its'} event. A random UUID has been assigned for ${multiple? 'each one':'it'}.`);
+            info(multiple? assignedTemplates: assignedTemplates[0]);
         }
 
         let configWarned = false;
@@ -91,7 +93,7 @@ const parseConfig = (cfg: string) => {
                 delete event._config;
 
                 if (!configWarned) {
-                    !config.ignoreWarnings && console.warn('One or more events has the _config key defined. This was automatically remapped to __config due to the initial key being used by JAC');
+                    warn('One or more events has the _config key defined. This was automatically remapped to __config due to the initial key being used by JAC');
                     configWarned = true;
                 }
             }

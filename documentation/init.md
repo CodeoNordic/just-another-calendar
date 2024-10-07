@@ -17,7 +17,9 @@ If a value is followed by an asterisk \* it is required.
 ### `date` (string)
 Controls which date is currently selected. If multiple days are shown, the currently selected date will be the first date in the range.
 
-Example:
+**Note:** The date picker in the side-menu will automatically update this value UNLESS the scriptname `onDateSelected` is defined,
+in which case you should manually set this value using [`setConfigValue('date', ...)`](./functions.md#setconfigvaluekey-value).
+
 ```json
 {
     "date": "19.11.2024"
@@ -29,7 +31,6 @@ Example:
 ### `days` (number)
 Controls how many days to display at once in the calendar. Certain calendar views will not use this value.
 
-Example:
 ```json
 {
     "days": 3 // shows 3 days at once
@@ -74,7 +75,6 @@ view if the value is changed in the config through E.G [`setConfigValue`](./func
 **Other**
 - `multiMonthYear`
 
-Example:
 ```json
 {
     "view": "resourceDayGrid" // The view most commonly used by Codeo
@@ -84,7 +84,6 @@ Example:
 ### `events` (array)
 The list of events to display in the calendar.
 
-Example:
 ```json
 {
     "events": [
@@ -101,7 +100,6 @@ Check the [events definition](./events.md) for more information.
 ### `resources` (array)
 The list of resources to use in the calendar.
 
-Example:
 ```json
 {
     "resources": [
@@ -116,7 +114,6 @@ Example:
 ### `resourcesWidth` (string)
 Controls the width of the resources. Only relevant in views where resources are visible on the side. **Must be a valid CSS unit.**
 
-Example:
 ```json
 {
     "resourcesWidth": "360px"
@@ -136,13 +133,18 @@ in the calendar.
 
 Check the [event templates definition](./event-templates.md) for more information.
 
-### `eventTemplatesOpen` (boolean)
-Controls whether or not the event templates area should be open.
+### `eventTemplateAreas` (array)
+The list of areas that [event templates](./event-templates.md) can be grouped into. The only required field is `name`.
 
-Example:
 ```json
 {
-    "eventTemplatesOpen": true
+    "eventTemplateAreas": [
+        {
+            "name": "area1", // Unique name
+            "title": "Area 1", // Title displayed in the menu
+            "open": true // Whether the area should be opened or collapsed
+        }
+    ]
 }
 ```
 
@@ -156,7 +158,6 @@ Check the [event filters definition](./event-filters.md) for more information.
 ### `eventFilterAreas` (array)
 The list of areas that [event filters](./event-filters.md) can be grouped into. The only required field is `name`.
 
-Example:
 ```json
 {
     "eventFilterAreas": [
@@ -216,17 +217,17 @@ it will not be included in the list, and a warning will be issued to the console
 Controls whether or not the built-in contrast checker should be used when displaying certain elements,
 such as the event and source filters, to try and optimize accessibility.
 
-Example:
 ```json
 {
     "contrastCheck": true
 }
 ```
 
+**Default value:** `true`
+
 ### `contrastMin` (number)
 Sets the level of contrast that is required for the contrast check to activate.
 
-Example:
 ```json
 {
     "contrastMin": 3.5    
@@ -238,11 +239,10 @@ Example:
 ### `fullCalendarLicense` (string)
 Your developer license to fullcalendar, if needed.
 
-**This is not required if you are using the original, non-modified version of the calendar.**
+**This is not required if you are using the original, non-modified version of the calendar, unless you explicitly wish to use your own license.**
 
 Codeo Norge AS owns a FullCalendar developer license applicable for the original version of "Just Another Calendar", which is automatically passed into the module.
 
-Example:
 ```json
 {
     "fullCalendarLicense": "xxxx-xxxx-xxxx-xxxx"
@@ -253,7 +253,6 @@ Example:
 Controls which language preset should be used by the calendar.
 Used by FullCalendar along with certain date/time related areas of the calendar.
 
-Example:
 ```json
 {
     "locale": "en-us"
@@ -265,7 +264,6 @@ Example:
 ### `translations` (object)
 Translation table for various labels in the calendar.
 
-Example:
 ```json
 {
     "weekNumberHeader": "U", // Defaults to 'W' for 'Week'
@@ -283,10 +281,11 @@ Passes into FullCalendar's [`eventTimeFormat`](https://fullcalendar.io/docs/even
 
 This value does mostly nothing, as the event display is controlled by the [event component](./event-components.md).
 
+**Default value:** `HH:mm`
+
 ### `nowIndicator` (boolean)
 Controls whether or not an "now indicator" should be displayed in the calendar.
 
-Example:
 ```json
 {
     "nowIndicator": true
@@ -308,7 +307,6 @@ If a default event component isn't defined, and the event does not match any
 component criteria, the event will not be displayed, and a warning will be shown
 in the web console.
 
-Example:
 ```json
 {
     "eventComponents": [
@@ -328,7 +326,6 @@ This is respected by both FullCalendar, and the date picker in the side-menu.
 
 Can also be written as a string, E.G `"mon"`, `"tuesday"` etc. These must be written in English.
 
-Example:
 ```json
 {
     "firstDayOfWeek": 1 // Monday
@@ -344,7 +341,6 @@ Example:
 ### `allDaySlot` (boolean)
 Controls whether or not "all day" events should be displayed or not. Passes into FullCalendar's [`allDaySlot`](https://fullcalendar.io/docs/allDaySlot) value.
 
-Example:
 ```json
 {
     "allDaySlot": true
@@ -356,7 +352,6 @@ Example:
 ### `showWeekends` (boolean)
 Controls whether or not weekends should be displayed or not. Passes into FullCalendar's [`weekends`](https://fullcalendar.io/docs/weekends) value.
 
-Example:
 ```json
 {
     "showWeekends": true
@@ -366,9 +361,8 @@ Example:
 **Default value:** `false`
 
 ### `selectableTooltips` (boolean)
-Controls whether or not event tooltips can be highlighted or not.
+Controls whether or not event tooltips can be highlighted/copied.
 
-Example:
 ```json
 {
     "selectableTooltips": true
@@ -382,7 +376,6 @@ Sets the earliest and latest visible times in the calendar. Useful for defining 
 
 It is recommended to add 15 minutes to the end time, as the end time will not have a label.
 
-Example:
 ```json
 {
     "calendarStartTime": "08:00",
@@ -392,10 +385,22 @@ Example:
 
 **Default value:** `08:00` and `21:15`
 
+### `initialScrollTime` (string)
+The initial time the calendar should scroll to upon loading.
+
+In some cases, you may want the calendar to start at E.G 08:00, but grant the ability
+to scroll up to E.G 06:00.
+
+```json
+{
+    "calendarStartTime": "06:00",
+    "initialScrollTime": "08:00"
+}
+```
+
 ### `eventCreation` (boolean)
 Controls whether or not events are able to be created by dragging in the calendar.
 
-Example:
 ```json
 {
     "eventCreation": false
@@ -412,7 +417,6 @@ Check the [event creation documentation](./creating-events-from-calendar.md) for
 ### `newEventMovable` (boolean)
 Controls whether the new event popup can be moved around in the web viewer.
 
-Example:
 ```json
 {
     "newEventMovable": true
@@ -430,7 +434,6 @@ Check the [script names definition](./script-names.md) for more information.
 ### `customCSS` (string)
 Injects custom CSS-styling into the web viewer's `<head>` element.
 
-Example:
 ```json
 {
     "customCSS": "body { background: red; }"
@@ -460,7 +463,6 @@ Each style object is as follows:
 }
 ```
 
-Example:
 ```json
 {
     "styles": {
@@ -527,3 +529,15 @@ the `onSideMenuOpened` and `onSideMenuClosed` scripts defined in [`scriptNames`]
     "sideMenuOpen": false
 }
 ```
+
+### `ignoreInfo` (boolean)
+Supresses info logs sent to the browser console.
+
+**Default value:** `false`
+
+### `ignoreWarnings` (boolean)
+Supresses warnings sent to the browser console.
+
+**It is not recommended to use this, as warnings often mean that a function was used incorrectly.**
+
+**Default value:** `false`

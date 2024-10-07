@@ -6,10 +6,9 @@ Initialise the calendar with one singular configuration object. (JSON)
 
 Check the [init documentation](./init.md) for more information.
 
-### setConfigValue(key, value)
+### setConfigValue(key, value) (alias: setConfigProp)
 Change a specific value in the config. The key can be any of the values mentioned in the [configuration](./init.md#json-structure). This function should be used when changing e.g the `date` or `view` of the calendar.
 
-Example:
 ```js
 // Change the displayed date to November 19th 2024
 setConfigValue('date', '2024-11-19'); // The European date format can also be passed here (19.11.2024)
@@ -26,7 +25,6 @@ that other events must not match in order for the event to be added.
 
 The event ID is checked by default, so you don't need to add a filter for this.
 
-Example:
 ```js
 // Add one event to the calendar
 addEvents(
@@ -70,15 +68,9 @@ addEvents(
 ### removeEvents(search, [limit])
 Remove one or more events from the calendar, specified by one or more searches, with an optional limit on how many events can be removed at once.
 
-Example:
 ```js
-// Removes one event with a matching id
-removeEvents(
-    JSON.stringify({
-        id: "==abcd-efgh-ijkl-mnop"
-    }),
-    1
-);
+// Removes a specific event ID
+removeEvents("==abcd-efgh-ijkl-mnop");
 
 // Removes any event where the 'dateStart' is before November 19th 2024
 removeEvents(
@@ -104,7 +96,8 @@ If a limit is not defined, the function will remove any event that matches the s
 ### setEvents(events)
 Overwrite the list of events.
 
-Example:
+Alternatively, you can use [`setConfigValue('events', ...)`](#setconfigvaluekey-value).
+
 ```js
 // Overwrite with a list of events
 setEvents(
@@ -118,7 +111,6 @@ setEvents(
 ### updateEvent(search, data, autocreate)
 Update a specific event in the calendar, specified by a search, and the data to set. Optionally, a boolean can be passed to automatically create the event, in case it is not found in the list.
 
-Example:
 ```js
 // Update the event with the matching id, changing the time
 updateEvent(
@@ -148,7 +140,6 @@ Update a specific [event filter](./event-filters.md). Useful when you want to lo
 The search parameter can be either the filter's index in the array (number), the event filter's ID (string),
 or an object which matches one or more of the filter's values.
 
-Example:
 ```js
 // Lock the first event filter
 updateEventFilter(0, JSON.stringify({ locked: true }));
@@ -158,3 +149,15 @@ updateEventFilter(0, JSON.stringify({ locked: true }));
 Revert/undo an action made in the web viewer, such as moving an event.
 
 This method has limited functionality.
+
+```js
+// After moving an event
+revert('abcd-efgh-ijkl-mnop'); // revert id sent to FileMaker
+```
+
+### scrollToTime(time)
+Scroll the calendar view to a specific time.
+
+```js
+scrollToTime('16:00');
+```
