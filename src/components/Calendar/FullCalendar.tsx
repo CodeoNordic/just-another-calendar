@@ -1,20 +1,21 @@
+// Import hooks
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { useConfigState } from '@context/Config';
+import { useConfig, useConfigState } from '@context/Config';
 
+import { useCalendarRef } from '@context/CalendarRefProvider';
 import { useCreateMethod } from '@utils/createMethod';
-import { v4 as randomUUID } from 'uuid';
+import { useEventDropdown } from './Event/Dropdown';
 
 // Import components
 import Event from '@components/Calendar/Event';
-import { useEventDropdown } from './Event/Dropdown';
+import NewEvent from './Event/NewEvent';
 
 // Import methods
 import mapEvents from './mapEvents';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
-import { DateInput, EventDropArg, EventSourceInput } from '@fullcalendar/core';
-import listPlugin from '@fullcalendar/list';
+import { EventDropArg, EventSourceInput } from '@fullcalendar/core';
 
 // Import Calendar plugins
 import momentPlugin from '@fullcalendar/moment';
@@ -27,23 +28,26 @@ import resourceDayGridPlugin from '@fullcalendar/resource-daygrid';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import multiMonthPlugin from '@fullcalendar/multimonth'
+import listPlugin from '@fullcalendar/list';
 
 // Import utils
-import dateFromString from '@utils/dateFromString';
 import performScript from '@utils/performScript';
+import dateFromString from '@utils/dateFromString';
 import capitalize from '@utils/capitalize';
 import searchObject from '@utils/searchObject';
-
-import NewEvent from './Event/NewEvent';
-import set from 'lodash.set';
-import { isWeekendDay, weekDays } from '@utils/calendarDates';
 import dateToObject from '@utils/dateToObject';
-import { useCalendarRef } from '@context/CalendarRefProvider';
+
+import { isWeekendDay, weekDays } from '@utils/calendarDates';
+import clamp from '@utils/clamp';
+
+import { v4 as randomUUID } from 'uuid';
+import set from 'lodash.set';
+import datesFromEvent from '@utils/datesFromEvent';
 
 const FullCalendar: FC = () => {
     const calendarRef = useCalendarRef();
 
-    const [config, setConfig] = useConfigState() as [JAC.Config, Function];
+    const [config, setConfig] = useConfigState() as State<JAC.Config>;
 
     const [creatingEvent, setCreatingEvent] = useState(false);
     const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
@@ -163,8 +167,7 @@ const FullCalendar: FC = () => {
             eventDurationEditable
             nowIndicator={config.nowIndicator}
             
-            eventDisplay={'block'}
-
+            eventDisplay="block"
             expandRows
 
             weekends={(typeof config!.showWeekends === 'boolean')? config.showWeekends: isWeekendDay(currentDate)}
@@ -265,7 +268,12 @@ const FullCalendar: FC = () => {
             }}
 
             // Sorting
-            resourceOrder="title"
+            resourceOrder={(a, b) => {
+                const resourceA = a as JAC.Resource;
+                const resourceB = b as JAC.Resource;
+
+                return (resourceA?.sort ?? Infinity) - (resourceB?.sort ?? Infinity);
+            }}
             eventOrder={(a, b) => {
                 const eventA = (a as { event: JAC.Event }).event;
                 const eventB = (b as { event: JAC.Event }).event;
@@ -306,11 +314,11 @@ const FullCalendar: FC = () => {
             slotLabelInterval={config.view?.startsWith('resourceTimeline') ? { hours: 1 }: { minutes: 15 }}
 
             firstDay={typeof config.firstDayOfWeek === 'number' ? 
-                config.firstDayOfWeek : typeof config.firstDayOfWeek === "string" ? 
+                clamp(config.firstDayOfWeek, 0, 6) : typeof config.firstDayOfWeek === "string" ? 
                 Math.max(weekDays.indexOf(config.firstDayOfWeek!.toLowerCase().substring(0,3)), 1) : 1}
 
             // Event handlers
-            eventClick={info => {
+            eventClick={config.scriptNames?.onEventClick? (info => {
                 const root = info.el;
 
                 // Return if the element clicked was a button
@@ -322,9 +330,9 @@ const FullCalendar: FC = () => {
                 }
 
                 performScript('onEventClick', info.event.extendedProps!.event);
-            }}
+            }): undefined}
 
-            eventChange={info => {
+            eventChange={config.scriptNames?.onEventChange? (info => {
                 const revertId = randomUUID();
                 setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
 
@@ -336,7 +344,7 @@ const FullCalendar: FC = () => {
                     newResource: (info as EventDropArg).newResource?.toJSON(),
                     revertId
                 });
-            }}
+            }): undefined}
 
             eventMouseEnter={info => {
                 const rect = info.el.getBoundingClientRect();
@@ -380,25 +388,40 @@ const FullCalendar: FC = () => {
 
             droppable
             drop={info => {
-                const event = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
+                const { id, ...event } = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
+                if (!Object.keys(event).length) return;
 
                 const start = new Date(info.date);
+                const [hours, minutes] = event.duration.split(':') as [string, string];
 
-                const duration = event.duration.split(':') as [string, string];
-                const end = new Date(start.getTime()); 
-                end.setMinutes(end.getMinutes() + Number(duration[1]) + Number(duration[0]) * 60);
+                const end = new Date(start.getTime());
+                end.setMinutes(end.getMinutes() + Number(minutes) + Number(hours) * 60);
                 
-                setNewEvent(prev => ({
-                    ...prev,
-                    id: randomUUID(),
+                const parsedEvent = {
+                    ...event,
+                    id: id || randomUUID(),
                     start: start.toISOString(),
                     end: end.toISOString(),
-                    resourceId: info.resource?._resource.id,
-                    ...event
+                    resourceId: info.resource?.id
+                };
+
+                setNewEvent(parsedEvent);
+                !config.eventCreation && setConfig(prev => prev && ({
+                    ...prev,
+                    events: [...(prev.events ?? []), parsedEvent]
                 }));
+                /*if (config.eventCreation)
+                    setNewEvent(prev => ({
+                        //...prev,
+                        ...parsedEvent
+                    }));
+                else
+                    setConfig(prev => prev && {
+                        ...prev,
+                        events: [...(prev.events ?? []), parsedEvent]
+                    })*/
 
                 setCreateTemplate(true);
-
                 setTimeout(() => {
                     if (start.getHours() === 0) {
                         const startNew = start.toISOString(); 
@@ -407,16 +430,16 @@ const FullCalendar: FC = () => {
                         calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
                     }    
 
-                    setNewEvent(prev => ({
+                    /*setNewEvent(prev => ({
                         ...prev,
-                        id: randomUUID(),
+                        id: event.id ?? randomUUID(),
                         start: start.toISOString(),
                         end: end.toISOString(),
                         resourceId: info.resource?._resource.id,
                         ...event
-                    }));
+                    }));*/
 
-                    setCreateTemplate(false);
+                    //setCreateTemplate(false);
                 }, 0);
             }}
             
@@ -425,14 +448,26 @@ const FullCalendar: FC = () => {
                 (Boolean(config.scriptNames.onRangeSelected)/* && Boolean(config.eventTemplates?.length)*/) ||
                 Boolean(config.scriptNames.onEventCreated)}
             select={info => {
-                if (newEvent && config.scriptNames?.onEventCreated) {
-                    performScript('onEventCreated', newEvent)
+                const dates = newEvent && datesFromEvent(newEvent);
+                const eventParam = newEvent && {
+                    ...newEvent,
+                    _start: dates?.start && dateToObject(dates.start),
+                    _end: dates?.end && dateToObject(dates.end)
+                };
+
+                if (!creatingEvent && !createTemplate && newEvent && config.scriptNames?.onEventCreated) {
+                    performScript('onEventCreated', eventParam)
+                }
+
+                else if (createTemplate && !config.eventCreation && config.scriptNames?.onEventCreated) {
+                    performScript('onEventCreated', eventParam);
+                    setCreateTemplate(false);
                 }
 
                 else if (config.scriptNames?.onRangeSelected) {
                     const start = info.start;
                     const end = info.end;
-                    console.log(newEvent);
+                    //console.log(newEvent);
                     performScript("onRangeSelected", {
                         start: {
                             ...dateToObject(start),
@@ -443,7 +478,7 @@ const FullCalendar: FC = () => {
                             time: end.toTimeString().split(' ')[0]
                         },
                         resourceId: info.resource?.id,
-                        event: createTemplate ? newEvent : null
+                        event: createTemplate? eventParam: undefined
                     });
                 }
 

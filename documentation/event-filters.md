@@ -3,13 +3,8 @@ In a calendar with a lot of events, it may be difficult to find what you
 are looking for. Event filters allow the user to only display the events
 they want, based on developer-defined criteria.
 
-Each time a filter is clicked, a call to the `eventFilterChanged` script will be made,
-unless the filter has its own `script` value, or its `clientOnly` value is set to `true`,
-in which case the filter will be handled in the web viewer, without any script calls.
-
-If a filter does not have the `clientOnly` value set to `true`, AND the filter does
-not have a `script` value, the `onEventFilterChange` script defined in [`scriptNames`](./script-names.md)
-will be used.
+Each time a filter is clicked, the filter will either use `filterId` from the events, do a call to the `onEventFilterChange` script defined in the [config scriptnames](./script-names.md),
+or from the `script` value from the filter. The priority goes `script` > `onEventFilterChange` > `_filter` > `filterId`.
 
 Filters can also have an `enabled` value. This value tells
 the calendar whether or not the filter is currently switched on.
@@ -18,6 +13,12 @@ A `locked` value controls whether or not the user can turn this filter on/off,
 indicated by a padlock icon for locked filters. This can be used to temporarily
 or permanently disable the user's access to control the filters, E.G whenever
 changes are being made, or the calendar is fetching data.
+
+The filters can also have a `sort` value. This controls the order that the filters appear, with the lowest numbers being placed first,
+and the highest at the end. Filters without a sort value will be placed at the bottom. 
+
+To organize filters, you may also pass an empty object with a `divider` boolean value. This will render a dividing line, separating
+the filters above and below.
 
 ## Client-only filters
 For `clientOnly` filters, a [`_filter`](./_filter.md) value should be passed to specify which events
@@ -28,7 +29,7 @@ enabled filters' criteria are fulfilled.
 a [`_filter`](./_filter.md) value is not needed, but passing it will still work.
 
 In very specific cases, you may want to combine this with calls to a FileMaker script.
-The way this works is tat the client filter will run simultaneously whilst calling the
+The way this works is that the client filter will run simultaneously whilst calling the
 FileMaker script.
 
 ```json
@@ -92,8 +93,6 @@ Each event can have a `filterId` value. This can be either a string or an array 
 which filters the event is controlled by. The purpose of doing this, is that it eliminates the
 need for complex [`_filter`](./_filter.md) objects.
 
-This can also be combined with client-only filters, but in most cases this isn't necessary.
-
 ---
 
 In the following example, the first event will be hidden if `filter1` is disabled, whilst
@@ -144,13 +143,48 @@ the second event will be hidden only when both filters are disabled.
 }
 ```
 
+## Using a FileMaker Script to handle filters
+If the handling of an event filter is complex, you may want to use a FileMaker Script instead.
+This script should update the [`events`](./init.md#events-array) array.
+
+As mentioned before, each filter can have an associated `script` value. This script will be ran
+when the filter is clicked. Otherwise, the scriptName `onEventFilterChange` will be used.
+
+For both of these scripts, the filter itself will be passed as a parameter, with the `enabled`
+value being changed to the desired state, E.G if the user clicks to turn the filter off, the
+value will be `false`.
+
+```json
+{
+    "eventFilters": [
+        // Runs "[TRG] = Filter 1 Change"
+        {
+            "title": "Filter 1",
+            "color": "#aaeeaa",
+            "script": "[TRG] = Filter 1 Change"
+        },
+
+        // Runs "[TRG] = EVNT Filter Change"
+        {
+            "title": "Filter 2",
+            "color": "#4499cc"
+        }
+    ],
+
+    "scriptNames": {
+        "onEventFilterChange": "[TRG] = EVNT Filter Change"
+    }
+}
+```
+
 ---
 
 ## Grouping event filters into areas
 If you have many filters of varying categories, you may group these by specifying an `areaName` per filter.
 These areas must already be defined in the [config](./init.md#eventfilterareas-array).
 
-> If no event filter areas are specified, a default one will be created with the name "Event Filters"
+> If no event filter areas are specified, a default one will be created with the name "Filters", unless
+the `eventFiltersHeader` translation is defined in the [`translations`](./init.md#translations-object) object.
 
 By default, the filters will be ordered depending on their placement in the array, but this can be overwritten
 by specifying a `sort` number for one or more filters.
@@ -212,28 +246,7 @@ by specifying a `sort` number for one or more filters.
 }
 ```
 
-
-# Event Filters
-In a calendar with a lot of events, it may be difficult to find what you
-are looking for. Event filters allow the user to only display the events
-they want, based on developer-defined criteria.
-
-Each time a filter is clicked, the filter will either use `filterId` from the events, do a call to the `onEventFilterChange` script defined in the [config scriptnames](./script-names.md), 
-or the `script` value from the filter. The priority goes `script` > `onEventFilterChange` > `_filter` > `filterId`.
-
-Filters can also have an `enabled` value. This value tells
-the calendar whether or not the filter is currently switched on.
-
-A `locked` value controls whether or not the user can turn this filter on/off,
-indicated by a padlock icon for locked filters. This can be used to temporarily
-or permanently disable the user's access to control the filters, E.G whenever
-changes are being made, or the calendar is fetching data.
-
-The filters can also have a `sort` value. This controls the order that the filters appers, with the lowest numbers first and the ones without at the end. 
-
-The last value a filter can have is `divider`. This makes the filter a divider instead, if you want clearer separation between two filters.
-
-## Filtering in the calendar with filterId
+<!--## Filtering in the calendar with filterId
 Each event can have a `filterId` value. This can be either a string or an array which specifies
 which filters the event is controlled by. This is the easiest filtering to set up, and is recommended for most cases.
 
@@ -405,3 +418,4 @@ here is an example of both [`_filter`](./_filter.md) and `script` being used.
     ]
 }
 ```
+-->

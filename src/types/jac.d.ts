@@ -5,6 +5,8 @@ declare global {
             title?: string;
             collapsed?: boolean;
             disabled?: boolean;
+
+            sort?: number;
         }
         
         interface TextStyle {
@@ -47,7 +49,7 @@ declare global {
             type?: 'text'|'button'|'time'|'date';
 
             /** An icon to be used alongside the field value. If the icon starts with < it is assumed to be injectable HTML */
-            icon?: string;
+            icon?: string|WithFilter<{ icon: string }>|WithFilter<{ icon: string }>[];
 
             /** The key of the value to display, E.G "FirstName". Supports lodash.get syntax such as "NestedObject.FirstName" or "NestedArray[0]" */
             value?: string;
@@ -97,6 +99,12 @@ declare global {
 
             /** Should be defined if type is 'button' */
             script?: string;
+
+            /** Passed to CSS 'marginTop' */
+            marginTop?: string|number;
+
+            /** Passed to CSS 'marginBottom' */
+            marginBottom?: string|number;
         }>;
 
         type EventComponent = WithFilter<{

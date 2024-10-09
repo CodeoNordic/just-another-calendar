@@ -14,21 +14,19 @@ const EventFilterArea: FC<JAC.Area & {filters: JAC.EventFilter[]; index?: number
     if (!config) return null;
 
     const toggleFilter = (filter: JAC.EventFilter) => {
-        const { _initialIndex, ...rest } = filter;
+        const { _initialIndex, enabled, ...rest } = filter;
+
+        const param = {
+            ...rest,
+            index: _initialIndex,
+            enabled: !enabled || false
+        }
 
         // priority is script from filter > script from config > client side toggle
         if (filter.script) {
-            performScript(filter.script, {
-                ...filter,
-                index: _initialIndex,
-                enabled: !filter.enabled || false
-            });
+            performScript(filter.script, param);
         } else if (config.scriptNames.onEventFilterChange){
-            performScript("onEventFilterChange", {
-                ...filter,
-                index: _initialIndex,
-                enabled: !filter.enabled || false
-            });
+            performScript("onEventFilterChange", param);
         } else {
             setConfig(prev => {
                 const newFilters = prev?.eventFilters?.map(f => {
@@ -107,8 +105,6 @@ const EventFilters: FC = () => {
     const config = useConfig()!;
 
     const sortedFilters = useMemo(() => {
-        if (!config.eventFilters) return null;
-
         return [...(config.eventFilters || [])]
             .map((f, i) => {
                 f._initialIndex = i;

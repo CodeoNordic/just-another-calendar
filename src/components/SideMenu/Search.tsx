@@ -38,7 +38,7 @@ const Search: FC = () => {
             };
             
             return <div key={index}> <div className="divider" /> 
-        {searchField.title ? <Collapse top={<>
+        {searchField.title ? <Collapse className="search" top={<>
             <div>{searchField.title}</div>
         </>}
         collapsed={searchField.open === false}>

@@ -7,10 +7,17 @@ import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
 
 const EventTemplates: FC = () => {
-    const config = useConfig();
+    const config = useConfig()!;
+
+    const sortedTemplates = useMemo(() => {
+        if (!config.eventTemplates) return null;
+
+        return [...(config.eventTemplates)]
+            .sort((a, b) => (a.sort || Infinity) - (b.sort || Infinity));
+    }, [config.eventFilters]);
     
     const filteredAreas = useMemo<(JAC.Area & { templates: JAC.EventTemplate[] })[]>(() => config?.eventTemplateAreas?.map((area, i) => {
-        const templates = config?.eventTemplates?.filter(template =>
+        const templates = sortedTemplates?.filter(template =>
             (template.areaName === area.name)
         );
 
@@ -20,18 +27,18 @@ const EventTemplates: FC = () => {
         };
     }).filter(area =>
         Boolean(area?.templates?.length)
-    ) || [{ name: 'default', title: config!.translations!.eventTemplatesHeader ?? 'Templates', templates: config!.eventTemplates! }],
-        [config?.eventTemplateAreas, config?.eventTemplates]
+    ) || [{ name: 'default', title: config?.translations?.eventTemplatesHeader ?? 'Templates', templates: sortedTemplates! }],
+        [config?.eventTemplateAreas, sortedTemplates]
     );
 
-    if (!filteredAreas?.length) return null;
+    if (!filteredAreas?.length || !filteredAreas.some(area => Boolean(area?.templates?.length))) return null;
 
     return <div className="insertable-events">
         <div className="divider" />
         {filteredAreas.map((area, i) => <Collapse
             className="event-template-area"
             key={i}
-            top={<div>{((area.title ?? (capitalize(area.name)))) || config!.translations!.eventTemplatesHeader || 'Templates'}</div>}
+            top={<div>{((area.title ?? (capitalize(area.name)))) || config?.translations?.eventTemplatesHeader || 'Templates'}</div>}
             collapsed={!area.open}
             onChange={collapsed => {
                 // Pass the index to make tracking easier
@@ -68,31 +75,6 @@ const EventTemplates: FC = () => {
                 </div>
             })}
         </Collapse>)}
-        {/*<Collapse top={<>
-            <div>{config!.translations?.eventTemplatesHeader ?? "Event templates"}</div>
-        </>}
-        collapsed={!config!.eventTemplatesOpen}
-        >
-            {config!.eventTemplates?.map((template, i) => {
-                template.event.duration ??= "01:00";
-
-                return <div
-                    data-event={JSON.stringify(template.event)}
-                    className="insertable-event"
-                    key={i}  
-                    style={{
-                        background: template.backgroundColor || "#3788d8",
-                        color: calculateContrast(template.textColor || "#fff", template.backgroundColor || "#3788d8", config?.contrastMin) 
-                            ? template.textColor || "#fff" 
-                            : "#000",
-                        pointerEvents: template.locked ? "none" : "auto",
-                        opacity: template.locked ? 0.5 : 1,
-                        cursor: template.locked ? "not-allowed" : "grab"
-                    }}>
-                    {template.title}
-                </div>
-            })}
-        </Collapse>*/}
     </div>
 }
 

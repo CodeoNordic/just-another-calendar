@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import getEventsFromObject from '@utils/getEventsFromObject';
 import { loadCallbacks } from '@utils/performScript';
 
-import { v4 as randomUUID } from 'uuid';
 import { info, warn } from '@utils/log';
 
 const defaultConfig: Partial<JAC.Config> = {
@@ -50,6 +49,8 @@ const defaultConfig: Partial<JAC.Config> = {
             type: "checkbox"
         }
     ],
+    scriptNames: {},
+    translations: {},
     eventCreation: true,
     newEventMovable: false,
     firstDayOfWeek: 1,
@@ -63,7 +64,7 @@ const defaultConfig: Partial<JAC.Config> = {
 
 
 // Parses the JSON from FileMaker into a readable config
-const parseConfig = (cfg: string) => {
+const parseConfig = (cfg: string = '{}') => {
     try {
         const config = JSON.parse(cfg) as JAC.Config;
         const events = getEventsFromObject(config.events) || [];
@@ -75,19 +76,26 @@ const parseConfig = (cfg: string) => {
         const assignedTemplates: JAC.EventTemplate[] = [];
         config.eventTemplates?.forEach(template => {
             if (!template.event.id) {
-                template.event.id = randomUUID();
+                //template.event.id = randomUUID();
                 assignedTemplates.push(template);
             }
         });
 
         if (assignedTemplates.length) {
             const multiple = assignedTemplates.length > 1;
-            info(`The following template${multiple?'s':''} had no ID in ${multiple? 'their':'its'} event. A random UUID has been assigned for ${multiple? 'each one':'it'}.`);
+            info(`The following template${multiple?'s':''} had no ID in ${multiple? 'their':'its'} event. A random UUID will be assigned for ${multiple? 'each one':'it'} upon creation.`);
             info(multiple? assignedTemplates: assignedTemplates[0]);
         }
 
+        const missingId: JAC.Event[] = [];
         let configWarned = false;
-        config.events = events.map(event => {
+
+        config.events = events.map((event, i) => {
+            if (typeof event.id !== 'string') {
+                missingId.push(event);
+                event.id = String(i);
+            }
+
             if (event._config !== undefined) {
                 event.__config = event._config;
                 delete event._config;
@@ -100,6 +108,12 @@ const parseConfig = (cfg: string) => {
 
             return event;
         });
+
+        if (missingId.length) {
+            const multiple = missingId.length > 1;
+            warn(`The following event ${multiple? 's':''} had no ID. ${multiple? 'Their array indexes were': 'Its array index was'} used instead.`);
+            warn(multiple? missingId: missingId[0]);
+        }
 
         return config;
     } catch(err) {

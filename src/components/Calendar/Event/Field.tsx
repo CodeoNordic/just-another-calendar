@@ -25,8 +25,19 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
         return value;
     }, [props.htmlTemplate, props.event, props.eval, props.htmlTemplate, props.template, props.value]);
 
+    // Get the icon
+    const fieldIconSrc: string|null = useMemo(() => {
+        if (!props.icon) return null;
+        if (typeof props.icon === 'string') return props.icon;
+
+        const matches = (props.icon instanceof Array? props.icon: [props.icon])
+            .filter(obj => !obj._filter || searchObject(props.event, obj._filter));
+        
+        return matches[0]?.icon || null;
+    }, [props.icon, props.event]);
+
     if (!filterCheck) return null;
-    const fieldIcon = props.icon && <Icon src={props.icon} />
+    const fieldIcon = (fieldIconSrc) && <Icon src={fieldIconSrc} />
 
     if (!props.showIfEmpty && fieldValue === null) return null;
     const fieldType = props.type?.toLowerCase() || 'text';
@@ -39,7 +50,9 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
         )}
         style={{
             width: props.fullWidth? '100%': undefined,
-            color: props.color
+            color: props.color,
+            marginTop: (typeof props.marginTop === 'number')? `${props.marginTop}px`: props.marginTop,
+            marginBottom: (typeof props.marginBottom === 'number')? `${props.marginBottom}px`: props.marginBottom
         }}
     >
         {['text', 'time', 'date'].includes(fieldType) && <>

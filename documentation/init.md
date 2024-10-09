@@ -391,6 +391,11 @@ The initial time the calendar should scroll to upon loading.
 In some cases, you may want the calendar to start at E.G 08:00, but grant the ability
 to scroll up to E.G 06:00.
 
+If this value is changed, the calendar will scroll again, but if the value is
+changed to the same time, it will not scroll. Due to this, you should use the
+[`scrollToTime(time)`](./functions.md#scrolltotimetime) function when
+changing the position after loading.
+
 ```json
 {
     "calendarStartTime": "06:00",

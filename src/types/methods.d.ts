@@ -16,7 +16,7 @@ declare global {
 
         /** Remove one, more or all events. Limit should be set to 1 when removing a specific event. If a string is passed, it is considered as the event ID. */
         removeEvents(
-            search?: Partial<JAC.Event>|(Partial<JAC.Event>[])|string,
+            search?: Partial<JAC.Event>|((Partial<JAC.Event>|string)[])|string,
             limit?: number
         ): void;
 
@@ -32,7 +32,7 @@ declare global {
          * updateEvent(JSON.stringify({id: '123'}), JSON.stringify({title: 'New title'}), true);
          * ```
         */
-        updateEvent(find: Partial<JAC.Event>, data: JAC.Event, autocreate?: boolean): void;
+        updateEvent(search: Partial<JAC.Event>|string, data: JAC.Event, autocreate?: boolean): void;
 
         /**
          * Update a specific event filter

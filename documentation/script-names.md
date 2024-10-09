@@ -9,7 +9,7 @@ The following example uses Codeo's script name format:
         "onJsError": "[TRG] = JavaScript Error", // Runs when an unhandled JS error occurs
 
         "onEventClick": "[TRG] = EVNT Edit", // Runs when an event is clicked
-        "onRangeSelected": "[TRG] = EVNT Create", // Runs when a time/date range is selected in the calendar
+        "onRangeSelected": "[TRG] = EVNT Create", // Runs when a time/date range is selected in the calendar. Codeo uses this for event creation.
         "onEventCreated": "[TRG] = EVNT Create Popup", // Runs when an event is created wither with the built-in popup or by dragging a template
 
         "onSearch": "[TRG] = EVNT Search", // Runs when a search is performed

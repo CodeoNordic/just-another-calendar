@@ -49,10 +49,10 @@ For more information, the Licensee should contact the Licensor at sales@codeo.no
 The Licensee will have access to all Software updates released within one (1) year from the date of purchase. Updates may include bug fixes, performance improvements, and new features. Access to updates beyond this period requires the purchase of a subscription renewal or a new license.
 
 ### 5.3. Subscription Renewal:
-After the initial one-year period, the Licensee may choose to renew their support and updates subscription by paying an additional fee. If the Licensee does not renew, they may continue to use the last version of the Software provided during the initial support period but will not be entitled to further updates or support.
+After the initial one-year period, the Licensee may choose to renew their support and updates subscription by paying an additional fee. If the Licensee does not renew, they may continue to use the last version of the Software provided during the initial support period but will not be entitled to further updates.
 
 ### 5.4. No Obligation for Future Updates:
-The Licensor is not obligated to provide future updates or support beyond the one-year period unless the subscription is renewed. The Software is licensed on an "as-is" basis after the expiration of the support and update period unless renewed.
+The Licensor is not obligated to provide future updates beyond the one-year period unless the subscription is renewed. The Software is licensed on an "as-is" basis after the expiration of the support and update period unless renewed.
 
 ## 6. No Warranty & Limitation of Liability
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

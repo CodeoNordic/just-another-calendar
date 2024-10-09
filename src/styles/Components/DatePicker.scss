@@ -1,9 +1,12 @@
 .date-picker {
     min-width: 260px;
 
+    .collapse:not(.collapsed) .top {
+        margin-bottom: 8px;
+    }
+
     .top {
         font-size: 1.3em;
-        margin-bottom: 8px;
 
         .title {
             margin-right: auto;
@@ -41,7 +44,7 @@
         display: grid;
         grid-template-columns: 1fr;
         border-right: 1px solid black;
-        padding-right: 10px;
+        padding-right: 6px;
     }
 
     .week-numbers {
@@ -78,7 +81,7 @@
         }
 
         .date.selected {
-            color: var(--nobs-blue);
+            color: var(--jac-blue);
         }
     }
 }

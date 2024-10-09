@@ -68,9 +68,12 @@ addEvents(
 ### removeEvents(search, [limit])
 Remove one or more events from the calendar, specified by one or more searches, with an optional limit on how many events can be removed at once.
 
+- If a limit is not defined, the function will remove any event that matches the search.
+- If a single string is passed, it is considered an event ID, and a limit of 1 will automatically be set.
+
 ```js
 // Removes a specific event ID
-removeEvents("==abcd-efgh-ijkl-mnop");
+removeEvents("abcd-efgh-ijkl-mnop");
 
 // Removes any event where the 'dateStart' is before November 19th 2024
 removeEvents(
@@ -82,21 +85,25 @@ removeEvents(
 // Removes the events with the matching id's
 removeEvents(
     JSON.stringify([
-        { id: "==abcd-efgh-ijkl-mnop" },
-        { id: "==ponm-lkji-hgfe-dcba" }
+        "==abcd-efgh-ijkl-mnop",
+        "==ponm-lkji-hgfe-dcba"
     ]),
     2
 );
+
+// Removes any event where the value 'FirstName' is either 'Joakim' or 'Vetle'
+removeEvents(
+    JSON.stringify([
+        { FirstName: "==Joakim" },
+        { FirstName: "==Vetle" }
+    ])
+)
 ```
-
-If a limit is not defined, the function will remove any event that matches the search.
-
-**For reliability, it is highly recommended to set a limit anytime you are removing specific events.**
 
 ### setEvents(events)
 Overwrite the list of events.
 
-Alternatively, you can use [`setConfigValue('events', ...)`](#setconfigvaluekey-value).
+Alternatively, you may use [`setConfigValue('events', ...)`](#setconfigvaluekey-value).
 
 ```js
 // Overwrite with a list of events
@@ -111,10 +118,12 @@ setEvents(
 ### updateEvent(search, data, autocreate)
 Update a specific event in the calendar, specified by a search, and the data to set. Optionally, a boolean can be passed to automatically create the event, in case it is not found in the list.
 
+If the passed search is a string, it will be considered as the Event ID.
+
 ```js
 // Update the event with the matching id, changing the time
 updateEvent(
-    JSON.stringify({ id: "==abcd-efgh-ijkl-mnop" }),
+    "==abcd-efgh-ijkl-mnop",
     JSON.stringify({
         timeStart: "10:00",
         timeEnd: "11:30"

@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { useConfig } from '@context/Config';
+import { useConfigState } from '@context/Config';
 
 import EventDropdownProvider from '@components/Calendar/Event/Dropdown';
 
@@ -12,7 +12,7 @@ import CalendarRefProvider from '@context/CalendarRefProvider';
 import performScript from '@utils/performScript';
 
 const App: React.FC = () => {
-    const config = useConfig();
+    const [config, setConfig] = useConfigState();
 
     const css = config?.customCSS;
     useEffect(() => {
@@ -29,7 +29,7 @@ const App: React.FC = () => {
 
     const poll = useCallback(() => {
         performScript('poll');
-    }, [config?.scriptNames]);
+    }, [config?.scriptNames?.poll]);
 
     // Singular polling
     const nextPollMs = config?.nextPollMs;
@@ -37,11 +37,17 @@ const App: React.FC = () => {
         if (
             !config ||
             !Number.isFinite(config.nextPollMs) ||
-            (config.nextPollMs <= 0)
+            (config.nextPollMs! <= 0)
         ) return;
 
-        const t = setTimeout(poll, config.nextPollMs);
-        return () => clearTimeout(t)
+        const t = setTimeout(() => {
+            poll();
+            setConfig(prev => prev && ({
+                ...prev,
+                nextPollMs: undefined
+            }));
+        }, config.nextPollMs);
+        return () => clearTimeout(t);
     }, [nextPollMs, poll]);
 
     // Continuous polling
@@ -50,7 +56,7 @@ const App: React.FC = () => {
         if (
             !config ||
             !Number.isFinite(config.pollIntervalMs) ||
-            (config.pollIntervalMs <= 0)
+            (config.pollIntervalMs! <= 0)
         ) return;
 
         const i = setInterval(poll, config.pollIntervalMs);

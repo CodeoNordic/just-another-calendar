@@ -199,7 +199,7 @@
     // Top left borders
     .fc-col-header thead {
         :first-child .fc-timegrid-axis {
-            border-bottom-width: 0;
+            border-bottom-width: 0 !important;
         }
 
         :nth-child(2) .fc-timegrid-axis {

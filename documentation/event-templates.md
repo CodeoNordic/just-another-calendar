@@ -75,6 +75,12 @@ It is also possible to give an event template a `duration` value in the event fi
 If you have many templates of varying categories, you may group these by specifying an `areaName` per template.
 These areas must already be defined in the [config](./init.md#eventtemplateareas-array).
 
+> If no event template areas are specified, a default one will be created with the name "Templates", unless
+the `eventTemplatesHeader` translation is defined in the [`translations`](./init.md#translations-object) object.
+
+By default, the templates will be ordered depending on their placement in the array, but this can be overwritten
+by specifying a `sort` number for one or more templates.
+
 ```json
 {
     "eventTemplateAreas": [

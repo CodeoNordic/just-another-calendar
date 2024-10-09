@@ -48,6 +48,7 @@ const stdInterface = createInterface({
     output: process.stdout
 });
 
+/** @param {string} question */
 const yesNo = async question => {
     const ans = (await stdInterface.question(`${question} ${cyanText}[y/n]${resetText}\n> `)).toLowerCase();
 
@@ -58,6 +59,30 @@ const yesNo = async question => {
 
     console.log(`${yellowText}%s${resetText}`, 'Please type a valid yes/no answer');
     return yesNo(question);
+}
+
+/** @param {string} content */
+/** @param {string?} identifier */
+const filterOutJsOnly = (content, identifier = 'Text content') => {
+    const jsTokensStart = Array.from(
+        content.matchAll(/<!-- *\[?JSONLY START\]? *--> *($|(\r?\n))/g)
+    );
+
+    const jsTokensEnd = Array.from(
+        content.matchAll(/<!-- *\[?JSONLY END\]? *--> *($|(\r?\n))/g)
+    );
+
+    if (jsTokensStart.length !== jsTokensEnd.length)
+        throw new Error(`${identifier} has invalid JS ONLY markers. There are ${jsCountStart.length} start markers, but ${jsCountEnd.length} end markers.`);
+
+    for (let i = 0; i < jsTokensStart.length; i++) {
+        const startToken = jsTokensStart[i];
+        const endToken = jsTokensEnd[i];
+
+        content = content.substring(0, startToken.index) + content.substring(endToken.index + (endToken[0].length));
+    }
+
+    return content;
 }
 
 let version = packageJson.version;
@@ -113,7 +138,7 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         author: packageJson.author.name
     }
 
-    const commentRegex = /<!--.*?-->($|(\r?\n))/g;
+    const commentRegex = /<!--.*--> *($|(\r?\n))/g;
     const trimRegex = /(^(\r?\n)+)|((\r?\n)+$)/g;
 
     const patchNoteMap = allPatchNotes.map(fileName => {
@@ -126,30 +151,11 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
             return String(patchNoteValues[key] ?? str);
         });
 
-        const jsTokensStart = Array.from(
-            content.matchAll(/<!--( )*\[?JSONLY START\]?( )*-->($|(\r?\n))/g)
-        );
-
-        const jsTokensEnd = Array.from(
-            content.matchAll(/<!--( )*\[?JSONLY END\]?( )*-->($|(\r?\n))/g)
-        );
-
-        if (jsTokensStart.length !== jsTokensEnd.length)
-            throw new Error(`${fileName} has invalid JS ONLY markers. There are ${jsCountStart.length} start markers, but ${jsCountEnd.length} end markers.`);
-
-        let contentLite = content;
-        for (let i = 0; i < jsTokensStart.length; i++) {
-            const startToken = jsTokensStart[i];
-            const endToken = jsTokensEnd[i];
-
-            contentLite = contentLite.substring(0, startToken.index) + contentLite.substring(endToken.index + (endToken[0].length));
-        }
-
-        content = content
+        const contentLite = filterOutJsOnly(content, fileName)
             .replace(commentRegex, '')
             .replace(trimRegex, '');
 
-        contentLite = contentLite
+        content = content
             .replace(commentRegex, '')
             .replace(trimRegex, '');
 
@@ -161,14 +167,14 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         }
     });
 
-    const outputDirectory = join(__dirname, 'zip');
-    const liteDirectory = join(outputDirectory, 'lite');
+    const zipDirectory = join(__dirname, 'zip');
+    const outputDirectory = join(zipDirectory, version);
 
     const fileName = `${packageJson.name}-v${version}.zip`;
     const fileNameLite = `${packageJson.name}-v${version}-lite.zip`;
     
     const fileLocation = join(outputDirectory, fileName);
-    const fileLocationLite = join(liteDirectory, fileNameLite);
+    const fileLocationLite = join(outputDirectory, fileNameLite);
 
     const existingFiles = [];
     fs.existsSync(fileLocation) && existingFiles.push(fileName);
@@ -182,15 +188,15 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
     const indexPath = join('dist', 'index.html');
 
     const zipFiles = async () => {
-        if (!fs.existsSync(outputDirectory)) fs.mkdirSync(outputDirectory);
-        if (!fs.existsSync(liteDirectory)) fs.mkdirSync(liteDirectory);
+        !fs.existsSync(zipDirectory) && fs.mkdirSync(zipDirectory);
+        !fs.existsSync(outputDirectory) && fs.mkdirSync(outputDirectory);
 
         const comment = `${packageJson.name}-v${version}, ${copyrightNotice}`;
 
         const output = fs.createWriteStream(fileLocation);
         const archive = archiver('zip', { comment });
 
-        // Minified
+        // Minified version
         const outputLite = fs.createWriteStream(fileLocationLite);
         const archiveLite = archiver('zip', { comment });
 
@@ -246,7 +252,7 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         const readmePath = join(__dirname, 'README.md');
         const readmeContent = fs.readFileSync(readmePath, 'utf-8');
 
-        const readmeContentLite = readmeContent.replace(/For +JavaScript +Developers:[^$]*For +FileMaker +(Pro )?Developers:\n?/mi, '');
+        const readmeContentLite = filterOutJsOnly(readmeContent, 'README.md');
         archiveLite.append(readmeContentLite, { name: 'README.md' });
 
         // Documentation

@@ -7,6 +7,7 @@ declare global {
             textColor?: string;
             event: JAC.Event;
             locked?: boolean;
+            sort?: number;
         }
     }
 }

@@ -44,7 +44,9 @@
             width: 100%;
             height: 100%;
             
-            stroke: var(--nobs-dark-blue);
+            stroke: var(--jac-dark-blue);
+            color: var(--jac-dark-blue);
+
             stroke-width: .04em;
         }
     }
@@ -58,10 +60,9 @@
     
     
     &.open {
-
         .toggle-button {
             transform: scaleX(-1);
-            right: -18px;
+            right: -17px;
         }
 
         .wrapper {
@@ -98,5 +99,9 @@
 
     .event-template-area {
         margin-bottom: 8px;
+    }
+
+    .insertable-events:not(:has(.collapse.collapsed)) .collapse-container, .collapse.search:not(.collapsed) .collapse-container {
+        margin-top: 8px;
     }
 }
