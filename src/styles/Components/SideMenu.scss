@@ -52,9 +52,10 @@
     }
     
     .insertable-event {
-        margin-top: 2px;
         border-radius: 5px;
         padding: 4px;
+
+        margin-top: 2px;
         cursor: grab;
     }
     
@@ -105,3 +106,16 @@
         margin-top: 8px;
     }
 }
+
+.insertable-event-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 4px;
+    flex-wrap: wrap;
+}
+
+/*.fc-event-dragging {
+    padding: 4px;
+    border-radius: 5px;
+}*/

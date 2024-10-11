@@ -6,7 +6,7 @@ declare global {
             _component?: string;
 
             id: string;
-            resourceId: string|string[];
+            resourceId?: string|string[];
             //sourceId: string|string[];
 
             // Various keys for defining date and time

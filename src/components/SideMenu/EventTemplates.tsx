@@ -5,6 +5,7 @@ import { useConfig } from "@context/Config";
 import calculateContrast from "@utils/contrast";
 import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
+import Icon from '@components/Icon';
 
 const EventTemplates: FC = () => {
     const config = useConfig()!;
@@ -63,6 +64,7 @@ const EventTemplates: FC = () => {
                 return <div
                     key={j}
                     data-event={JSON.stringify(template.event)}
+                    data-instant={template.instant? '': undefined}
                     className="insertable-event"
                     style={{
                         backgroundColor,
@@ -71,7 +73,10 @@ const EventTemplates: FC = () => {
                             : textColor
                     }}
                 >
-                    {template.title}
+                    <div className="insertable-event-content">
+                        {template.icon && <Icon src={template.icon} />}
+                        {template.title && <span>{template.title}</span>}
+                    </div>
                 </div>
             })}
         </Collapse>)}

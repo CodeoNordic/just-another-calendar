@@ -87,6 +87,12 @@ const parseConfig = (cfg: string = '{}') => {
             info(multiple? assignedTemplates: assignedTemplates[0]);
         }
 
+        // Map 'enabled' into each event filter
+        config.eventFilters = config.eventFilters?.map(filter => ({
+            ...filter,
+            enabled: ![0, false].includes(filter.enabled!)
+        }))
+
         const missingId: JAC.Event[] = [];
         let configWarned = false;
 

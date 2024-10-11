@@ -10,6 +10,9 @@ declare global {
             areaName?: string;
             color?: string;
 
+            // Runs a JavaScript function to determine if an event is affected by the filter
+            eval?: string;
+
             /** Whether the filter is a divider instead of a normal filter */
             divider?: boolean;
 

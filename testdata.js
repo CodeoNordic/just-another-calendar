@@ -227,7 +227,7 @@ init(JSON.stringify({
             
             open: true,
 
-            eval: "(input, event, config) => event.FirstName.toLowerCase() === input.toLowerCase()"
+            eval: "(event, input, config) => event.FirstName?.toLowerCase() === input?.toLowerCase()"
         }
     ],  
     calendarStartTime: "08:00",

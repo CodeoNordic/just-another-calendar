@@ -77,10 +77,10 @@ const NewEvent: FC<NewEventProps> = props => {
             setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
             
             setTimeout(() => {
-                setVisible(true)
+                setVisible(true);
             }, 0);
         }
-    }, [visible, newEvent]);
+    }, [creatingEvent, newEvent, eventRef, visible]);
 
     useEffect(() => {
         if (isDragging) {
@@ -100,7 +100,7 @@ const NewEvent: FC<NewEventProps> = props => {
     useEffect(() => {
         const tempEvent = newEvent;
 
-        //calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId});
+        calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId});
         const arrow = document.querySelector('.create-arrow') as HTMLElement | null;
         if (arrow) arrow.style.display = "block";
 
@@ -112,7 +112,7 @@ const NewEvent: FC<NewEventProps> = props => {
 
     const addEvent = () => {
         setConfig((prev) => prev && ({...prev, events: [...(prev.events ?? []), newEvent]} as JAC.Config));
-        //console.log(newEvent);
+        console.log(newEvent);
         config?.scriptNames?.onEventCreated && performScript('onEventCreated', newEvent);
         stopNewEvent();
     }

@@ -13,6 +13,8 @@ a waiting-list twice.
 
 It is also possible to give an event template a `duration` value in the event field, which specifies the duration of the event when dragged in, in hh:mm format.
 
+> If you have event creation enabled (popup), you can add a `instant` boolean value to bypass this for a specific template.
+
 ```json
 {
     // Config

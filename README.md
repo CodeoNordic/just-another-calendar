@@ -9,12 +9,14 @@
 <p><strong>&copy; Codeo Norge AS</strong></p>
 <p>This module requires <a href="https://www.claris.com/filemaker" target="_blank">FileMaker Pro</a> version 19.0 or later</p>
 
-\<\-\-\- [Contact Us](#contact-support) \-\-\-\>
+\<\-\-\- [Contact Us](#contact) \-\-\-\>
 </div>
+
+---
 
 ## Documentation
 ### Disclaimer
-Certain function examples will be written in JavaScript, using `JSON.stringify`. However, these should be called from FileMaker using the `[Perform JavaScript In Web Viewer]` script step.
+Function examples will be written in JavaScript, using `JSON.stringify`. However, these should be called from FileMaker using the `[Perform JavaScript In Web Viewer]` script step.
 
 It is recommended to check the [`_filter`](./documentation/_filter.md) definition
 before continuing, as this is used in multiple areas of the calendar.
@@ -38,15 +40,15 @@ For FileMaker Pro developers:
 - [Event buttons](./documentation/event-buttons.md)
 - [Event templates](./documentation/event-templates.md)
 
-## Contact (support)
+## Contact
 You may contact our team for consulting regarding this module.
 
 - Company: Codeo Norge AS
 - Email: sales@codeo.no
 - Developers:
-    - Andreas Haandlykken: ah@codeo.no (CEO of [Codeo Norway](https://codeo.no) and FileMaker developer)
-    - Joakim Isaksen: ji@codeo.no (React developer)
-    - Vetle Emanuel Lindbråten: vel@codeo.no (React developer)
+    - Andreas Haandlykken: ah@codeo.no - CEO of [Codeo Norway](https://codeo.no) and Senior FileMaker developer
+    - Joakim Isaksen: ji@codeo.no React developer - Head developer of [www.codeo.no](https://codeo.no)
+    - Vetle Emanuel Lindbråten: vel@codeo.no - React developer
 
 ## About
 

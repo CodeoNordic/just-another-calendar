@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, Fragment } from "react";
 
 import Collapse from "./Collapse";
 import { useConfig, useConfigState } from "@context/Config";
@@ -30,9 +30,11 @@ const EventFilterArea: FC<JAC.Area & {filters: JAC.EventFilter[]; index?: number
         } else {
             setConfig(prev => {
                 const newFilters = prev?.eventFilters?.map(f => {
-                    if (f.id === filter.id) {
+                    // Same object reference
+                    if (filter === f) {
                         f.enabled = !f.enabled;
                     }
+
                     return f;
                 });
 
@@ -76,27 +78,29 @@ const EventFilterArea: FC<JAC.Area & {filters: JAC.EventFilter[]; index?: number
                     fill: notEnoughContrast ? "#000" : "#fff"
                 }
 
-                if (filter.divider) return <div key={index} className="filter-divider" />;
+                return <Fragment key={index}>
+                    {filter.divider && <div className="filter-divider" />}
 
-                return (<div 
-                    className="filter-item" 
-                    key={index}  
-                    onClick={() => !filter.locked && toggleFilter(filter)}
-                    style={{
-                        opacity: (filter.enabled && !filter.locked) ? 1 : 0.5,
-                        cursor: filter.locked ? "not-allowed" : "pointer"
-                    }}
-                >
-                    {filter.enabled ? 
-                    <Checkmark className="filter-checkbox" style={iconStyles}/> :
-                    <Crossmark className="filter-checkbox" style={iconStyles}/>}
-                    
-                    <p style={{
-                        color: notEnoughContrast ? "#000" : filter.color || "#3788d8"
-                    }}>{filter.title}</p>
-                    {filter.locked && <Padlock className="filter-lock"/>}
-                </div>
-            )})}
+                    <div 
+                        className="filter-item" 
+                        key={index}  
+                        onClick={() => !filter.locked && toggleFilter(filter)}
+                        style={{
+                            opacity: (filter.enabled && !filter.locked) ? 1 : 0.5,
+                            cursor: filter.locked ? "not-allowed" : "pointer"
+                        }}
+                    >
+                        {filter.enabled ? 
+                        <Checkmark className="filter-checkbox" style={iconStyles}/> :
+                        <Crossmark className="filter-checkbox" style={iconStyles}/>}
+                        
+                        <p style={{
+                            color: notEnoughContrast ? "#000" : filter.color || "#3788d8"
+                        }}>{filter.title}</p>
+                        {filter.locked && <Padlock className="filter-lock"/>}
+                    </div>
+                </Fragment>
+            })}
         </Collapse>
     </div>
 }

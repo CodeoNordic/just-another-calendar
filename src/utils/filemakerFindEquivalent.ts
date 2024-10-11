@@ -44,11 +44,11 @@ function greaterOrLessThan(a: string, b: string, operator: '<'|'>'|'<='|'>=') {
     }
 }
 
-export default function fileMakerFindEquivalent(value: any, search: string): boolean {
+export default function filemakerFindEquivalent(value: any, search: string): boolean {
     search = String(search);
 
     // If search starts with ^, do an inverse search
-    if (search.startsWith('^')) return !fileMakerFindEquivalent(value, search.substring(1));
+    if (search.startsWith('^')) return !filemakerFindEquivalent(value, search.substring(1));
     if (search === '=') return ["", undefined, null, NaN].includes(value);
 
     const stringValue = String(value).toLowerCase();

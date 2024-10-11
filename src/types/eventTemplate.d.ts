@@ -8,6 +8,8 @@ declare global {
             event: JAC.Event;
             locked?: boolean;
             sort?: number;
+            instant?: boolean;
+            icon?: string;
         }
     }
 }

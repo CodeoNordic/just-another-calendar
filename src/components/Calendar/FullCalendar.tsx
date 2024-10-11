@@ -1,6 +1,6 @@
 // Import hooks
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { useConfig, useConfigState } from '@context/Config';
+import { useConfigState } from '@context/Config';
 
 import { useCalendarRef } from '@context/CalendarRefProvider';
 import { useCreateMethod } from '@utils/createMethod';
@@ -11,7 +11,7 @@ import Event from '@components/Calendar/Event';
 import NewEvent from './Event/NewEvent';
 
 // Import methods
-import mapEvents from './mapEvents';
+import mapEvents, { eventToFcEvent } from './mapEvents';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
@@ -142,8 +142,19 @@ const FullCalendar: FC = () => {
         if (containerEl) {
             new Draggable(containerEl, {
                 itemSelector: '.insertable-event',
-                eventData: {
-                    create: false,
+                eventData: (elem) => {
+                    let event: JAC.Event|null = null;
+
+                    try {
+                        event = JSON.parse(elem.getAttribute('data-event')!);
+                    } catch(err) {
+                        console.error(err);
+                    }
+
+                    return {
+                        create: false,
+                        ...eventToFcEvent(event!, config, 0, true)
+                    };
                 }
             });
         }
@@ -274,21 +285,6 @@ const FullCalendar: FC = () => {
 
                 return (resourceA?.sort ?? Infinity) - (resourceB?.sort ?? Infinity);
             }}
-            eventOrder={(a, b) => {
-                const eventA = (a as { event: JAC.Event }).event;
-                const eventB = (b as { event: JAC.Event }).event;
-
-                // If both events have the same 'isUrgent' value, sort by dateFinishedDisplay
-                if (eventA.isUrgent === eventB.isUrgent) {
-                    const dateA = new Date(eventA.dateFinishedDisplay);
-                    const dateB = new Date(eventB.dateFinishedDisplay);
-
-                    return dateA.valueOf() - dateB.valueOf()
-                }
-
-                // Otherwise, put the urgent event first
-                return eventA.isUrgent? -1: 1;
-            }}
             
             // Additional config values
             resourceAreaHeaderContent={() => <div className="date-header">{resourcesTitle}</div>}
@@ -332,6 +328,7 @@ const FullCalendar: FC = () => {
                 performScript('onEventClick', info.event.extendedProps!.event);
             }): undefined}
 
+            // TODO update events after drag if scriptName isn't defined
             eventChange={config.scriptNames?.onEventChange? (info => {
                 const revertId = randomUUID();
                 setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
@@ -350,7 +347,7 @@ const FullCalendar: FC = () => {
                 const rect = info.el.getBoundingClientRect();
                 const event = info.event.extendedProps.event as JAC.Event;
 
-                if (event.type === 'backgroundEvent') return;
+                if (!event || event.type === 'backgroundEvent') return;
 
                 const buttons = eventButtons(event);
 
@@ -388,7 +385,18 @@ const FullCalendar: FC = () => {
 
             droppable
             drop={info => {
-                const { id, ...event } = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
+                let ev: JAC.Event|null = null;
+
+                try {
+                    ev = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
+                } catch(err) {
+                    console.error(err);
+                }
+
+                if (!ev) return;
+                const { id, ...event } = ev;
+
+                //const { id, ...event } = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
                 if (!Object.keys(event).length) return;
 
                 const start = new Date(info.date);
@@ -397,7 +405,7 @@ const FullCalendar: FC = () => {
                 const end = new Date(start.getTime());
                 end.setMinutes(end.getMinutes() + Number(minutes) + Number(hours) * 60);
                 
-                const parsedEvent = {
+                const parsedEvent: JAC.Event = {
                     ...event,
                     id: id || randomUUID(),
                     start: start.toISOString(),
@@ -405,11 +413,25 @@ const FullCalendar: FC = () => {
                     resourceId: info.resource?.id
                 };
 
-                setNewEvent(parsedEvent);
-                !config.eventCreation && setConfig(prev => prev && ({
-                    ...prev,
-                    events: [...(prev.events ?? []), parsedEvent]
-                }));
+                if (config.eventCreation && info.draggedEl.getAttribute('data-instant') === null) {
+                    config.newEventFields?.forEach(field => {
+                        if (!field.defaultValue) return;
+                        if ([undefined, null, NaN, ''].includes(parsedEvent[field.name]))
+                            set(parsedEvent, field.name, field.defaultValue);
+                    });
+                    
+                    setNewEvent(parsedEvent);
+                    setCreatingEvent(true);
+                }
+
+                else {
+                    setConfig(prev => prev && ({
+                        ...prev,
+                        events: [...(prev.events ?? []), parsedEvent]
+                    }));
+                    
+                    setNewEvent(parsedEvent);
+                }
                 /*if (config.eventCreation)
                     setNewEvent(prev => ({
                         //...prev,
@@ -425,23 +447,18 @@ const FullCalendar: FC = () => {
                 setTimeout(() => {
                     if (start.getHours() === 0) {
                         const startNew = start.toISOString(); 
-                        calendarRef.current?.getApi().select({start: startNew, end: undefined, allDay: false, resourceId: info.resource?._resource.id});
+                        calendarRef.current?.getApi().select({ start: startNew, end: undefined, allDay: false, resourceId: info.resource?.id });
                     } else {
-                        calendarRef.current?.getApi().select({start, end, allDay: false, resourceId: info.resource?._resource.id});
-                    }    
-
-                    /*setNewEvent(prev => ({
-                        ...prev,
-                        id: event.id ?? randomUUID(),
-                        start: start.toISOString(),
-                        end: end.toISOString(),
-                        resourceId: info.resource?._resource.id,
-                        ...event
-                    }));*/
-
-                    //setCreateTemplate(false);
+                        calendarRef.current?.getApi().select({ start, end, allDay: false, resourceId: info.resource?.id });
+                    }
                 }, 0);
             }}
+
+            // Can be used when dropping events
+            /*eventReceive={info => {
+                console.log(info);
+                window._config?.events?.push(info.event.toJSON() as JAC.Event)
+            }}*/
             
             selectable={
                 config.eventCreation ||
@@ -488,21 +505,20 @@ const FullCalendar: FC = () => {
                 const arrow = document.querySelector('.create-arrow') as HTMLElement | null;
                 if (arrow) arrow.style.display = "block";
 
-                let newEventTemp = {
+                /*let newEventTemp = {
                     id: randomUUID(),
                     start: info.start.toISOString(),
                     end: info.end.toISOString(),
                     resourceId: info.resource?.id || ""
                 } as JAC.Event;
                 
-                config.newEventFields?.map(field => {
+                config.newEventFields?.forEach(field => {
                     if (!field.defaultValue) return;
-
                     set(newEventTemp, field.name, field.defaultValue);
                 });
 
                 setNewEvent(newEventTemp);
-                setCreatingEvent(true);
+                setCreatingEvent(true);*/
 
                 document.addEventListener('click', e => {
                     if ((e.target as HTMLElement)?.closest('.create-event')) return;

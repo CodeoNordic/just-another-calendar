@@ -232,8 +232,7 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
             'package-lock.json',
             'testdata.json',
             'testdata_min.json',
-            'tsconfig.json',
-            'widget.json'
+            'tsconfig.json'
         ];
 
         sourceCodeFiles.forEach(name => {
@@ -244,7 +243,9 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         addFile('Demo.fmp12');
         addFile('codeo-logo.png');
         addFile('upload.js');
-        archiveLite.file('widget.json');
+
+        archive.file('widget.dist.json', { name: 'widget.json', prefix: 'source-code/' });
+        archiveLite.file('widget.dist.json', { name: 'widget.json' });
         
         // README
         addFile('README.md', 'README.md', true);

@@ -1,47 +1,52 @@
+import filterEvents from './filterEvents';
+
 import calculateContrast from '@utils/contrast';
 import datesFromEvent from '@utils/datesFromEvent';
 
 import { warn } from '@utils/log';
 
+export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number = 0, noIdCheck: boolean = false) {
+    if (!event.id && !noIdCheck) {
+        warn(`The following event does not have an associated ID, and will instead use its array index`, event);
+        event.id = String(i);
+    }
+
+    const dates = datesFromEvent(event);
+
+    const eventStart = dates.start;
+    const eventEnd = dates.end;
+
+    if (event.type === 'backgroundEvent') return {
+        start: eventStart,
+        end: eventEnd,
+        allDay: true,
+        display: 'background',
+        backgroundColor: event.backgroundColor ?? '#eaa',
+        extendedProps: { event }
+    }
+
+    const resourceIds = event.resourceId instanceof Array? event.resourceId: (event.resourceId? [event.resourceId]: []);
+
+    return {
+        id: event.id,
+        resourceId: resourceIds[0],
+        resourceIds,
+        backgroundColor: event.colors?.background || "#3788d8",
+        borderColor: event.colors?.border || "#3788d8",
+        textColor: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config.contrastMin)) ? 
+        "#000" : event.colors?.text,
+        start: eventStart,
+        end: eventEnd,
+        duration: event.duration,
+        extendedProps: { event },
+        allDay: Boolean(event.allDay)
+    }
+}
+
 export default function mapEvents(config: JAC.Config) {
-    return config.events.map((event, i) => {
-        if (!event.id) {
-            warn(`The following event does not have an associated ID, and will instead use its array index`, event);
-            event.id = String(i);
-        }
-
-        const dates = datesFromEvent(event);
-
-        const eventStart = dates.start;
-        const eventEnd = dates.end;
-
-        if (event.type === 'backgroundEvent') return {
-            start: eventStart,
-            end: eventEnd,
-            allDay: true,
-            display: 'background',
-            backgroundColor: event.backgroundColor ?? '#eaa',
-            extendedProps: { event }
-        }
-
-        const resourceIds = event.resourceId instanceof Array? event.resourceId: (event.resourceId? [event.resourceId]: []);
-
-        return {
-            id: event.id,
-            resourceId: resourceIds[0],
-            resourceIds,
-            backgroundColor: event.colors?.background || "#3788d8",
-            borderColor: event.colors?.border || "#3788d8",
-            textColor: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config.contrastMin)) ? 
-            "#000" : event.colors?.text,
-            start: eventStart,
-            end: eventEnd,
-            extendedProps: { event },
-            allDay: Boolean(event.allDay)
-        }
-    }).filter(ev => {
+    return filterEvents(config).map((event, i) => eventToFcEvent(event, config, i))/*.filter(ev => {
         const filterIds = ev.extendedProps.event.filterId;
-        let filteredOut = false 
+        let filteredOut = false;
 
         if (typeof filterIds === 'string' && !config.scriptNames.onEventFilterChange && config.eventFilters) 
             filteredOut = config.eventFilters.some(filter => 
@@ -68,7 +73,7 @@ export default function mapEvents(config: JAC.Config) {
                     config.eventFilters?.some(filter => filter.id == id && !filter.enabled && !filter.script)
                 );
             }
-        }  
+        }
             
         const filteredSearch = config.searchFields ? config.searchFields.some(searchField => {
             if (searchField.eval && searchField.value) {
@@ -102,5 +107,5 @@ export default function mapEvents(config: JAC.Config) {
         }
 
         return true;
-    })
+    })*/
 }

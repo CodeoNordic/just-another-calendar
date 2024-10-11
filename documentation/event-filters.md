@@ -3,11 +3,18 @@ In a calendar with a lot of events, it may be difficult to find what you
 are looking for. Event filters allow the user to only display the events
 they want, based on developer-defined criteria.
 
-Each time a filter is clicked, the filter will either use `filterId` from the events, do a call to the `onEventFilterChange` script defined in the [config scriptnames](./script-names.md),
-or from the `script` value from the filter. The priority goes `script` > `onEventFilterChange` > `_filter` > `filterId`.
+Each filter requires criteria for which events should be affected by it.
+
+> If an event isn't included in any filter, it will still be shown.
+
+Each time a filter is clicked, the filter will use one of the following values to determine if an event is included in the filter:
+- `script` - Runs a FileMaker script. Falls back to the `onEventFilterChange` script, if defined in [`scriptNames`](./script-names.md)
+- `id` - ID of the filter. Checks an event's `filterId` field, which can be a string, or an array of strings
+- `eval` - JavaScript code which returns a boolean determining whether or not an event is included in the filter
+- `_filter` - [`_filter`](./_filter.md) object determining whether or not an event is included in the filter
 
 Filters can also have an `enabled` value. This value tells
-the calendar whether or not the filter is currently switched on.
+the calendar whether or not the filter is currently switched on. (defaults to true)
 
 A `locked` value controls whether or not the user can turn this filter on/off,
 indicated by a padlock icon for locked filters. This can be used to temporarily
@@ -18,11 +25,11 @@ The filters can also have a `sort` value. This controls the order that the filte
 and the highest at the end. Filters without a sort value will be placed at the bottom. 
 
 To organize filters, you may also pass an empty object with a `divider` boolean value. This will render a dividing line, separating
-the filters above and below.
+the filters above and below. If a filter includes this value, the divider will be placed above.
 
 ## Client-only filters
-For `clientOnly` filters, a [`_filter`](./_filter.md) value should be passed to specify which events
-should be displayed when the filter is enabled. An event will be displayed if any of the currently
+For filters that should be handled in the browser, a [`_filter`](./_filter.md) value should be passed to specify which events
+should be affected by the filter. An event will be displayed if any of the currently
 enabled filters' criteria are fulfilled.
 
 > If you are using the [`filterId`](#filtering-by-pre-determining-the-filter-id-optional) value,
@@ -56,7 +63,7 @@ FileMaker script.
     ],
 
     "eventFilters": [
-        // Client only filter
+        // "Client only" filter
         {
             "id": "filter1",
             "title": "Meeting",
@@ -66,13 +73,12 @@ FileMaker script.
             "enabled": true,
             "locked": false,
 
-            "clientOnly": true,
             "_filter": {
                 "YourCustomEventType": "==meeting"
             }
         },
 
-        // Runs a FileMaker script
+        // Runs a FileMaker script when clicked
         {
             "id": "filter2",
             "title": "Consulting",
@@ -246,6 +252,24 @@ by specifying a `sort` number for one or more filters.
 }
 ```
 
+## Programmatically updating a filter
+There are two main methods of updating a filter:
+1. Setting the entire filter list using [`setConfigValue('eventFilters', ...)`](./functions.md#setconfigvaluekey-value-alias-setconfigprop)
+2. Updating a specific filter using [`updateEventFilter(...)`]
+
+The most optimal method is to use `updateEventFilter`, as it only changes a single object.
+
+To find said filter, a search must be passed as the first function parameter. If the target
+filter has an ID, pass this as a string. Otherwise, you may pass the filter's array index.
+
+```js
+// Disable the event filter with the ID 'filter1'
+updateEventFilter('filter1', JSON.stringify({ enabled: false }));
+
+// Lock the first event filter
+updateEventFilter(0, JSON.stringify({ locked: true }));
+```
+
 <!--## Filtering in the calendar with filterId
 Each event can have a `filterId` value. This can be either a string or an array which specifies
 which filters the event is controlled by. This is the easiest filtering to set up, and is recommended for most cases.
@@ -286,7 +310,7 @@ the second event will be hidden only when both filters are disabled.
         },
 
         {
-            "divider": true // will show up as an divider instead
+            "divider": true // will show up as a divider instead
         }
 
         {

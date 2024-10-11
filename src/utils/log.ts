@@ -5,5 +5,5 @@ export function warn(...args: any[]) {
 
 export function info(...args: any[]) {
     if (window._config?.ignoreInfo) return;
-    console.info(...args);
+    console.info('Info:', ...args);
 }
