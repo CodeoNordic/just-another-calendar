@@ -252,6 +252,26 @@ by specifying a `sort` number for one or more filters.
 }
 ```
 
+## Altering the behavior of filters
+In certain situations, you want your filters to behave differently. This value is
+controlled by the `eventFilterBehavior` value in the config.
+
+The calendar has four main behavioral patterns that event filters can follow:
+
+### 1. `any`
+If ANY filter affecting an event is enabled, the event will be shown.
+This is the least strict behavior.
+
+### 2. `all`
+ALL filters affecting an event MUST be enabled, otherwise the event will be hidden.
+This is the most strict behavior.
+
+### 3+4. `groupedAny` and `groupedAll`
+These behaviors are related to [filter areas](#grouping-event-filters-into-areas).
+
+- With the `groupedAny` behavior, at least ONE filter affecting the event must be enabled in EACH area
+- With the `groupedAll` behavior, ALL filters in an area must be enabled, excluding filters that don't affect the event
+
 ## Programmatically updating a filter
 There are two main methods of updating a filter:
 1. Setting the entire filter list using [`setConfigValue('eventFilters', ...)`](./functions.md#setconfigvaluekey-value-alias-setconfigprop)
