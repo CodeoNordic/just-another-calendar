@@ -38,7 +38,14 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
             return included;
         });
 
-        const filterCheck = !affectingFilters.length || affectingFilters.some(filter => !([0, false].includes(filter.enabled!)));
+        let filterCheck = !affectingFilters.length
+
+        if (affectingFilters.length) {
+            config.eventFilterBehaviour == 'all' && (filterCheck = affectingFilters.every(filter => !([0, false].includes(filter.enabled!))));
+            config.eventFilterBehaviour == 'groupedAll' && (filterCheck = affectingFilters.every(filter => !([0, false].includes(filter.enabled!))));
+            config.eventFilterBehaviour == 'groupedAny' && (filterCheck = affectingFilters.some(filter => !([0, false].includes(filter.enabled!))));
+            config.eventFilterBehaviour == 'any' && (filterCheck = affectingFilters.some(filter => !([0, false].includes(filter.enabled!))));
+        }
 
         const searchCheck = searchFields.every(field => {
             if ([undefined, null, NaN, ''].includes(field.value)) return true;

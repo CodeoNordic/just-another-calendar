@@ -14,6 +14,7 @@ declare global {
             
             eventFilters?: EventFilter[];
             eventFilterAreas?: Area[];
+            eventFilterBehaviour?: 'all' | 'groupedAll' | 'groupedAny' | 'any';
 
             eventTemplates?: EventTemplate[];
             eventTemplateAreas: Area[];

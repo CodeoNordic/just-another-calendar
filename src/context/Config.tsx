@@ -59,7 +59,8 @@ const defaultConfig: Partial<JAC.Config> = {
     nowIndicator: true,
     eventTemplatesOpen: true,
     sideMenuOpen: false,
-    ignoreWarnings: false
+    ignoreWarnings: false,
+    eventFilterBehaviour: 'groupedAny',
 };
 
 
