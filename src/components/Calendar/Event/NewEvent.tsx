@@ -7,6 +7,7 @@ import performScript from '@utils/performScript';
 import React, { useEffect, useRef, useState } from 'react';
 import { useCalendarRef } from '@context/CalendarRefProvider';
 import dateFromString from '@utils/dateFromString';
+import searchObject from '@utils/searchObject';
 
 
 interface NewEventProps {
@@ -227,9 +228,9 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
                 <div className='body-inputs'>
                     <p className='title-inputs'>{config?.translations?.eventCreationHeader ?? "New Event"}</p>
-                    {config?.newEventFields?.map(field => {
+                    {config?.newEventFields?.filter(field => !field._filter || searchObject(newEvent!, field._filter))?.map(field => {
                         return <div key={field.name} className='input-wrapper'>
-                            <p>{field.title ?? field.name}</p>
+                            {field.title && <p>{field.title}</p>}
                             {field.type === "dropdown" ? <select 
                                 className='dropdown-input'
                                 value={get(newEvent as JAC.Event, field.name) || ''}

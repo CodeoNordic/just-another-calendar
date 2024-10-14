@@ -1,6 +1,6 @@
 declare global {
     namespace JAC {
-        interface NewEventField {
+        type NewEventField = WithFilter<{
             name: string;
             title?: string;
             placeholder?: string;
@@ -15,7 +15,7 @@ declare global {
             }[] | string[];
 
             multiple?: boolean;
-        }
+        }>;
     }
 }
 

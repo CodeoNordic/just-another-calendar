@@ -12,7 +12,7 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
     return config?.events?.filter(event => {
         const filterIds = (typeof event.filterId === 'string')? [event.filterId]: (event.filterId || []);
 
-        const filterCheck = filters.filter(filter => {
+        const affectingFilters = filters.filter(filter => {
             let included = false;
 
             // True if the filter ID matches
@@ -36,7 +36,9 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
             // True if the _filter criteria is fulfilled
             if (!included && filter._filter) included = searchObject(event, filter._filter);
             return included;
-        }).some(filter => !([0, false].includes(filter.enabled!)));
+        });
+
+        const filterCheck = !affectingFilters.length || affectingFilters.some(filter => !([0, false].includes(filter.enabled!)));
 
         const searchCheck = searchFields.every(field => {
             if ([undefined, null, NaN, ''].includes(field.value)) return true;

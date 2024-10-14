@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { useConfig } from '@context/Config';
 import combineClasses from '@utils/combineClasses';
 
+import { warn } from '@utils/log';
+
 const Icon: FC<{src: string}> = props => {
     const config = useConfig();
     const src = useMemo(() => {
@@ -40,7 +42,10 @@ const Icon: FC<{src: string}> = props => {
             }
         }
 
-        return config?.icons?.find(icon => icon.name === props.src)?.html ?? null;
+        const icon = config?.icons?.find(icon => icon.name === props.src)?.html ?? null;
+        if (!icon) warn(`The icon '${props.src}' was not found in the config`);
+
+        return icon;
     }, [config?.icons, props.src]);
 
     return <div className={combineClasses('jac-icon', props.className)} dangerouslySetInnerHTML={{ __html: src ?? '' }} />

@@ -329,19 +329,44 @@ const FullCalendar: FC = () => {
             }): undefined}
 
             // TODO update events after drag if scriptName isn't defined
-            eventChange={config.scriptNames?.onEventChange? (info => {
+            eventChange={info => {
                 const revertId = randomUUID();
                 setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
 
+                const start = info.event.start!;
+                const end = info.event.end!;
+
                 performScript('onEventChange', {
                     event: info.event.extendedProps.event,
-                    start: info.event.start,
-                    end: info.event.end,
+                    start: dateToObject(start),
+                    end: dateToObject(end),
                     oldResource: (info as EventDropArg).oldResource?.toJSON(),
                     newResource: (info as EventDropArg).newResource?.toJSON(),
                     revertId
                 });
-            }): undefined}
+
+                // Update the event dates and times
+                setConfig(prev => {
+                    if (!prev) return prev;
+
+                    const { events, ...cfg } = prev;
+                    const event = events?.find(ev => ev.id === info.event.id)!;
+
+                    event.start = start.toISOString();
+                    event.end = end.toISOString();
+
+                    event.startTime = start.toTimeString().substring(0, 5);
+                    event.timeStart = event.startTime;
+
+                    event.endTime = end.toTimeString().substring(0, 5);
+                    event.timeEnd = event.endTime;
+
+                    return {
+                        ...cfg,
+                        events: [...events]
+                    } as JAC.Config;
+                });
+            }}
 
             eventMouseEnter={info => {
                 const rect = info.el.getBoundingClientRect();
@@ -499,13 +524,13 @@ const FullCalendar: FC = () => {
                     });
                 }
 
-                if (!config.eventCreation) return;
+                if (!config.eventCreation || createTemplate) return;
 
                 document.querySelector('.calendar-highlight')?.remove();
                 const arrow = document.querySelector('.create-arrow') as HTMLElement | null;
                 if (arrow) arrow.style.display = "block";
 
-                /*let newEventTemp = {
+                let newEventTemp = {
                     id: randomUUID(),
                     start: info.start.toISOString(),
                     end: info.end.toISOString(),
@@ -518,7 +543,7 @@ const FullCalendar: FC = () => {
                 });
 
                 setNewEvent(newEventTemp);
-                setCreatingEvent(true);*/
+                setCreatingEvent(true);
 
                 document.addEventListener('click', e => {
                     if ((e.target as HTMLElement)?.closest('.create-event')) return;

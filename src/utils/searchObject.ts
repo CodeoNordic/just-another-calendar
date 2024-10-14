@@ -13,6 +13,8 @@ import fileMakerFindEquivalent from './filemakerFindEquivalent';
  * ```
  */
 export default function searchObject(obj: RSAny, searchParam: string|RSAny): boolean {
+    if (!obj || !searchParam) return true;
+
     if (typeof searchParam === 'string') return Object.keys(obj)
         .some(k => {
             const value = obj[k];
@@ -37,6 +39,6 @@ export default function searchObject(obj: RSAny, searchParam: string|RSAny): boo
             if (typeof value === 'object')
                 return searchObject(value, searchValue);
 
-            return value == searchValue;
+            return (value == searchValue) === String(searchValue).startsWith('^');
         });
 }
