@@ -170,6 +170,17 @@ The list of areas that [event filters](./event-filters.md) can be grouped into. 
 }
 ```
 
+### `eventFilterBehavior` (string)
+Controls how [event filters](./event-filters.md) behave in relation to one another.
+
+```json
+{
+    "eventFilterBehavior": "any"
+}
+```
+
+**Default value:** `groupedAny`
+
 ### `searchFields` (array)
 A list of search fields that should be available in the side-menu.
 
