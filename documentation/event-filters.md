@@ -270,7 +270,7 @@ This is the most strict behavior.
 These behaviors are related to [filter areas](#grouping-event-filters-into-areas).
 
 - With the `groupedAny` behavior, at least ONE filter affecting the event must be enabled in EACH area
-- With the `groupedAll` behavior, ALL filters in an area must be enabled, excluding filters that don't affect the event
+- With the `groupedAll` behavior, ALL filters in one or more areas must be enabled, excluding filters that don't affect the event
 
 ## Programmatically updating a filter
 There are two main methods of updating a filter:
