@@ -203,6 +203,32 @@ init(JSON.stringify({
 
         {
             name: 'Speaker'
+        },
+
+        {
+            name: 'colors.background',
+
+            value: [
+                {
+                    value: "#a35c36",
+                    _filter: {
+                        eventType: 'break'
+                    }
+                }
+            ]
+        },
+
+        {
+            name: 'colors.text',
+
+            setter: [
+                {
+                    value: '#ffffff',
+                    _filter: {
+                        eventType: 'break'
+                    }
+                }
+            ]
         }
     ]
 }));

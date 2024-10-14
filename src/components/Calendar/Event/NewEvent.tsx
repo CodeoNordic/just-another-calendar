@@ -12,12 +12,15 @@ import searchObject from '@utils/searchObject';
 
 interface NewEventProps {
     creatingState: State<boolean>;
+    templateState: State<boolean>;
     eventState: State<JAC.Event|null>;
 }
 
 const NewEvent: FC<NewEventProps> = props => {
     const [creatingEvent, setCreatingEvent] = props.creatingState;
+    const [, setCreateTemplate] = props.templateState;
     const [newEvent, setNewEvent] = props.eventState;
+
     const eventRef = useRef<HTMLDivElement>(null);
     
     const [isDragging, setIsDragging] = useState(false);
@@ -112,10 +115,18 @@ const NewEvent: FC<NewEventProps> = props => {
     }, [newEvent?.start, newEvent?.end])
 
     const addEvent = () => {
-        setConfig((prev) => prev && ({...prev, events: [...(prev.events ?? []), newEvent]} as JAC.Config));
-        console.log(newEvent);
-        config?.scriptNames?.onEventCreated && performScript('onEventCreated', newEvent);
+        const eventCopy = { ...newEvent } as JAC.Event;
+
+        config?.newEventFields?.forEach(field => {
+            eventCopy[field.name] ??= field.defaultValue;
+        });
+
+        setNewEvent(eventCopy);
+        setConfig((prev) => prev && ({...prev, events: [...(prev.events ?? []), eventCopy]} as JAC.Config));
+        console.log(eventCopy);
+        config?.scriptNames?.onEventCreated && performScript('onEventCreated', eventCopy);
         stopNewEvent();
+        setCreateTemplate(false);
     }
 
     const stopNewEvent = () => {
@@ -124,11 +135,32 @@ const NewEvent: FC<NewEventProps> = props => {
         document.querySelector('.calendar-highlight')?.remove();
         document.querySelector('.fc-highlight')?.remove();
         setVisible(false);
+        setCreateTemplate(false);
     }
 
-    const setNewEventField = (field: string, value: string|number|boolean|Date) => {
+    const setNewEventField = (fieldName: string, value: string|number|boolean|Date) => {
         const newEventCopy = { ...newEvent };
-        set(newEventCopy, field, value);
+        set(newEventCopy, fieldName, value);
+        
+        config?.newEventFields?.filter(field => field.setter !== undefined)
+            .forEach(field => {
+                let value: any = field.setter;
+
+                if (field.setter instanceof Array) {
+                    const setter = field.setter.find(setter =>
+                        !setter._filter || searchObject(newEventCopy, setter._filter)
+                    );
+
+                    value = setter?.value;
+                }
+
+                else if (field.setter instanceof Object) {
+                    value = field.setter.value;
+                }
+
+                set(newEventCopy, field.name, value);
+            });
+
         setNewEvent(newEventCopy as JAC.Event);
     }
 
@@ -228,7 +260,7 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
                 <div className='body-inputs'>
                     <p className='title-inputs'>{config?.translations?.eventCreationHeader ?? "New Event"}</p>
-                    {config?.newEventFields?.filter(field => !field._filter || searchObject(newEvent!, field._filter))?.map(field => {
+                    {config?.newEventFields?.filter(field => !field.setter && (!field._filter || searchObject(newEvent!, field._filter)))?.map(field => {
                         return <div key={field.name} className='input-wrapper'>
                             {field.title && <p>{field.title}</p>}
                             {field.type === "dropdown" ? <select 

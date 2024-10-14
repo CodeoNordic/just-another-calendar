@@ -15,6 +15,12 @@ declare global {
             }[] | string[];
 
             multiple?: boolean;
+
+            // TODO Set the value to undefined if hidden by _filter
+            unsetIfHidden?: boolean;
+
+            // Setter functionality, hides the field
+            setter?: WithFilter<{ value: any }>[]|{ value: any }|string|number|boolean|null;
         }>;
     }
 }

@@ -115,7 +115,7 @@ const FullCalendar: FC = () => {
 
             api.scrollToTime(config.initialScrollTime);
         }, 0);
-    }, [calendarRef, config?.initialScrollTime]);
+    }, [calendarRef, config?.initialScrollTime, config?.view, config?.date]);
 
     useCreateMethod('scrollToTime', time => {
         if (!calendarRef.current || !time) return;
@@ -328,7 +328,6 @@ const FullCalendar: FC = () => {
                 performScript('onEventClick', info.event.extendedProps!.event);
             }): undefined}
 
-            // TODO update events after drag if scriptName isn't defined
             eventChange={info => {
                 const revertId = randomUUID();
                 setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
@@ -407,6 +406,8 @@ const FullCalendar: FC = () => {
             datesSet={info => {
                 setResourcesTitle(info.view.title);
             }}
+
+            dragRevertDuration={0}
 
             droppable
             drop={info => {
@@ -556,6 +557,7 @@ const FullCalendar: FC = () => {
 
         {creatingEvent && <NewEvent
             eventState={[newEvent, setNewEvent]}
+            templateState={[createTemplate, setCreateTemplate]}
             creatingState={[creatingEvent, setCreatingEvent]}
         />}
     </div>

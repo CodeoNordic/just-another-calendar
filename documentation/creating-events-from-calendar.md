@@ -55,3 +55,38 @@ a `dropdown` type, used for selection.
     ]
 }
 ```
+
+## Value setters
+If you wish to set specific values based on user input, you may use a `setter`.
+
+A setter can be either a static value, or an array of objects with a `value` and `_filter`.
+It will be evaluated upon any field change in the popup.
+
+The order of which these objects are placed in the array decides the "priority" list.
+If the first `_filter` matches, the value of said object will be applied to the event.
+
+> If the 'setter' value is defined, the field will not be displayed in the popup.
+
+```json
+{
+    "name": "colors.background",
+
+    "setter": [
+        // Sets the background color to blue if the 'title' value matches 'Make it blue!'
+        {
+            "value": "#00f",
+            "_filter": {
+                "title": "==Make it blue!"
+            }
+        }
+
+        // Sets the background color to red if the 'title' value contains 'red'
+        {
+            "value": "#f00",
+            "_filter": {
+                "title": "red"
+            }
+        }
+    ]
+}
+```
