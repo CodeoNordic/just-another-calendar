@@ -41,10 +41,33 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
         let filterCheck = !affectingFilters.length
 
         if (affectingFilters.length) {
+            // Check if all filters are enabled, if not, filter out the event
             config.eventFilterBehaviour == 'all' && (filterCheck = affectingFilters.every(filter => !([0, false].includes(filter.enabled!))));
-            config.eventFilterBehaviour == 'groupedAll' && (filterCheck = affectingFilters.every(filter => !([0, false].includes(filter.enabled!))));
-            config.eventFilterBehaviour == 'groupedAny' && (filterCheck = affectingFilters.some(filter => !([0, false].includes(filter.enabled!))));
+            // Check if any filter is enabled, if not, filter out the event
             config.eventFilterBehaviour == 'any' && (filterCheck = affectingFilters.some(filter => !([0, false].includes(filter.enabled!))));
+            if ((config.eventFilterBehaviour === 'groupedAll' || config.eventFilterBehaviour == 'groupedAny') && config.eventFilterAreas) {
+                const filtersEvent = config.eventFilterAreas.reduce<string[][]>((acc, area) => {
+                    const filteredIds = filterIds?.filter(filterId => 
+                        config.eventFilters?.some(filter => filter.areaName === area.name && filter.id === filterId)
+                    );
+                    acc.push(filteredIds);
+                    return acc;
+                }, []);
+            
+                // Check if all filters for at least one area is enabled, if not, filter out the event
+                if (config.eventFilterBehaviour === 'groupedAll') filterCheck = filtersEvent.some(filterGroup => 
+                    filterGroup.length > 0 && filterGroup.every(id => 
+                        affectingFilters.some(filter => filter.id === id && !([0, false].includes(filter.enabled!)))
+                    )
+                );
+
+                // Check if at least one filter for every area is enabled, if not, filter out the event
+                if (config.eventFilterBehaviour === 'groupedAny') filterCheck = filtersEvent.every(filterGroup =>
+                    filterGroup.length > 0 && filterGroup.some(id => 
+                        affectingFilters.some(filter => filter.id === id && !([0, false].includes(filter.enabled!)))
+                    )
+                );
+            }
         }
 
         const searchCheck = searchFields.every(field => {
