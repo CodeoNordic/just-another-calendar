@@ -72,6 +72,15 @@ const NewEvent: FC<NewEventProps> = props => {
             } else if (y < 0) {
                 y = 5;
             }
+
+            if (x < 0) {
+                x = 5;
+                arrowPosX = rect.width + 5;
+            }
+
+            if (y < 0) {
+                y = 5;
+            }
     
             if (arrowPosY + 20 > window.innerHeight) {
                 arrowPosY = window.innerHeight - 27;
