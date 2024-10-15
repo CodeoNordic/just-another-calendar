@@ -193,12 +193,14 @@ init(JSON.stringify({
         {
             name: "filters",
             title: "Filtrer",
-            open: true
+            open: true,
+            order: 2
         },
         {
             name: "sources",
             title: "Kilder",
-            open: false
+            open: false,
+            order: 3
         }
     ],
     searchFields: [
@@ -208,7 +210,8 @@ init(JSON.stringify({
             ],
             placeholder: "Søk",
             
-            open: true
+            open: true,
+            order: 6
         },
         {
             searchBy: [
@@ -219,7 +222,8 @@ init(JSON.stringify({
             title: "Søk etter tid",
             placeholder: "Søk",
             
-            open: true
+            open: true,
+            order: 5
         },
         {
             title: "Søk etter helt navn (eval test)",
@@ -227,7 +231,8 @@ init(JSON.stringify({
             
             open: true,
 
-            eval: "(event, input, config) => event.FirstName?.toLowerCase() === input?.toLowerCase()"
+            eval: "(event, input, config) => event.FirstName?.toLowerCase() === input?.toLowerCase()",
+            order: 4
         }
     ],  
     calendarStartTime: "08:00",
@@ -322,13 +327,15 @@ init(JSON.stringify({
         {
             name: 'area1',
             title: 'Template area 1',
-            open: true
+            open: true,
+            order: 0
         },
 
         {
             name: 'area2',
             title: 'Template area 2',
-            open: false
+            open: false,
+            order: 1
         }
     ],
     newEventFields: [

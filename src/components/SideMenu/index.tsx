@@ -1,7 +1,4 @@
 import DatePicker from './DatePicker';
-import EventFilters from './EventFilters';
-import Search from './Search';
-import EventTemplates from './EventTemplates';
 
 import { useConfigState } from '@context/Config';
 
@@ -9,6 +6,7 @@ import performScript from '@utils/performScript';
 import combineClasses from '@utils/combineClasses';
 
 import ChevronIcon from 'jsx:@svg/menu-toggle.svg';
+import SideMenuComponents from './SideMenuComponents';
 
 
 const SideMenu: FC = () => {
@@ -33,9 +31,7 @@ const SideMenu: FC = () => {
 
         <div className="wrapper">
             {!config!.datePickerDisabled && <DatePicker />}
-            <Search />
-            <EventFilters />
-            <EventTemplates />
+            <SideMenuComponents />
         </div>
     </div>
 }

@@ -12,6 +12,8 @@ declare global {
             eval?: string; // JavaScript to run when the search field is changed
 
             script?: string; // Script to run when the search field is changed for searching in FileMaker
+
+            order?: number; // The order of the search field in the side menu
         }
     }
 }

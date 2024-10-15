@@ -117,6 +117,7 @@ declare global {
             name: string;
             title?: string;
             open?: boolean;
+            order?: number;
         }
     }
 }

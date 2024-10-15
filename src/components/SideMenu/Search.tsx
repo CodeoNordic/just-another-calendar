@@ -4,11 +4,14 @@ import performScript from "@utils/performScript";
 
 import { warn } from '@utils/log';
 
-const Search: FC = () => {
+const Search: FC<{searchField: JAC.SearchField, index: number}> = (props) => {
     const [config, setConfig] = useConfigState();
+    const searchField = props.searchField;
+    const index = props.index;
+
     if (!config?.searchFields) return null;
 
-    const setSearch = (searchField: JAC.SearchField, newValue: string, index: number) => {
+    const setSearch = (newValue: string) => {
         // priority is script from filter > script from config > client side toggle 
         if (searchField.script) {
             performScript(searchField.script, {
@@ -29,29 +32,26 @@ const Search: FC = () => {
             });
         }
     }
-
-    return <div>
-        {config.searchFields.map((searchField, index) => {
-            if (!searchField.searchBy && !searchField.eval && !searchField.script) {
-                warn('Search field is missing searchBy, eval and script, will not be used.', searchField);
-                return null;
-            };
-            
-            return <div key={index}> <div className="divider" /> 
+    
+    if (!searchField.searchBy && !searchField.eval && !searchField.script) {
+        warn('Search field is missing searchBy, eval and script, will not be used.', searchField);
+        return null;
+    };
+    
+    return <>
         {searchField.title ? <Collapse className="search" top={<>
             <div>{searchField.title}</div>
         </>}
         collapsed={searchField.open === false}>
             <input type="text" placeholder={searchField.placeholder ?? "Search"}
                 value={searchField.value || ""}
-                onChange={e => setSearch(searchField, e.target.value, index)}
+                onChange={e => setSearch(e.target.value)}
             />
         </Collapse> : <input type="text" placeholder={searchField.placeholder ?? "Search"}
                 value={searchField.value || ""}
-                onChange={e => setSearch(searchField, e.target.value, index)}
+                onChange={e => setSearch(e.target.value)}
             />}
-    </div>})}
-    </div>
+    </>
 }
 
 export default Search;

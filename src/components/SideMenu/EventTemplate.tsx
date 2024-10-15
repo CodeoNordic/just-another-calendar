@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import Collapse from "./Collapse";
 import { useConfig } from "@context/Config";
 import calculateContrast from "@utils/contrast";
@@ -7,38 +5,14 @@ import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
 import Icon from '@components/Icon';
 
-const EventTemplates: FC = () => {
+const EventTemplates: FC<{area: JAC.Area & {templates: JAC.EventTemplate[]}, index: number}> = (props) => {
     const config = useConfig()!;
-
-    const sortedTemplates = useMemo(() => {
-        if (!config.eventTemplates) return null;
-
-        return [...(config.eventTemplates)]
-            .sort((a, b) => (a.sort || Infinity) - (b.sort || Infinity));
-    }, [config.eventFilters]);
-    
-    const filteredAreas = useMemo<(JAC.Area & { templates: JAC.EventTemplate[] })[]>(() => config?.eventTemplateAreas?.map((area, i) => {
-        const templates = sortedTemplates?.filter(template =>
-            (template.areaName === area.name)
-        );
-
-        return {
-            ...area,
-            templates: templates!
-        };
-    }).filter(area =>
-        Boolean(area?.templates?.length)
-    ) || [{ name: 'default', title: config?.translations?.eventTemplatesHeader ?? 'Templates', templates: sortedTemplates! }],
-        [config?.eventTemplateAreas, sortedTemplates]
-    );
-
-    if (!filteredAreas?.length || !filteredAreas.some(area => Boolean(area?.templates?.length))) return null;
+    const area = props.area;
+    const index = props.index;
 
     return <div className="insertable-events">
-        <div className="divider" />
-        {filteredAreas.map((area, i) => <Collapse
+        <Collapse
             className="event-template-area"
-            key={i}
             top={<div>{((area.title ?? (capitalize(area.name)))) || config?.translations?.eventTemplatesHeader || 'Templates'}</div>}
             collapsed={!area.open}
             onChange={collapsed => {
@@ -46,7 +20,7 @@ const EventTemplates: FC = () => {
                 const param = {
                     ...area,
                     open: !collapsed,
-                    index: i
+                    index: index
                 };
 
                 if (!collapsed && config!.scriptNames!.onEventTemplateAreaOpened)
@@ -79,7 +53,7 @@ const EventTemplates: FC = () => {
                     </div>
                 </div>
             })}
-        </Collapse>)}
+        </Collapse>
     </div>
 }
 
