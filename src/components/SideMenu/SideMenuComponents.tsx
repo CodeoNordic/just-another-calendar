@@ -47,20 +47,20 @@ const SideMenuComponents: FC = () => {
 
     const components = [];
 
-    if (config.searchFields) {
+    config.searchFields &&
         config.searchFields.forEach((searchField, index) => {
             components.push({
                 component: <Search key={`search-${index}`} searchField={searchField} index={index} />,
-                order: searchField.order
+                order: searchField.order || 0
             });
         });
-    }
+    
 
     if (mappedFilterAreas?.length) {
-        mappedFilterAreas.forEach((area, i) => {
+        mappedFilterAreas.forEach((area, index) => {
             components.push({
-                component: <EventFilter key={`filter-${i}`} index={i} name={area.name} filters={area.filters} title={area.title || "Filter"} open={area.open} />,
-                order: area.order
+                component: <EventFilter key={`filter-${index}`} index={index} name={area.name} title={area.title} open={area.open} filters={area.filters} />,
+                order: area.order || 0
             });
         });
     } else if (sortedFilters.length) {
@@ -70,14 +70,13 @@ const SideMenuComponents: FC = () => {
         });
     }
 
-    if (filteredTemplateAreas.length && filteredTemplateAreas.some(area => Boolean(area?.templates?.length))) {
+    filteredTemplateAreas.length && filteredTemplateAreas.some(area => Boolean(area?.templates?.length)) &&
         filteredTemplateAreas.forEach((area, i) => {
             components.push({
                 component: <EventTemplate key={`template-${i}`} index={i} area={area} />,
-                order: area.order
+                order: area.order || 0
             });
         });
-    }
 
     const sortedComponents = components.sort((a, b) => a.order - b.order);
 

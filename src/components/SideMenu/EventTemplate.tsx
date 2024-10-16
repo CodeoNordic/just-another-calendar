@@ -5,7 +5,7 @@ import performScript from '@utils/performScript';
 import capitalize from '@utils/capitalize';
 import Icon from '@components/Icon';
 
-const EventTemplates: FC<{area: JAC.Area & {templates: JAC.EventTemplate[]}, index: number}> = (props) => {
+const EventTemplate: FC<{area: JAC.Area & {templates: JAC.EventTemplate[]}, index: number}> = (props) => {
     const config = useConfig()!;
     const area = props.area;
     const index = props.index;
@@ -57,4 +57,4 @@ const EventTemplates: FC<{area: JAC.Area & {templates: JAC.EventTemplate[]}, ind
     </div>
 }
 
-export default EventTemplates;
+export default EventTemplate;
