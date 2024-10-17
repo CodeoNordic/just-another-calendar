@@ -45,6 +45,7 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
             config.eventFilterBehaviour == 'all' && (filterCheck = affectingFilters.every(filter => !([0, false].includes(filter.enabled!))));
             // Check if any filter is enabled, if not, filter out the event
             config.eventFilterBehaviour == 'any' && (filterCheck = affectingFilters.some(filter => !([0, false].includes(filter.enabled!))));
+            
             if ((config.eventFilterBehaviour === 'groupedAll' || config.eventFilterBehaviour == 'groupedAny') && config.eventFilterAreas) {
                 const filtersEvent = config.eventFilterAreas.reduce<string[][]>((acc, area) => {
                     const filteredIds = filterIds?.filter(filterId => 
@@ -82,9 +83,7 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
                     const result = func(event, field.value, config);
                     return Boolean(result);
                 } catch (err) {
-                    console.error('Eval failed for the following search field');
-                    console.error(field);
-                    console.error(err);
+                    console.error('Eval failed for the following search field', field, err);
                 }
             }
             

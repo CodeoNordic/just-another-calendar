@@ -7,6 +7,7 @@ import React, { useMemo } from "react";
 const SideMenuComponents: FC = () => {
     const config = useConfig()!;
 
+    // filters
     const sortedFilters = useMemo(() => {
         return [...(config.eventFilters || [])]
             .map((f, i) => {
@@ -25,6 +26,9 @@ const SideMenuComponents: FC = () => {
         })).filter(area => !!area.filters?.length);
     }, [config.eventFilterAreas, sortedFilters]);
 
+    
+
+    // templates
     const sortedTemplates = useMemo(() => {
         if (!config.eventTemplates) return null;
 
@@ -45,38 +49,43 @@ const SideMenuComponents: FC = () => {
         [config?.eventTemplateAreas, sortedTemplates]
     );
 
-    const components = [];
+    const components = useMemo(() => {
+        const compArray = [];
 
-    config.searchFields &&
-        config.searchFields.forEach((searchField, index) => {
-            components.push({
-                component: <Search key={`search-${index}`} searchField={searchField} index={index} />,
-                order: searchField.order || 0
+        if (mappedFilterAreas?.length) {
+            mappedFilterAreas.forEach((area, index) => {
+                compArray.push({
+                    component: <EventFilter key={`filter-${index}`} index={index} name={area.name} title={area.title} open={area.open} filters={area.filters} />,
+                    order: area.order || 0
+                });
             });
-        });
-    
+        } else if (sortedFilters.length) {
+            compArray.push({
+                component: <EventFilter key="default-filter" index={0} name="default" title={config!.translations?.eventFiltersHeader ?? "Filters"} filters={sortedFilters} />,
+                order: 0
+            });
+        }
 
-    if (mappedFilterAreas?.length) {
-        mappedFilterAreas.forEach((area, index) => {
-            components.push({
-                component: <EventFilter key={`filter-${index}`} index={index} name={area.name} title={area.title} open={area.open} filters={area.filters} />,
-                order: area.order || 0
+        if (filteredTemplateAreas.length && filteredTemplateAreas.some(area => Boolean(area?.templates?.length))) {
+            filteredTemplateAreas.forEach((area, index) => {
+                compArray.push({
+                    component: <EventTemplate key={`template-${index}`} index={index} area={area} />,
+                    order: area.order || 0
+                });
             });
-        });
-    } else if (sortedFilters.length) {
-        components.push({
-            component: <EventFilter key="default-filter" index={0} name="default" title={config!.translations?.eventFiltersHeader ?? "Filters"} filters={sortedFilters} />,
-            order: 0
-        });
-    }
+        }
 
-    filteredTemplateAreas.length && filteredTemplateAreas.some(area => Boolean(area?.templates?.length)) &&
-        filteredTemplateAreas.forEach((area, i) => {
-            components.push({
-                component: <EventTemplate key={`template-${i}`} index={i} area={area} />,
-                order: area.order || 0
+        if (config.searchFields) {
+            config.searchFields.forEach((searchField, index) => {
+                compArray.push({
+                    component: <Search key={`search-${index}`} searchField={searchField} index={index} />,
+                    order: searchField.order || 0
+                });
             });
-        });
+        }
+
+        return compArray.sort((a, b) => a.order - b.order);
+    }, [mappedFilterAreas, filteredTemplateAreas, config.searchFields, sortedFilters, config]);
 
     const sortedComponents = components.sort((a, b) => a.order - b.order);
 

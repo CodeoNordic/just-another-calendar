@@ -132,7 +132,6 @@ const NewEvent: FC<NewEventProps> = props => {
 
         setNewEvent(eventCopy);
         setConfig((prev) => prev && ({...prev, events: [...(prev.events ?? []), eventCopy]} as JAC.Config));
-        console.log(eventCopy);
         config?.scriptNames?.onEventCreated && performScript('onEventCreated', eventCopy);
         stopNewEvent();
         setCreateTemplate(false);
@@ -269,8 +268,8 @@ const NewEvent: FC<NewEventProps> = props => {
                 </div>
                 <div className='body-inputs'>
                     <p className='title-inputs'>{config?.translations?.eventCreationHeader ?? "New Event"}</p>
-                    {config?.newEventFields?.filter(field => !field.setter && (!field._filter || searchObject(newEvent!, field._filter)))?.map(field => {
-                        return <div key={field.name} className='input-wrapper'>
+                    {config?.newEventFields?.filter(field => !field.setter && (!field._filter || searchObject(newEvent!, field._filter)))?.map(field => 
+                        <div key={field.name} className='input-wrapper'>
                             {field.title && <p>{field.title}</p>}
                             {field.type === "dropdown" ? <select 
                                 className='dropdown-input'
@@ -306,15 +305,13 @@ const NewEvent: FC<NewEventProps> = props => {
                                         const [inputHour, inputMinute] = (inputValue as string).split(':');
                                         date?.setHours(Number(inputHour), Number(inputMinute));
                                         inputValue = date!.toISOString();
-
-                                        
                                     }
                                     
                                     setNewEventField(field.name, inputValue || "");
                                 }} 
                             />}
                         </div>
-                })}
+                    )}
                 </div>
             </div>
             <div className='buttons-wrapper'>
