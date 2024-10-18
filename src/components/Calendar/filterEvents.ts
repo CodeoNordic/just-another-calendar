@@ -38,16 +38,18 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
             return included;
         });
 
-        let filterCheck = !affectingFilters.length
-
+        let filterCheck = !affectingFilters.length;
         if (affectingFilters.length) {
             // Check if all filters are enabled, if not, filter out the event
-            config.eventFilterBehaviour == 'all' && (filterCheck = affectingFilters.every(filter => !([0, false].includes(filter.enabled!))));
+            if (config.eventFilterBehaviour == 'all')
+                filterCheck = affectingFilters.every(filter => !([0, false].includes(filter.enabled!)));
+
             // Check if any filter is enabled, if not, filter out the event
-            config.eventFilterBehaviour == 'any' && (filterCheck = affectingFilters.some(filter => !([0, false].includes(filter.enabled!))));
+            else if (config.eventFilterBehaviour == 'any' || !config.eventFilterAreas?.length)
+                filterCheck = affectingFilters.some(filter => !([0, false].includes(filter.enabled!)));
             
-            if ((config.eventFilterBehaviour === 'groupedAll' || config.eventFilterBehaviour == 'groupedAny') && config.eventFilterAreas) {
-                const filtersEvent = config.eventFilterAreas.reduce<string[][]>((acc, area) => {
+            else if ((config.eventFilterBehaviour === 'groupedAll' || config.eventFilterBehaviour == 'groupedAny')) {
+                const filtersEvent = config.eventFilterAreas!.reduce<string[][]>((acc, area) => {
                     const filteredIds = filterIds?.filter(filterId => 
                         config.eventFilters?.some(filter => filter.areaName === area.name && filter.id === filterId)
                     );
