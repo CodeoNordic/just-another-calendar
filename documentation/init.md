@@ -143,7 +143,7 @@ The list of areas that [event templates](./event-templates.md) can be grouped in
             "name": "area1", // Unique name
             "title": "Area 1", // Title displayed in the menu
             "open": true, // Whether the area should be opened or collapsed
-            "order": 1 // the order the area appears in the side menu
+            "sort": 1 // the order the area appears in the side menu
         }
     ]
 }
@@ -164,7 +164,7 @@ The list of areas that [event filters](./event-filters.md) can be grouped into. 
             "name": "area1", // Unique name
             "title": "Area 1", // Title displayed in the menu
             "open": true, // Whether the area should be opened or collapsed
-            "order": 3 // the order the area appears in the side menu
+            "sort": 3 // the order the area appears in the side menu
         }
     ]
 }
@@ -210,7 +210,7 @@ it will not be included in the list, and a warning will be issued to the console
             "value": "", // The current search value, not required
 
             "script": "[TRG] = EVNT Search", // Optional script to run when searching
-            "order": 3 // the order the area appears in the side menu
+            "sort": 3 // the order the area appears in the side menu
         },
 
         {
@@ -220,7 +220,7 @@ it will not be included in the list, and a warning will be issued to the console
             "placeholder": "Type a title...",
 
             "open": true,
-            "order": 7
+            "sort": 7
         }
     ]
 }

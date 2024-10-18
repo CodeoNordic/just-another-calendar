@@ -46,28 +46,27 @@ const SideMenuComponents: FC = () => {
     }, [config?.eventTemplateAreas, sortedTemplates]);
 
     const components = useMemo(() => {
-        const compArray = [] as { component: JSX.Element, order: number }[];
+        const compArray = [] as { component: JSX.Element, sort: number }[];
 
         if (mappedFilterAreas?.length) {
             mappedFilterAreas.forEach((area, index) => {
                 compArray.push({
                     component: <EventFilter key={`filter-${index}`} index={index} name={area.name} title={area.title} open={area.open} filters={area.filters} />,
-                    order: area.order || 0
+                    sort: area.sort || 0
                 });
             });
         } else if (sortedFilters.length) {
             compArray.push({
                 component: <EventFilter key="default-filter" index={0} name="default" title="Filters" filters={sortedFilters} />,
-                order: 0
+                sort: 0
             });
         }
 
         if (filteredTemplateAreas?.length && filteredTemplateAreas.some(area => Boolean(area?.templates?.length))) {
             filteredTemplateAreas.forEach((area, index) => {
-                console.log(area);
                 compArray.push({
                     component: <EventTemplate key={`template-${index}`} index={index} area={area} />,
-                    order: area.order || 0
+                    sort: area.sort || 0
                 });
             });
         }
@@ -76,20 +75,19 @@ const SideMenuComponents: FC = () => {
             config.searchFields.forEach((searchField, index) => {
                 if (searchField.hidden) return;
                 compArray.push({
-                    component: <Search key={`search-${index}`} searchField={searchField} index={index} />,
-                    order: searchField.order || 0
+                    component: searchField.dynamicDropdown ? <></> : <Search key={`search-${index}`} searchField={searchField} index={index} />,
+                    sort: searchField.sort || 0
                 });
             });
         }
 
-        return compArray.sort((a, b) => a.order - b.order);
+        return compArray.sort((a, b) => a.sort - b.sort);
     }, [mappedFilterAreas, filteredTemplateAreas, config.searchFields, sortedFilters, config]);
 
-    const sortedComponents = components.sort((a, b) => a.order - b.order);
+    const sortedComponents = components.sort((a, b) => a.sort - b.sort);
 
     return <>
         {sortedComponents.map((item, index) => (
-            console.log(item),
             <div key={index}>
                 {(index != 0 || !config!.datePickerDisabled) && <div className="divider" />}
                 <React.Fragment>
