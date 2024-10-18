@@ -9,15 +9,13 @@ const Search: FC<{searchField: JAC.SearchField, index: number}> = (props) => {
     const searchField = props.searchField;
     const index = props.index;
 
-    if (!config?.searchFields) return null;
-
     const setSearch = (newValue: string) => {
         // priority is script from filter > script from config > client side toggle 
         if (searchField.script) {
             performScript(searchField.script, {
                 searchField, newValue, index
             });
-        } else if (config.scriptNames.onSearch){
+        } else if (config!.scriptNames.onSearch){
             performScript("onSearch", {
                 searchField, newValue, index
             });
