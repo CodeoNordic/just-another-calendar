@@ -81,7 +81,8 @@
         }
 
         .date.selected {
-            color: var(--jac-blue);
+            //color: var(--jac-blue);
+            background-color: var(--button-hover);
         }
     }
 }
