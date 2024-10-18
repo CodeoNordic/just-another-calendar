@@ -79,6 +79,7 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
         className="jac-event-wrapper"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
+        data-eventid={props.id}
     >
         <div
             className="jac-event"

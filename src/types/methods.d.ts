@@ -50,6 +50,9 @@ declare global {
 
         /** Scrolls to a specific time in the calendar */
         scrollToTime(time: string): void;
+
+        /** Debug helper to get an event's data */
+        getEvent(id: string): JAC.Event|undefined;
     }
 }
 
