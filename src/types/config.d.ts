@@ -15,14 +15,17 @@ declare global {
             eventFilters?: EventFilter[];
             eventFilterAreas?: Area[];
             eventFilterBehaviour?: 'all' | 'groupedAll' | 'groupedAny' | 'any';
+            eventFiltersHidden?: boolean;
 
             eventTemplates?: EventTemplate[];
             eventTemplateAreas: Area[];
+            eventTemplatesHidden?: boolean;
 
             /** @deprecated use 'open' in each event template area */
             eventTemplatesOpen?: boolean;
             
             searchFields?: SearchField[];
+            searchFieldsHidden?: boolean;
             
             contrastCheck?: boolean;
             contrastMin?: number;

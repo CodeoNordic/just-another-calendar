@@ -2,9 +2,6 @@ declare global {
     namespace JAC {
         interface Translations {
             weekNumberHeader?: string;
-            
-            eventTemplatesHeader?: string;
-            eventFiltersHeader?: string;
 
             allDaySlot?: string;
 

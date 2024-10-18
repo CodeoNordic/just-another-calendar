@@ -10,6 +10,7 @@ declare global {
             sort?: number;
             instant?: boolean;
             icon?: string;
+            hidden?: boolean;
         }
     }
 }

@@ -118,6 +118,7 @@ declare global {
             title?: string;
             open?: boolean;
             order?: number;
+            hidden?: boolean;
         }
     }
 }

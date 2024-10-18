@@ -18,15 +18,15 @@ const SideMenuComponents: FC = () => {
     }, [config.eventFilters]);
 
     const mappedFilterAreas = useMemo<(JAC.Area & { filters: JAC.EventFilter[] })[]|null>(() => {
-        if (!config.eventFilterAreas?.length || !sortedFilters?.length) return null;
+        if (!config.eventFilterAreas?.length || !sortedFilters?.length || config.eventFiltersHidden) return null;
 
-        return config.eventFilterAreas.map(area => ({
-            ...area,
-            filters: sortedFilters.filter(f => f.areaName === area.name)
-        })).filter(area => !!area.filters?.length);
+        const filteredAreas = config.eventFilterAreas.filter(area => area.hidden !== true);
+
+        return filteredAreas.map(area => {
+            return {...area,
+            filters: sortedFilters.filter(f => f.areaName === area.name && f.hidden !== true)};
+        }).filter(area => !!area.filters?.length);
     }, [config.eventFilterAreas, sortedFilters]);
-
-    
 
     // templates
     const sortedTemplates = useMemo(() => {
@@ -36,21 +36,17 @@ const SideMenuComponents: FC = () => {
             .sort((a, b) => (a.sort || Infinity) - (b.sort || Infinity));
     }, [config.eventFilters]);
     
-    const filteredTemplateAreas = useMemo<(JAC.Area & { templates: JAC.EventTemplate[] })[]>(() => config?.eventTemplateAreas?.map((area, i) => {
-        const templates = sortedTemplates?.filter(template => template.areaName === area.name);
-
-        return {
-            ...area,
-            templates: templates!
-        };
-    }).filter(area =>
-        Boolean(area?.templates?.length)
-    ) || [{ name: 'default', title: config?.translations?.eventTemplatesHeader ?? 'Templates', templates: sortedTemplates! }],
-        [config?.eventTemplateAreas, sortedTemplates]
-    );
+    const filteredTemplateAreas = useMemo<(JAC.Area & { templates: JAC.EventTemplate[] })[]|null>(() => {
+        if (!sortedTemplates?.length) return null;    
+        
+        return config?.eventTemplateAreas?.filter(area => area.hidden !== true).map(area => ({
+                ...area,
+                templates: sortedTemplates?.filter(template => template.areaName === area.name && template.hidden !== true)
+        })).filter(area =>!!area?.templates?.length) || [{ name: 'default', title: 'Templates', templates: sortedTemplates }];
+    }, [config?.eventTemplateAreas, sortedTemplates]);
 
     const components = useMemo(() => {
-        const compArray = [];
+        const compArray = [] as { component: JSX.Element, order: number }[];
 
         if (mappedFilterAreas?.length) {
             mappedFilterAreas.forEach((area, index) => {
@@ -61,13 +57,14 @@ const SideMenuComponents: FC = () => {
             });
         } else if (sortedFilters.length) {
             compArray.push({
-                component: <EventFilter key="default-filter" index={0} name="default" title={config!.translations?.eventFiltersHeader ?? "Filters"} filters={sortedFilters} />,
+                component: <EventFilter key="default-filter" index={0} name="default" title="Filters" filters={sortedFilters} />,
                 order: 0
             });
         }
 
-        if (filteredTemplateAreas.length && filteredTemplateAreas.some(area => Boolean(area?.templates?.length))) {
+        if (filteredTemplateAreas?.length && filteredTemplateAreas.some(area => Boolean(area?.templates?.length))) {
             filteredTemplateAreas.forEach((area, index) => {
+                console.log(area);
                 compArray.push({
                     component: <EventTemplate key={`template-${index}`} index={index} area={area} />,
                     order: area.order || 0
@@ -75,8 +72,9 @@ const SideMenuComponents: FC = () => {
             });
         }
 
-        if (config.searchFields) {
+        if (config.searchFields && !config.searchFieldsHidden) {
             config.searchFields.forEach((searchField, index) => {
+                if (searchField.hidden) return;
                 compArray.push({
                     component: <Search key={`search-${index}`} searchField={searchField} index={index} />,
                     order: searchField.order || 0
@@ -91,6 +89,7 @@ const SideMenuComponents: FC = () => {
 
     return <>
         {sortedComponents.map((item, index) => (
+            console.log(item),
             <div key={index}>
                 {(index != 0 || !config!.datePickerDisabled) && <div className="divider" />}
                 <React.Fragment>

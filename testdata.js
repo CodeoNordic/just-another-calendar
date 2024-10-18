@@ -128,40 +128,56 @@ init(JSON.stringify({
     ],
     eventFilters: [
         {
-          id: "filter1",
-          title: "Låst filter",
-          areaName: "filters",
+            id: "filter1",
+            title: "Låst filter",
+            areaName: "filters",
 
-          color: "#AAEEAA",
-          
-          enabled: true, 
-          locked: true,
+            color: "#AAEEAA",
+
+            eventColor: "#AAEEAA",
+
+
+            enabled: true,
+            locked: true,
         },
         {
-          id: "filter2",
-          title: "Ulåst filter",
-          areaName: "filters",
+            id: "filter2",
+            title: "Ulåst filter",
+            areaName: "filters",
 
-          color: "#ff0000",
-          
-          enabled: true, 
-          locked: false, 
+            color: "#ff0000",
+
+            eventColor: "#ff0000",
+            eventColorPriority: -1,
+
+            enabled: true,
+            locked: false,
         },
         {
-          id: "filter3",
-          title: "Ulåst filter (default av)",
-          areaName: "filters",
-          
-          color: "#0000ff",
-          
-          enabled: false,
-          locked: false,
+            id: "filter3",
+            title: "Ulåst filter (default av)",
+            areaName: "filters",
+
+            color: "#0000ff",
+
+            eventColor: {
+                background:"#0000ff",
+                border: "#0000ff",
+                text: "#ffffff"
+            },
+            eventColorPriority: 2,
+
+            hidden: true,
+
+            enabled: false,
+            locked: false,
         },
         {
             id: "source1",
             title: "Kilde 1",
             areaName: "sources",
             color: "#ff0000",
+
 
             enabled: true,
             locked: false,
@@ -200,7 +216,8 @@ init(JSON.stringify({
             name: "sources",
             title: "Kilder",
             open: false,
-            order: 3
+            order: 3,
+            hidden: true
         }
     ],
     searchFields: [
@@ -209,7 +226,7 @@ init(JSON.stringify({
                 "FirstName"
             ],
             placeholder: "Søk",
-            
+
             open: true,
             order: 6
         },
@@ -221,20 +238,20 @@ init(JSON.stringify({
 
             title: "Søk etter tid",
             placeholder: "Søk",
-            
+
             open: true,
             order: 5
         },
         {
             title: "Søk etter helt navn (eval test)",
             placeholder: "Søk",
-            
+
             open: true,
 
             eval: "(event, input, config) => event.FirstName?.toLowerCase() === input?.toLowerCase()",
             order: 4
         }
-    ],  
+    ],
     calendarStartTime: "08:00",
     calendarEndTime: "16:15",
     locale: "en",
@@ -321,7 +338,7 @@ init(JSON.stringify({
                 }
             },
             areaName: 'area2'
-        } 
+        }
     ],
     eventTemplateAreas: [
         {
@@ -338,51 +355,52 @@ init(JSON.stringify({
             order: 1
         }
     ],
+
     newEventFields: [
-    {
-        name: "FirstName",
-        title: "Tittel"
-    },
-    {
-        name: "start",
-        title: "Start",
-        type: "time"
-    },
-    {
-        name: "end",
-        title: "Slutt",
-        type: "time"
-    },
-    {
-        name: "colors.border",
-        title: "Kant-farge",
-        type: "color",
-        defaultValue: "#3788d8"
-    },
-    {
-        name: "colors.background",
-        title: "Bakgrunnsfarge",
-        type: "color",
-        defaultValue: "#3788d8"
-    },
-    {
-        name: "filterId",
-        title: "Filtrerings-id",
-        defaultValue: "filter2",
-        type: "dropdown",
-        dropdownItems: [
-            {
-                value: "filter1",
-                label: "Første filter",
-            },
-            {
-                value: "filter2",
-                label: "Andre filter",
-            },
-            {
-                value: "filter3",
-                label: "Tredje filter",
-            }
-        ]
-    }]
+        {
+            name: "FirstName",
+            title: "Tittel"
+        },
+        {
+            name: "start",
+            title: "Start",
+            type: "time"
+        },
+        {
+            name: "end",
+            title: "Slutt",
+            type: "time"
+        },
+        {
+            name: "colors.border",
+            title: "Kant-farge",
+            type: "color",
+            defaultValue: "#3788d8"
+        },
+        {
+            name: "colors.background",
+            title: "Bakgrunnsfarge",
+            type: "color",
+            defaultValue: "#3788d8"
+        },
+        {
+            name: "filterId",
+            title: "Filtrerings-id",
+            defaultValue: "filter2",
+            type: "dropdown",
+            dropdownItems: [
+                {
+                    value: "filter1",
+                    label: "Første filter",
+                },
+                {
+                    value: "filter2",
+                    label: "Andre filter",
+                },
+                {
+                    value: "filter3",
+                    label: "Tredje filter",
+                }
+            ]
+        }]
 }))

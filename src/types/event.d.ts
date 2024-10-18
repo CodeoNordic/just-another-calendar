@@ -5,6 +5,7 @@ declare global {
             type?: 'event'|'backgroundEvent';
             _component?: string;
 
+
             id: string;
             resourceId?: string|string[];
             //sourceId: string|string[];
@@ -27,6 +28,7 @@ declare global {
 
             // for filtering
             filterId?: string|string[];
+            _affectingFilters?: JAC.EventFilter[];
 
             // for filtering by source
             source?: string|string[];
