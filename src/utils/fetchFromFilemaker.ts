@@ -31,16 +31,17 @@ window.onScriptResult = (uuid, data) => {
  * ```
  */
 export default async function fetchFromFileMaker<T = RSAny>(
-    scriptKey: string & keyof JAC.Config['scriptNames'],
+    scriptKey: (string & keyof JAC.Config['scriptNames']) | (string & {}),
     param?: any,
-    timeoutInMs: number = 30_000,
-    option?: Parameters<typeof window['FileMaker']['PerformScriptWithOption']>[2]
+    option?: Parameters<typeof window['FileMaker']['PerformScriptWithOption']>[2],
+    directScriptName: boolean = false,
+    timeoutInMs: number = 30_000
 ): Promise<T|null> {
     // Waits until config has loaded before running
-    if (!window._config) {
+    if (!window._config && !directScriptName) {
         return new Promise<T>((res, rej) => {
             loadCallbacks.push(() => {
-                fetchFromFileMaker<T>(scriptKey, param, timeoutInMs, option)
+                fetchFromFileMaker<T>(scriptKey, param, option, directScriptName, timeoutInMs)
                     .then(result => {
                         if (result === undefined) rej('Result was undefined');
                         else res(result as T);
@@ -53,10 +54,15 @@ export default async function fetchFromFileMaker<T = RSAny>(
     }
 
     // Get the script name
-    const scriptName = window._config!.scriptNames?.[scriptKey];
+    const scriptName = directScriptName? scriptKey: window._config!.scriptNames?.[scriptKey as keyof JAC.ScriptNames];
     if (typeof scriptName !== 'string') {
+        if (directScriptName && !scriptName) {
+            warn('No direct scriptname was passed');
+            return null;
+        }
+
         warn(`Script name of the key '${scriptKey}' was not found in the config`);
-        return null
+        return null;
     }
 
     const uuid = randomUUID();
