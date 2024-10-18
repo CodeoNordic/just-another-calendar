@@ -38,6 +38,8 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
             return included;
         });
 
+        affectingFilters && (event._affectingFilters = affectingFilters);
+
         let filterCheck = !affectingFilters.length;
         if (affectingFilters.length) {
             // Check if all filters are enabled, if not, filter out the event

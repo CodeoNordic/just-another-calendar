@@ -27,6 +27,25 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
 
     const resourceIds = event.resourceId instanceof Array? event.resourceId: (event.resourceId? [event.resourceId]: []);
 
+    if (event._affectingFilters?.some(filter => !!filter.eventColor) && !(event.colors?.background || event.colors?.border || event.colors?.text)) {
+        const affectingFilter = event._affectingFilters.filter(filter => !!filter.eventColor).sort((a, b) => {
+            return (a.eventColorPriority || 0) - (b.eventColorPriority || 0);
+        }).pop(); 
+
+        event.colors ??= {};
+
+        const eventColor = affectingFilter?.eventColor!;
+
+        if (typeof eventColor === 'string') {
+            !event.colors.background && (event.colors.background = eventColor);
+            !event.colors.border && (event.colors.border = eventColor);
+        } else if (eventColor instanceof Object) {
+            !event.colors.background && (event.colors.background = eventColor.background);
+            !event.colors.border && (event.colors.border = eventColor.border);
+            !event.colors.text && (event.colors.text = eventColor.text);
+        }
+    }
+
     return {
         id: event.id,
         resourceId: resourceIds[0],
@@ -34,7 +53,7 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
         backgroundColor: event.colors?.background || "#3788d8",
         borderColor: event.colors?.border || "#3788d8",
         textColor: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config.contrastMin)) ? 
-        "#000" : event.colors?.text,
+        (calculateContrast("#000", event.colors?.background || "#3788d8", config.contrastMin) ? "#000" : "#fff") : event.colors?.text,
         start: eventStart,
         end: eventEnd,
         duration: event.duration,

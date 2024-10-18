@@ -30,6 +30,24 @@ declare global {
 
             /** script for own filtering */
             script?: string;
+
+            /** if the filter is hidden, will still work */
+            hidden?: boolean;
+
+            /** If event has no color, this will be used */
+            eventColor?: string | {
+                /** The color to use for the background */
+                background?: string;
+
+                /** The color to use for the border */
+                border?: string;
+
+                /** The color to use for the text */
+                text?: string;
+            };
+
+            /** Highest priority sets the event color, otherwise, the last affecting filter is used for the color */
+            eventColorPriority?: number;
         }>;
     }
 }

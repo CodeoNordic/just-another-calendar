@@ -13,7 +13,7 @@ const EventTemplate: FC<{area: JAC.Area & {templates: JAC.EventTemplate[]}, inde
     return <div className="insertable-events">
         <Collapse
             className="event-template-area"
-            top={<div>{((area.title ?? (capitalize(area.name)))) || config?.translations?.eventTemplatesHeader || 'Templates'}</div>}
+            top={<div>{(area.title ?? capitalize(area.name)) || 'Templates'}</div>}
             collapsed={!area.open}
             onChange={collapsed => {
                 // Pass the index to make tracking easier
