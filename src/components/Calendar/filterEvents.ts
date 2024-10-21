@@ -76,6 +76,7 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
         }
 
         const searchCheck = searchFields.every(field => {
+            if (field.dynamicDropdown) return true; 
             if ([undefined, null, NaN, ''].includes(field.value)) return true;
             
             // If eval is defined, return its result
