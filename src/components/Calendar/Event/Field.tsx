@@ -18,12 +18,13 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
             eval: props.eval,
             htmlTemplate: props.htmlTemplate,
             template: props.template,
-            value: props.value
+            value: props.value,
+            icon: props.icon
         });
 
         if (typeof props.htmlTemplate === 'string' && props.htmlTemplate[0] === '<' && value !== null) return <div dangerouslySetInnerHTML={{ __html: value }} />
         return value;
-    }, [props.htmlTemplate, props.event, props.eval, props.htmlTemplate, props.template, props.value]);
+    }, [props.htmlTemplate, props.event, props.eval, props.htmlTemplate, props.template, props.value, props.icon]);
 
     // Get the icon
     const fieldIconSrc: string|null = useMemo(() => {
@@ -39,41 +40,45 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
     if (!filterCheck) return null;
     const fieldIcon = (fieldIconSrc) && <Icon src={fieldIconSrc} />
 
-    if (!props.showIfEmpty && fieldValue === null) return null;
+    if (!props.showIfEmpty && fieldValue === null && fieldIconSrc === null) return null;
     const fieldType = props.type?.toLowerCase() || 'text';
 
-    return <div 
-        className={combineClasses(
-            'jac-field', `type-${fieldType}`, 
-            props.value && `field-${props.value.replace(/\s/g, '_')}`, 
-            props.cssClass
-        )}
-        style={{
-            width: props.fullWidth? '100%': undefined,
-            color: props.color,
-            marginTop: (typeof props.marginTop === 'number')? `${props.marginTop}px`: props.marginTop,
-            marginBottom: (typeof props.marginBottom === 'number')? `${props.marginBottom}px`: props.marginBottom
-        }}
-    >
-        {['text', 'time', 'date'].includes(fieldType) && <>
-            {fieldIcon}
-            <span>{fieldValue}</span>
-        </>}
+    return <>
+        {props.lineBreakStart && <div className="line-break" />}
+        <div 
+            className={combineClasses(
+                'jac-field', `type-${fieldType}`,
+                props.value && `field-${props.value.replace(/\s/g, '_')}`,
+                props.fullWidth && 'field-fullwidth',
+                props.cssClass
+            )}
+            style={{
+                color: props.color,
+                marginTop: (typeof props.marginTop === 'number')? `${props.marginTop}px`: props.marginTop,
+                marginBottom: (typeof props.marginBottom === 'number')? `${props.marginBottom}px`: props.marginBottom
+            }}
+        >
+            {['text', 'time', 'date'].includes(fieldType) && <>
+                {fieldIcon}
+                {fieldValue && <span>{fieldValue}</span>}
+            </>}
 
-        {fieldType === 'button' && <button
-            onPointerEnter={props.onButtonEnter}
-            onPointerLeave={props.onButtonLeave}
-            onClick={props.script? () => performScript(
-                props.script as string,
-                props.event,
-                undefined,
-                true
-            ): undefined
-        }>
-            {fieldIcon}
-            <span>{fieldValue}</span>    
-        </button>}
-    </div>
+            {fieldType === 'button' && <button
+                onPointerEnter={props.onButtonEnter}
+                onPointerLeave={props.onButtonLeave}
+                onClick={props.script? () => performScript(
+                    props.script as string,
+                    props.event,
+                    undefined,
+                    true
+                ): undefined
+            }>
+                {fieldIcon}
+                {fieldValue && <span>{fieldValue}</span>}
+            </button>}
+        </div>
+        {props.lineBreakEnd && <div className="line-break" />}
+    </>
 }
 
 export default Field;

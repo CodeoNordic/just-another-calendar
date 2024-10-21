@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, PointerEvent } from 'react';
 import clamp from '@utils/clamp';
 const tooltipPadding = 20;
 
+/** @deprecated use the new tooltip component */
 export default function useTooltip(tooltip?: string, colors?: JAC.Event['colors']) {
     const config = useConfig();
     const selectable = config?.selectableTooltips;

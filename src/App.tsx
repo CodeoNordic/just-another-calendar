@@ -2,6 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useConfigState } from '@context/Config';
 
 import EventDropdownProvider from '@components/Calendar/Event/Dropdown';
+import TooltipProvider from '@components/Calendar/Event/Tooltip';
 
 import SideMenu from '@components/SideMenu';
 import Calendar from '@components/Calendar';
@@ -65,12 +66,14 @@ const App: React.FC = () => {
 
     if (!config) return null;
     return <EventDropdownProvider>
-        <CalendarRefProvider>
-            <div className="app-wrapper">
-                {!config?.sideMenuDisabled && <SideMenu />}
-                <Calendar />
-            </div>
-        </CalendarRefProvider>
+        <TooltipProvider>
+            <CalendarRefProvider>
+                <div className="app-wrapper">
+                    {!config?.sideMenuDisabled && <SideMenu />}
+                    <Calendar />
+                </div>
+            </CalendarRefProvider>
+        </TooltipProvider>
     </EventDropdownProvider>
 }
 

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useConfig } from '@context/Config';
-import useTooltip from '@hooks/useTooltip';
+
+import { useTooltip } from './Tooltip';
 
 import searchObject from '@utils/searchObject';
 import { templateKey } from '@utils/getFieldValue';
@@ -14,14 +15,14 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
     // An event does not render without the config being present
 
     const config = useConfig()!;
-    const {
+    /*const {
         onPointerMove,
         onPointerLeave,
 
         onButtonEnter,
         onButtonLeave
-    } = useTooltip(props.type !== 'backgroundEvent'? props.tooltip: undefined, props.colors);
-
+    } = useTooltip(props.type !== 'backgroundEvent'? props.tooltip: undefined, props.colors);*/
+    const [tooltip, setTooltip] = useTooltip();
     if (props.type === 'backgroundEvent') return <BackgroundEvent {...props} />
 
     // Find the correct component to use
@@ -69,28 +70,28 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
 
         return <div
             className="jac-event"
-            onPointerMove={onPointerMove}
-            onPointerLeave={onPointerLeave}
+            onPointerMove={e => tooltip.onPointerMove(e, props)}
+            onPointerLeave={() => tooltip.onPointerLeave()}
             dangerouslySetInnerHTML={{ __html: parsedHtml ?? '' }}
         />
     }
 
     return <div
         className="jac-event-wrapper"
-        onPointerMove={onPointerMove}
-        onPointerLeave={onPointerLeave}
+        onPointerMove={e => tooltip.onPointerMove(e, props)}
+        onPointerLeave={() => tooltip.onPointerLeave()}
         data-eventid={props.id}
     >
         <div
             className="jac-event"
-            onPointerMove={onPointerMove}
-            onPointerLeave={onPointerLeave}
+            onPointerMove={e => tooltip.onPointerMove(e, props)}
+            onPointerLeave={() => tooltip.onPointerLeave()}
         >
             {component.fields?.map((field, i) => <Field
                 key={i}
                 event={props}
-                onButtonEnter={onButtonEnter}
-                onButtonLeave={onButtonLeave}
+                onButtonEnter={tooltip.onButtonEnter}
+                onButtonLeave={tooltip.onButtonLeave}
                 {...field}
             />)}
         </div>
