@@ -65,7 +65,7 @@ You can also write the icon directly in the field:
 
 ---
 
-## Dynamically displaying an Icons
+## Dynamically displaying Icons
 You may use the `eval:` prefix to dynamically set a specific icon,
 based on the event's data and the config.
 

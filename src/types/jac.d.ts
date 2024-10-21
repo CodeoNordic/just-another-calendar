@@ -12,6 +12,7 @@ declare global {
         interface TextStyle {
             font?: string;
             size?: string;
+            style?: string; // E.G 'italic'
     
             weight?: string;
             boldness?: string; // alias for weight
@@ -84,6 +85,8 @@ declare global {
              * ```
             */
             eval?: string;
+
+            textStyle?: TextStyle;
 
             /** By default, the field will not be displayed if the value is empty */
             showIfEmpty?: boolean;

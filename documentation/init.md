@@ -468,6 +468,7 @@ Each style object is as follows:
 {
     "font": "...", // Sets 'font-family'
     "size": "...", // Sets 'font-size'
+    "style": "...", // Sets 'font-style' E.G 'italic'
 
     "weight": "...", // Sets 'font-weight'. "boldness" can also set this (aliased)
 

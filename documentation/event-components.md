@@ -94,14 +94,19 @@ that the JavaScript code passed is correct.
             "fields": [
                 {
                     "value": "title",
-                    "icon": "coolIcon", // Key reference to an icon in the 'icons' array (not defined here)
-                    "fullWidth": true, // Ensure that the following fields are placed under this field
+                    "icon": "mug", // Key reference to an icon in the 'icons' array (not defined here). Alternatively write the SVG code here.
+                    "fullWidth": true, // Makes the field take up the full width of the event
 
                     "marginBottom": "12px" // If this is a number, it will count as pixels
                 },
 
                 {
-                    "template": "- {sponsor}"
+                    "template": "- {sponsor}",
+
+                    // Optional style object, identical structure to textStyles in config
+                    "textStyle": {
+                        "style": "italic"
+                    }
                 }
             ]
         }

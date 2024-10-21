@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useConfig } from '@context/Config';
 
 import { useTooltip } from './Tooltip';
@@ -9,21 +9,32 @@ import { templateKey } from '@utils/getFieldValue';
 import BackgroundEvent from './Background';
 import Field from './Field';
 
+import combineClasses from '@utils/combineClasses';
 import { warn } from '@utils/log';
 
 const Event: FC<JAC.Event> = ({ children, ...props }) => {
     // An event does not render without the config being present
-
     const config = useConfig()!;
-    /*const {
-        onPointerMove,
-        onPointerLeave,
+    
+    const divRef = useRef<HTMLDivElement|null>(null);
+    const childRef = useRef<HTMLDivElement|null>(null);
 
-        onButtonEnter,
-        onButtonLeave
-    } = useTooltip(props.type !== 'backgroundEvent'? props.tooltip: undefined, props.colors);*/
-    const [tooltip, setTooltip] = useTooltip();
-    if (props.type === 'backgroundEvent') return <BackgroundEvent {...props} />
+    const [tooltip] = useTooltip();
+    const [tooSmall, setTooSmall] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (!divRef.current || !childRef.current) return;
+
+        const listener = () => {
+            setTooSmall(divRef.current!.clientHeight < childRef.current!.scrollHeight)
+        }
+
+        setTimeout(listener);
+        divRef.current.addEventListener('resize', listener);
+        return () => divRef.current?.removeEventListener('resize', listener);
+    }, [divRef, childRef]);
+
+    if (props.type === 'backgroundEvent') return <BackgroundEvent {...props} />;
 
     // Find the correct component to use
     const component = useMemo(() => {
@@ -77,13 +88,15 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
     }
 
     return <div
-        className="jac-event-wrapper"
+        ref={divRef}
+        className={combineClasses("jac-event-wrapper", tooSmall && 'too-small')}
         onPointerMove={e => tooltip.onPointerMove(e, props)}
         onPointerLeave={() => tooltip.onPointerLeave()}
         data-eventid={props.id}
     >
         <div
             className="jac-event"
+            ref={childRef}
             onPointerMove={e => tooltip.onPointerMove(e, props)}
             onPointerLeave={() => tooltip.onPointerLeave()}
         >
@@ -92,6 +105,7 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
                 event={props}
                 onButtonEnter={tooltip.onButtonEnter}
                 onButtonLeave={tooltip.onButtonLeave}
+                tooSmall={tooSmall}
                 {...field}
             />)}
         </div>

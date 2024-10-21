@@ -31,6 +31,9 @@ ISO timestamps.
 - `unixEnd` (number) - A unix timestamp in seconds (E.G 1732003200)
 
 ## Example
+
+> In an event's `tooltip`, you can create a divider by including three dashes `---` on its own line.
+
 ```json
 {
     "resources": [
@@ -48,6 +51,8 @@ ISO timestamps.
 
             "start": "2024-11-19T07:00:00.000Z",
             "end": "2024-11-19T08:00:00.000Z",
+
+            "tooltip": "A young development team in Codeo Norway has made a developer friendly calendar component for FileMaker Developers in JavaScript (TypeScript) using React.",
 
             // Additional custom fields to be used in an event component
             "Title": "Just Another Calendar",
