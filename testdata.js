@@ -118,7 +118,8 @@ init(JSON.stringify({
         onEventFilterAreaOpened: '[TRG] = EVNT Filter Area Opened',
         onEventFilterAreaClosed: '[TRG] = EVNT Filter Area Closed',
         onEventTemplateAreaOpened: '[TRG] = EVNT Template Area Opened',
-        onEventTemplateAreaClosed: '[TRG] = EVNT Template Area Closed'
+        onEventTemplateAreaClosed: '[TRG] = EVNT Template Area Closed',
+        onJsRequest: '[TRG] = EVNT JS Request'
     },
     eventButtons: [
         {
@@ -250,6 +251,15 @@ init(JSON.stringify({
 
             eval: "(event, input, config) => event.FirstName?.toLowerCase() === input?.toLowerCase()",
             sort: 4
+        },
+        {
+            title: "Dropdown søk test",
+            placeholder: "Søk",
+            open: true,
+            dynamicDropdown: true,
+            script: '[TRG] = Søk etter dropdown items',
+            
+            sort: -1
         }
     ],
     calendarStartTime: "08:00",

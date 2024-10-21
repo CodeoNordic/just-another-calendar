@@ -3,6 +3,7 @@ import EventFilter from "./EventFilter";
 import EventTemplate from "./EventTemplate";
 import Search from "./Search";
 import React, { useMemo } from "react";
+import SearchDynamicDropdown from "./SearchDynamicDropdown";
 
 const SideMenuComponents: FC = () => {
     const config = useConfig()!;
@@ -75,7 +76,9 @@ const SideMenuComponents: FC = () => {
             config.searchFields.forEach((searchField, index) => {
                 if (searchField.hidden) return;
                 compArray.push({
-                    component: searchField.dynamicDropdown ? <></> : <Search key={`search-${index}`} searchField={searchField} index={index} />,
+                    component: searchField.dynamicDropdown 
+                        ? <SearchDynamicDropdown key={`search-${index}`} searchField={searchField} index={index} /> 
+                        : <Search key={`search-${index}`} searchField={searchField} index={index} />,
                     sort: searchField.sort || 0
                 });
             });
