@@ -114,7 +114,7 @@ const FullCalendar: FC = () => {
             const api = calendarRef.current.getApi();
 
             api.scrollToTime(config.initialScrollTime);
-        }, 0);
+        }, 50);
     }, [calendarRef, config?.initialScrollTime, config?.view, config?.date]);
 
     useCreateMethod('scrollToTime', time => {

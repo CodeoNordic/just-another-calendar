@@ -78,14 +78,14 @@ const TooltipProvider: FC = ({ children }) => {
         setEventHover(false);
     }, []);
 
-    const cleanedText = useMemo(() => tooltip.event?.tooltip
-        ?.trim()
-        .replace(/(^(\n?\r?))|((\n?\r?)$)/g, '') ?? '',
+    const cleanedText = useMemo(() => (tooltip.event?.tooltip
+        ?.trim() ?? '')
+        .replace(/\r/g, '\n'),
         [tooltip.event?.tooltip]
     );
 
     const textLines = useMemo(() => cleanedText
-        .split(/\n\r?/g),
+        .split(/(\n)/g),
         [cleanedText]
     );
 

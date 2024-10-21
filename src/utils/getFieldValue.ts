@@ -34,7 +34,10 @@ export function templateKey(event: JAC.Event, key: string) {
 
         if (pair[1] && date) {
             const time = String(get(event, pair[1])).split(':');
-            date.setHours(Number(time[0]), Number(time[1]));
+            if (time[1])
+                date.setHours(Number(time[0]), Number(time[1]));
+            else
+                date.setHours(Number(time));
         }
 
         return date?.toLocaleTimeString(window._config?.locale, { hour: '2-digit', minute: '2-digit' }) || '';

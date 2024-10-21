@@ -8,13 +8,23 @@ export default function datesFromEvent(event: JAC.Event) {
     const timeEnd = event.endTime ?? event.timeEnd;
 
     if (timeStart) {
-        const match = timeStart.match(/^(\d{1,2}):(\d{1,2})/);
-        match && eventStart?.setHours(Number(match[1]), Number(match[2]));
+        const match = timeStart.match(/^(\d{1,2}):?(\d{1,2})?/);
+        if (match) {
+            if (match[2])
+                eventStart?.setHours(Number(match[1]), Number(match[2]));
+            else
+                eventStart?.setHours(Number(match[1]));
+        }
     }
 
     if (timeEnd) {
-        const match = timeEnd.match(/^(\d{1,2}):(\d{1,2})/);
-        match && eventEnd?.setHours(Number(match[1]), Number(match[2]));
+        const match = timeEnd.match(/^(\d{1,2}):?(\d{1,2})?/);
+        if (match) {
+            if (match[2])
+                eventEnd?.setHours(Number(match[1]), Number(match[2]));
+            else
+                eventEnd?.setHours(Number(match[1]));
+        }
     }
 
     return { start: eventStart, end: eventEnd };

@@ -51,6 +51,7 @@ declare global {
 
             /** An icon to be used alongside the field value. If the icon starts with < it is assumed to be injectable HTML */
             icon?: string|WithFilter<{ icon: string }>|WithFilter<{ icon: string }>[];
+            iconPosition?: 'left'|'right';
 
             /** The key of the value to display, E.G "FirstName". Supports lodash.get syntax such as "NestedObject.FirstName" or "NestedArray[0]" */
             value?: string;
@@ -113,6 +114,15 @@ declare global {
 
             /** Passed to CSS 'marginBottom' */
             marginBottom?: string|number;
+
+            /** Passed to CSS 'marginLeft' */
+            marginLeft?: string|number;
+
+            /** Passed to CSS 'marginRight' */
+            marginRight?: string|number;
+
+            /** Passed to CSS 'flex-grow' */
+            grow?: number;
         }>;
 
         type EventComponent = WithFilter<{

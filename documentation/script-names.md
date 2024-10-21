@@ -13,6 +13,7 @@ The following example uses Codeo's script name format:
         "onEventCreated": "[TRG] = EVNT Create Popup", // Runs when an event is created wither with the built-in popup or by dragging a template
 
         "onSearch": "[TRG] = EVNT Search", // Runs when a search is performed
+        "onDynamicSearch": "[TRG] = EVNT Dynamic Search", //
 
         "dateSelected": "[TRG] = Date Select", // Runs when a date is clicked in the side-menu's date picker.
 

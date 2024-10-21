@@ -54,6 +54,11 @@ ISO timestamps.
 
             "tooltip": "A young development team in Codeo Norway has made a developer friendly calendar component for FileMaker Developers in JavaScript (TypeScript) using React.",
 
+            "colors": {
+                "text": "#fff",
+                "background": "#285a78"
+            },
+
             // Additional custom fields to be used in an event component
             "Title": "Just Another Calendar",
             "Sponsor": "Andreas Haandlykken"

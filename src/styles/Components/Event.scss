@@ -6,11 +6,15 @@
 
     &.too-small .line-break {
         width: 2px;
+
+        &:last-child {
+            display: none;
+        }
     }
 }
 
 .jac-event {
-    padding: 2px;
+    padding: 0 2px;
     user-select: none;
     -ms-user-select: none;
     -moz-user-select: none;

@@ -35,6 +35,10 @@ body {
 
     &:has(.side-menu.open) {
         grid-template-columns: 320px 6fr;
+
+        @include md {
+            grid-template-columns: 33% 67%;
+        }
     }
 
     &:not(:has(.side-menu)) {

@@ -31,6 +31,9 @@ const EventTemplate: FC<{area: JAC.Area & {templates: JAC.EventTemplate[]}, inde
         >
             {area.templates?.map((template, j) => {
                 template.event.duration ??= '01:00';
+                if (typeof template.event?.duration === 'number') {
+                    template.event.duration = `${String(Math.floor(template.event.duration / 60)).padStart(2, '0')}:${String(Math.floor(template.event.duration % 60)).padStart(2, '0')}`
+                }
 
                 const backgroundColor = template.backgroundColor || '#3788d8';
                 const textColor = template.textColor || '#fff';

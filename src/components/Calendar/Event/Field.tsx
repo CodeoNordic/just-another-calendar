@@ -55,19 +55,23 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
             style={{
                 color: props.color ?? props.textStyle?.color ?? props.textStyle?.textColor,
                 backgroundColor: props.textStyle?.background ?? props.textStyle?.backgroundColor,
+                margin: props.textStyle?.margin,
+                padding: props.textStyle?.padding,
                 marginTop: (typeof props.marginTop === 'number')? `${props.marginTop}px`: props.marginTop,
                 marginBottom: (typeof props.marginBottom === 'number')? `${props.marginBottom}px`: props.marginBottom,
+                marginLeft: (typeof props.marginLeft === 'number')? `${props.marginLeft}px`: props.marginLeft,
+                marginRight: (typeof props.marginRight === 'number')? `${props.marginRight}px`: props.marginRight,
+                flexGrow: props.grow,
                 fontFamily: props.textStyle?.font,
                 fontWeight: props.textStyle?.weight ?? props.textStyle?.boldness,
                 fontStyle: props.textStyle?.style,
-                margin: props.textStyle?.margin,
-                padding: props.textStyle?.padding,
                 textAlign: props.textStyle?.alignment
             }}
         >
             {['text', 'time', 'date'].includes(fieldType) && <>
-                {fieldIcon}
+                {props.iconPosition !== 'right' && fieldIcon}
                 {fieldValue && <span>{fieldValue}</span>}
+                {props.iconPosition === 'right' && fieldIcon}
             </>}
 
             {fieldType === 'button' && <button
@@ -80,8 +84,9 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
                     true
                 ): undefined
             }>
-                {fieldIcon}
+                {props.iconPosition !== 'right' && fieldIcon}
                 {fieldValue && <span>{fieldValue}</span>}
+                {props.iconPosition === 'right' && fieldIcon}
             </button>}
         </div>
         {props.lineBreakEnd && <div className="line-break" />}
