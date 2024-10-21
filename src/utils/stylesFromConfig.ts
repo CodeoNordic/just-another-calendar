@@ -14,6 +14,7 @@ export const styleLine = (selector: string, style: JAC.TextStyle) => {
     style.font && rules.push(`${selector} {font-family:${style.font} !important;}`);
     style.size && rules.push(`${selector} {font-size:${style.size} !important;}`);
     (style.weight || style.boldness) && rules.push(`${selector} {font-weight: ${style.weight || style.boldness} !important;}`);
+    style.style && rules.push(`${selector} {font-style: ${style.style} !important;}`);
     style.padding && rules.push(`${selector} {padding:${style.padding} !important;}`);
     (style.color || style.textColor) && rules.push(`${selector} {color:${style.color || style.textColor} !important;}`);
     (style.background || style.backgroundColor) && rules.push(`${selector} {background-color:${style.background || style.backgroundColor} !important;}`);

@@ -34,7 +34,7 @@ body {
     grid-template-columns: 20px 1fr;
 
     &:has(.side-menu.open) {
-        grid-template-columns: 1fr 6fr;
+        grid-template-columns: 320px 6fr;
     }
 
     &:not(:has(.side-menu)) {

@@ -3,6 +3,10 @@
 .jac-event-wrapper {
     width: 100%;
     height: 100%;
+
+    &.too-small .line-break {
+        width: 2px;
+    }
 }
 
 .jac-event {

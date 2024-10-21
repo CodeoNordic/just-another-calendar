@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, forwardRef } from 'react';
 
 import Icon from '@components/Icon'
 import combineClasses from '@utils/combineClasses';
@@ -6,7 +6,7 @@ import getFieldValue from '@utils/getFieldValue';
 import performScript from '@utils/performScript';
 import searchObject from '@utils/searchObject';
 
-const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void; onButtonLeave?: () => void; }> = props => {
+const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void; onButtonLeave?: () => void; tooSmall: boolean; }> = props => {
     const filterCheck = useMemo(() =>
         props._filter? searchObject(props.event, props._filter): true,
         [props._filter, props.event]
@@ -45,17 +45,24 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
 
     return <>
         {props.lineBreakStart && <div className="line-break" />}
-        <div 
+        <div
             className={combineClasses(
                 'jac-field', `type-${fieldType}`,
                 props.value && `field-${props.value.replace(/\s/g, '_')}`,
-                props.fullWidth && 'field-fullwidth',
+                props.fullWidth && !props.tooSmall && 'field-fullwidth',
                 props.cssClass
             )}
             style={{
-                color: props.color,
+                color: props.color ?? props.textStyle?.color ?? props.textStyle?.textColor,
+                backgroundColor: props.textStyle?.background ?? props.textStyle?.backgroundColor,
                 marginTop: (typeof props.marginTop === 'number')? `${props.marginTop}px`: props.marginTop,
-                marginBottom: (typeof props.marginBottom === 'number')? `${props.marginBottom}px`: props.marginBottom
+                marginBottom: (typeof props.marginBottom === 'number')? `${props.marginBottom}px`: props.marginBottom,
+                fontFamily: props.textStyle?.font,
+                fontWeight: props.textStyle?.weight ?? props.textStyle?.boldness,
+                fontStyle: props.textStyle?.style,
+                margin: props.textStyle?.margin,
+                padding: props.textStyle?.padding,
+                textAlign: props.textStyle?.alignment
             }}
         >
             {['text', 'time', 'date'].includes(fieldType) && <>

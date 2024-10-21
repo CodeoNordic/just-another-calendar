@@ -170,3 +170,6 @@ Scroll the calendar view to a specific time.
 ```js
 scrollToTime('16:00');
 ```
+
+### getEvent(id)
+This is only meant to be used in the browser devtools. It returns an event's object from the ID.
