@@ -88,8 +88,13 @@ declare global {
             /** By default, the field will not be displayed if the value is empty */
             showIfEmpty?: boolean;
 
-            /** Whether the field should take up as much horizontal space as possible */
+            /** Whether or not the field should take up as much horizontal space as possible */
             fullWidth?: boolean;
+
+            /** Whether or not the field should include a line break at the start */
+            lineBreakStart?: boolean,
+            /** Whether or not the field should include a line break at the end */
+            lineBreakEnd?: boolean,
 
             /** Optional color for the field */
             color?: string;

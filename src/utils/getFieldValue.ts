@@ -73,7 +73,7 @@ export function templateKey(event: JAC.Event, key: string) {
  * getFieldValue(event, { template: '{FirstName} {LastName}' }); // 'John Doe'
  * ```	
 */
-export default function getFieldValue(event: JAC.Event, field: Pick<JAC.EventField, 'eval'|'htmlTemplate'|'template'|'value'>) {
+export default function getFieldValue(event: JAC.Event, field: Pick<JAC.EventField, 'eval'|'htmlTemplate'|'template'|'value'|'icon'>) {
     if (typeof field.eval === 'string' && field.eval.length > 0) {
         try {
             // Parse the passed JS code. Must be a callable function
@@ -126,7 +126,8 @@ export default function getFieldValue(event: JAC.Event, field: Pick<JAC.EventFie
     if (typeof field.value !== 'string' || field.value.length === 0) {
         if (
             (typeof field.template !== 'string' || field.template.length === 0) && 
-            (typeof field.eval !== 'string' || field.eval.length === 0)
+            (typeof field.eval !== 'string' || field.eval.length === 0) &&
+            (typeof field.icon !== 'string' || field.icon.length === 0)
         ) warn(
             "The following field definition has no key to determine its value. One of three keys must be defined: 'value', 'template', 'eval'",
             field
@@ -136,7 +137,7 @@ export default function getFieldValue(event: JAC.Event, field: Pick<JAC.EventFie
     }
 
     // Return based on field.value
-    const value = get(event, field.value);
+    const value = field.value.length? get(event, field.value): null;
     if (['', null, undefined].includes(value)) return null;
 
     return String(value);
