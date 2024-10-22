@@ -5,6 +5,7 @@ import performScript from "@utils/performScript";
 import { warn } from '@utils/log';
 import fetchFromFileMaker from "@utils/fetchFromFilemaker";
 import { useEffect, useState } from "react";
+import ChevronDown from 'jsx:@svg/chevron-down.svg';
 
 const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[]}> = (props) => {
     const [dynamicDropdowns, setDynamicDropdowns] = useState<(JAC.SearchResult & { parent?: { first: number, second: number } })[][]>([[]]);
@@ -18,9 +19,11 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[]}> = (pr
     }, [props.dynamicDropdownParent]);
 
     return <div>
-        {dynamicDropdowns[active][0]?.parent && <div>
-            <div onClick={() => setActive(dynamicDropdowns[active][0]!.parent!.first!)}>{"<"}</div>
-            {dynamicDropdowns[dynamicDropdowns[active][0]!.parent!.first]?.[dynamicDropdowns[active][0]!.parent!.second]?.title}
+        {dynamicDropdowns[active][0]?.parent && <div className="dropdown-child-header">
+            <ChevronDown onClick={() => setActive(dynamicDropdowns[active][0].parent!.first)} className="back-arrow"/>
+            <p>{Array.isArray(dynamicDropdowns[dynamicDropdowns[active][0].parent.first][dynamicDropdowns[active][0].parent.second].title) 
+                ? dynamicDropdowns[dynamicDropdowns[active][0].parent.first][dynamicDropdowns[active][0].parent.second].title?.[0] 
+                : dynamicDropdowns[dynamicDropdowns[active][0].parent.first][dynamicDropdowns[active][0].parent.second].title}</p>
         </div>}
         {dynamicDropdowns[active].map((result, i) => <div key={i} onClick={() => {
             if (result.script && !result.dynamicDropdown) performScript(result.script);
@@ -34,8 +37,8 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[]}> = (pr
                     }
                 });
             }
-        }}>
-            <div>{Array.isArray(result.title) ? result.title.map(title => <div>{title}</div>) : result.title}</div>
+        }} className="dropdown-child-item">
+            {Array.isArray(result.title) ? result.title.map(title => <p className="dropdown-child-title">{title}</p>) : <p className="dropdown-child-title">{result.title}</p>}
         </div>)}
     </div>
 }
@@ -58,12 +61,12 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
         });
     }
 
-    return <div>
-        <input id="search-dynamic-input" type="text" placeholder={searchField.placeholder ?? "Search"}
+    return <div className="search-dropdown">
+        <input type="text" placeholder={searchField.placeholder ?? "Search"}
             value={searchField.value || ""}
             onChange={e => setSearch(e.target.value)}
             onKeyDown={(e) => {
-                if (e.key === 'Enter' && document.activeElement?.id === 'search-dynamic-input' && !searching) {
+                if (e.key === 'Enter' && !searching) {
                     setSearching(true);
                     fetchFromFileMaker(searchField.script!, {
                         searchField, searchValue: searchField.value, index

@@ -105,6 +105,39 @@
     .insertable-events:not(:has(.collapse.collapsed)) .collapse-container, .collapse.search:not(.collapsed) .collapse-container {
         margin-top: 8px;
     }
+
+    .search-dropdown {
+        .dropdown-child-item{
+            border: 1px solid rgba(0, 0, 0, .3);
+            border-radius: 5px;
+            padding: 4px;
+            margin: 4px 0;
+
+            .dropdown-child-title{
+                margin: 0;
+                padding-bottom: 2px;
+            }
+        }
+        .dropdown-child-header{
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding: 4px;
+
+            p {
+                width: 100%;
+                margin: 0;
+                margin-left: -1em;
+            }
+
+            .back-arrow{
+                transform: rotate(90deg);
+                stroke: black;
+                scale: 1.25;
+                stroke-width: .145em;
+            }
+        }   
+    }
 }
 
 .insertable-event-content {

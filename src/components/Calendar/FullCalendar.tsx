@@ -305,9 +305,9 @@ const FullCalendar: FC = () => {
             slotMinTime={config.calendarStartTime || "08:00"} 
             slotMaxTime={config.calendarEndTime || "21:15"}
 
-            slotLabelFormat="HH:mm"
-            slotDuration="00:15"
-            slotLabelInterval={config.view?.startsWith('resourceTimeline') ? { hours: 1 }: { minutes: 15 }}
+            slotLabelFormat={config.view?.startsWith('resourceTimeline') ? { day: 'numeric', weekday: 'short' }: { hour: '2-digit', minute: '2-digit' }}
+            slotDuration={config.view?.startsWith('resourceTimeline') ? { days: 1 }: { minutes: 15 }}
+            slotLabelInterval={config.view?.startsWith('resourceTimeline') ? { days: 1 }: { minutes: 15 }}
 
             firstDay={typeof config.firstDayOfWeek === 'number' ? 
                 clamp(config.firstDayOfWeek, 0, 6) : typeof config.firstDayOfWeek === "string" ? 
