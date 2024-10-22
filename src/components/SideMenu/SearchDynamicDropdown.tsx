@@ -11,8 +11,6 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[]}> = (pr
     const [dynamicDropdowns, setDynamicDropdowns] = useState<(JAC.SearchResult & { parent?: { first: number, second: number } })[][]>([[]]);
     const [active, setActive] = useState<number>(0);
 
-    console.log(dynamicDropdowns);
-
     useEffect(() => {
         setDynamicDropdowns([props.dynamicDropdownParent]);
         setActive(0);
@@ -28,10 +26,10 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[]}> = (pr
         {dynamicDropdowns[active].map((result, i) => <div key={i} onClick={() => {
             if (result.script && !result.dynamicDropdown) performScript(result.script);
             else if (result.dynamicDropdown && result.script) {
-                fetchFromFileMaker(result.script, result, undefined, true).then((value) => {
+                const params = dynamicDropdowns[active][i].scriptParam ? { ...JSON.parse(dynamicDropdowns[active][i].scriptParam), result: result } : { result: result };
+                fetchFromFileMaker(result.script, params, undefined, true).then((value) => {
                     const result = value as JAC.SearchResult[];
                     if (result) {
-                        console.log(active);
                         setDynamicDropdowns([...dynamicDropdowns, result.map((r) => ({ ...r, parent: { first: active, second: i } }))]);
                         setActive(dynamicDropdowns.length);
                     }
@@ -72,8 +70,7 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
                         searchField, searchValue: searchField.value, index
                     }, undefined, true).then((result) => {
                         setSearching(false);
-                        console.log(result);
-                        setDynamicDropdownParent(result as JAC.SearchResult[]);
+                        if (result) setDynamicDropdownParent(result as JAC.SearchResult[]);
                     });
         
                 }

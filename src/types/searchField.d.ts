@@ -25,6 +25,7 @@ declare global {
         interface SearchResult {
             title?: string|string[]; // Text displayed for the result. If an array is passed, the strings will be separated by a line break
             script?: string; // Script to run when the result is clicked
+            scriptParam?: string; // Parameter to pass to the script in json format 
 
             dynamicDropdown?: boolean; // "Recursive" dropdowns, allows for sub-popups 
         }
