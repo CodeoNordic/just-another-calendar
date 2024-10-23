@@ -107,36 +107,61 @@
     }
 
     .search-dropdown {
-        .dropdown-child-item{
-            border: 1px solid rgba(0, 0, 0, .3);
-            border-radius: 5px;
-            padding: 4px;
-            margin: 4px 0;
+        .dropdown-child {
+            margin-top: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.3);
 
-            .dropdown-child-title{
-                margin: 0;
-                padding-bottom: 2px;
+            
+
+            .dropdown-child-item{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-top: 1px solid rgba(0, 0, 0, 0.3);
+                padding: 6px;
+                margin-right: 0;
+
+                &:first-child {
+                    border-top: none;
+                }
+
+                .dropdown-child-title{
+                    margin: 0;
+                    padding-bottom: 2px;
+                }
+
+                .forward-arrow{
+                    transform: rotate(-90deg);
+                    stroke: gray;
+                    scale: 1.25;
+                    stroke-width: .145em;
+                }
             }
+            .dropdown-child-header{
+                display: flex;
+                align-items: center;
+                text-align: center;
+                padding: 4px;
+
+                p {
+                    width: 100%;
+                    margin: 0;
+                    margin-left: -1em;
+                }
+
+                .back-arrow{
+                    transform: rotate(90deg);
+                    stroke: black;
+                    scale: 1.25;
+                    stroke-width: .145em;
+                }
+            }   
         }
-        .dropdown-child-header{
-            display: flex;
-            align-items: center;
-            text-align: center;
-            padding: 4px;
 
-            p {
-                width: 100%;
-                margin: 0;
-                margin-left: -1em;
-            }
-
-            .back-arrow{
-                transform: rotate(90deg);
-                stroke: black;
-                scale: 1.25;
-                stroke-width: .145em;
-            }
-        }   
+        
     }
 }
 

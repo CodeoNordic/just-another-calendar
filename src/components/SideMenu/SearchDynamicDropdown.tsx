@@ -16,7 +16,9 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[]}> = (pr
         setActive(0);
     }, [props.dynamicDropdownParent]);
 
-    return <div>
+    if (!dynamicDropdowns[active].length) return <></>;
+
+    return <div className="dropdown-child">
         {dynamicDropdowns[active][0]?.parent && <div className="dropdown-child-header">
             <ChevronDown onClick={() => setActive(dynamicDropdowns[active][0].parent!.first)} className="back-arrow"/>
             <p>{Array.isArray(dynamicDropdowns[dynamicDropdowns[active][0].parent.first][dynamicDropdowns[active][0].parent.second].title) 
@@ -26,8 +28,7 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[]}> = (pr
         {dynamicDropdowns[active].map((result, i) => <div key={i} onClick={() => {
             if (result.script && !result.dynamicDropdown) performScript(result.script);
             else if (result.dynamicDropdown && result.script) {
-                const params = dynamicDropdowns[active][i].scriptParam ? { ...JSON.parse(dynamicDropdowns[active][i].scriptParam), result: result } : { result: result };
-                fetchFromFileMaker(result.script, params, undefined, true).then((value) => {
+                fetchFromFileMaker(result.script, result, undefined, true).then((value) => {
                     const result = value as JAC.SearchResult[];
                     if (result) {
                         setDynamicDropdowns([...dynamicDropdowns, result.map((r) => ({ ...r, parent: { first: active, second: i } }))]);
@@ -36,7 +37,10 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[]}> = (pr
                 });
             }
         }} className="dropdown-child-item">
-            {Array.isArray(result.title) ? result.title.map(title => <p className="dropdown-child-title">{title}</p>) : <p className="dropdown-child-title">{result.title}</p>}
+            <div>
+                {Array.isArray(result.title) ? result.title.map(title => <p className="dropdown-child-title">{title}</p>) : <p className="dropdown-child-title">{result.title}</p>}
+            </div>
+            {(result.dynamicDropdown) && <ChevronDown className="forward-arrow" />}
         </div>)}
     </div>
 }
@@ -64,13 +68,17 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
             value={searchField.value || ""}
             onChange={e => setSearch(e.target.value)}
             onKeyDown={(e) => {
-                if (e.key === 'Enter' && !searching) {
+                if (e.key === 'Enter' && !searching && (e.target as HTMLInputElement).value.length > 2) {
                     setSearching(true);
                     fetchFromFileMaker(searchField.script!, {
                         searchField, searchValue: searchField.value, index
                     }, undefined, true).then((result) => {
                         setSearching(false);
                         if (result) setDynamicDropdownParent(result as JAC.SearchResult[]);
+                    }).catch((error) => {
+                        console.error(error);
+                        setDynamicDropdownParent([]);
+                        setSearching(false);
                     });
         
                 }

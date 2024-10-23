@@ -66,7 +66,7 @@ export default async function fetchFromFileMaker<T = RSAny>(
     }
 
     const uuid = randomUUID();
-    
+
     return new Promise<T>((res, rej) => {
         // Configure the timeout
         const timeout = setTimeout(() => {
@@ -78,7 +78,7 @@ export default async function fetchFromFileMaker<T = RSAny>(
         promises.set(uuid, {
             resolve: data => {
                 clearTimeout(timeout);
-    
+
                 if (data instanceof Error) rej(data);
                 else res(data);
             },
