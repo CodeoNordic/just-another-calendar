@@ -3,6 +3,41 @@ import filemakerFindEquivalent from '@utils/filemakerFindEquivalent';
 
 import get from 'lodash.get';
 
+export const getAffectingFilters = (event: JAC.Event, config: JAC.Config) => {
+    const filters = config.eventFilters || [];
+    if (!filters.length) return config.events;
+
+    const filterIds = (typeof event.filterId === 'string')? [event.filterId]: (event.filterId || []);
+
+    const affectingFilters = filters.filter(filter => {
+        let included = false;
+
+        // True if the filter ID matches
+        if ((typeof filter.id === 'string')) included = filterIds.includes(filter.id);
+
+        // Run JavaScript
+        if (!included && typeof filter.eval === 'string') {
+            try {
+                const func = eval(filter.eval);
+                if (typeof func !== 'function') throw new Error('Eval result did not return a function');
+
+                const result = func(event, config);
+                if (Boolean(result)) included = true;
+            } catch(err) {
+                console.error('Eval failed for the following event filter');
+                console.error(filter);
+                console.error(err);
+            }
+        }
+
+        // True if the _filter criteria is fulfilled
+        if (!included && filter._filter) included = searchObject(event, filter._filter);
+        return included;
+    });
+
+    return affectingFilters;
+}
+
 export default function filterEvents(config: JAC.Config): JAC.Event[] {
     const filters = config.eventFilters || [];
     if (!filters.length) return config.events;
@@ -10,33 +45,7 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
     const searchFields = config.searchFields instanceof Array? config.searchFields: [];
 
     return config?.events?.filter(event => {
-        const filterIds = (typeof event.filterId === 'string')? [event.filterId]: (event.filterId || []);
-
-        const affectingFilters = filters.filter(filter => {
-            let included = false;
-
-            // True if the filter ID matches
-            if ((typeof filter.id === 'string')) included = filterIds.includes(filter.id);
-
-            // Run JavaScript
-            if (!included && typeof filter.eval === 'string') {
-                try {
-                    const func = eval(filter.eval);
-                    if (typeof func !== 'function') throw new Error('Eval result did not return a function');
-
-                    const result = func(event, config);
-                    if (Boolean(result)) included = true;
-                } catch(err) {
-                    console.error('Eval failed for the following event filter');
-                    console.error(filter);
-                    console.error(err);
-                }
-            }
-
-            // True if the _filter criteria is fulfilled
-            if (!included && filter._filter) included = searchObject(event, filter._filter);
-            return included;
-        });
+        const affectingFilters = getAffectingFilters(event, config);
 
         affectingFilters && (event._affectingFilters = affectingFilters);
 

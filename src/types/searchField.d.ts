@@ -19,6 +19,7 @@ declare global {
 
             // NEW PROPERTIES
             dynamicDropdown?: boolean;
+            noResults?: string; // Text to display if there is no results
         }
 
         // Each search result

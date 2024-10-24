@@ -111,14 +111,24 @@
     }
 
     .search-dropdown {
+
+        .search-error{
+            text-align: center;
+            padding: 8px;
+        }
+        
+        .search-event{
+            border-radius: 2px;
+            padding: 2px;
+            margin: 2px;
+        }
+
         .dropdown-child {
             margin-top: 16px;
             max-height: 400px;
             overflow-y: auto;
             overflow-x: hidden;
             border: 1px solid rgba(0, 0, 0, 0.3);
-
-            
 
             .dropdown-child-item{
                 display: flex;

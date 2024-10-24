@@ -5,8 +5,11 @@ import combineClasses from '@utils/combineClasses';
 import getFieldValue from '@utils/getFieldValue';
 import performScript from '@utils/performScript';
 import searchObject from '@utils/searchObject';
+import { useConfig } from '@context/Config';
 
 const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void; onButtonLeave?: () => void; tooSmall: boolean; }> = props => {
+    const config = useConfig()!;
+    
     const filterCheck = useMemo(() =>
         props._filter? searchObject(props.event, props._filter): true,
         [props._filter, props.event]
@@ -24,7 +27,7 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
 
         if (typeof props.htmlTemplate === 'string' && props.htmlTemplate[0] === '<' && value !== null) return <div dangerouslySetInnerHTML={{ __html: value }} />
         return value;
-    }, [props.htmlTemplate, props.event, props.eval, props.htmlTemplate, props.template, props.value, props.icon]);
+    }, [props.htmlTemplate, props.event, props.eval, props.htmlTemplate, props.template, props.value, props.icon, config]);
 
     // Get the icon
     const fieldIconSrc: string|null = useMemo(() => {
@@ -35,7 +38,7 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
             .filter(obj => !obj._filter || searchObject(props.event, obj._filter));
         
         return matches[0]?.icon || null;
-    }, [props.icon, props.event]);
+    }, [props.icon, props.event, config]);
 
     if (!filterCheck) return null;
     const fieldIcon = (fieldIconSrc) && <Icon src={fieldIconSrc} />
