@@ -505,6 +505,7 @@ const FullCalendar: FC = () => {
                 Boolean(config.scriptNames.onEventCreated)}
             select={info => {
                 const dates = newEvent && datesFromEvent(newEvent);
+                console.log(dates);
                 const eventParam = newEvent && {
                     ...newEvent,
                     start: dates?.start && dateToObject(dates.start),

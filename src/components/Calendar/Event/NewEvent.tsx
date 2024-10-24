@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useCalendarRef } from '@context/CalendarRefProvider';
 import dateFromString from '@utils/dateFromString';
 import searchObject from '@utils/searchObject';
+import dateToObject from '@utils/dateToObject';
 
 
 interface NewEventProps {
@@ -132,7 +133,11 @@ const NewEvent: FC<NewEventProps> = props => {
 
         setNewEvent(eventCopy);
         setConfig((prev) => prev && ({...prev, events: [...(prev.events ?? []), eventCopy]} as JAC.Config));
-        config?.scriptNames?.onEventCreated && performScript('onEventCreated', eventCopy);
+        config?.scriptNames?.onEventCreated && performScript('onEventCreated', {
+            ...eventCopy,
+            start: newEvent?.start && dateToObject(newEvent.start),
+            end: newEvent?.end && dateToObject(newEvent.end)
+        });
         stopNewEvent();
         setCreateTemplate(false);
     }
