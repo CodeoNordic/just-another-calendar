@@ -4,13 +4,23 @@
     width: 100%;
     height: 100%;
 
-    &.too-small .line-break {
-        width: 2px;
+    &.too-small {
+        .jac-event {
+            padding: 0;
+        }
 
-        &:last-child {
-            display: none;
+        .line-break {
+            width: 2px;
+    
+            &:last-child {
+                display: none;
+            }
         }
     }
+}
+
+.fc-event-main:has(.jac-event-wrapper.too-small) {
+    padding: 0 1px;
 }
 
 .jac-event {

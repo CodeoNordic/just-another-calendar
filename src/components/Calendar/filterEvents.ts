@@ -51,16 +51,33 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
                 filterCheck = affectingFilters.some(filter => !([0, false].includes(filter.enabled!)));
             
             else if ((config.eventFilterBehaviour === 'groupedAll' || config.eventFilterBehaviour == 'groupedAny')) {
-                const filtersEvent = config.eventFilterAreas!.reduce<string[][]>((acc, area) => {
+                /*const filtersEvent = config.eventFilterAreas!.reduce<string[][]>((acc, area) => {
                     const filteredIds = filterIds?.filter(filterId => 
                         config.eventFilters?.some(filter => filter.areaName === area.name && filter.id === filterId)
                     );
+
                     acc.push(filteredIds);
                     return acc;
-                }, []);
+                }, []);*/
+
+                const areas = config.eventFilterAreas.filter(area =>
+                    affectingFilters.some(filter => filter.areaName === area.name)
+                ).map(area => ({
+                    name: area.name,
+                    filters: affectingFilters.filter(filter => filter.areaName === area.name)
+                }));
+
+                if (config.eventFilterBehaviour === 'groupedAll') filterCheck = areas.some(area =>
+                    area.filters.every(filter => !([0, false].includes(filter.enabled!)))
+                );
+
+                // Otherwise, the behavior is 'groupedAny'
+                else filterCheck = areas.every(area =>
+                    area.filters.some(filter => !([0, false].includes(filter.enabled!)))
+                );
             
                 // Check if all filters for at least one area is enabled, if not, filter out the event
-                if (config.eventFilterBehaviour === 'groupedAll') filterCheck = filtersEvent.some(filterGroup => 
+                /*if (config.eventFilterBehaviour === 'groupedAll') filterCheck = filtersEvent.some(filterGroup => 
                     filterGroup.length > 0 && filterGroup.every(id => 
                         affectingFilters.some(filter => filter.id === id && !([0, false].includes(filter.enabled!)))
                     )
@@ -71,7 +88,7 @@ export default function filterEvents(config: JAC.Config): JAC.Event[] {
                     filterGroup.length > 0 && filterGroup.some(id => 
                         affectingFilters.some(filter => filter.id === id && !([0, false].includes(filter.enabled!)))
                     )
-                );
+                );*/
             }
         }
 

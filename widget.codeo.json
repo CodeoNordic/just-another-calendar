@@ -1,6 +1,6 @@
 {
     "name": "Calendar",
-    "server": "$",
-    "file": "Demo",
+    "server": "devmaster.codeo.no",
+    "file": "NOBS_GUI",
     "uploadScript": "UploadHTML"
 }

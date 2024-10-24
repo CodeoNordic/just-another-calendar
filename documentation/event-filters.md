@@ -256,7 +256,7 @@ by specifying a `sort` number for one or more filters.
 In certain situations, you want your filters to behave differently. This value is
 controlled by the `eventFilterBehavior` value in the config.
 
-The calendar has four main behavioral patterns that event filters can follow:
+The calendar has four behavioral patterns that event filters can follow:
 
 ### 1. `any`
 If ANY filter affecting an event is enabled, the event will be shown.
@@ -271,6 +271,8 @@ These behaviors are related to [filter areas](#grouping-event-filters-into-areas
 
 - With the `groupedAny` behavior, at least ONE filter affecting the event must be enabled in EACH area
 - With the `groupedAll` behavior, ALL filters in one or more areas must be enabled, excluding filters that don't affect the event
+
+**The default behavior is `groupedAny`**
 
 ## Programmatically updating a filter
 There are two main methods of updating a filter:
