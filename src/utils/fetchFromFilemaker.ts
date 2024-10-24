@@ -13,7 +13,6 @@ window.onScriptResult = (uuid, data) => {
         const parsedData = JSON.parse(data);
         promise.resolve(parsedData);
     } catch(err) {
-        console.error(err);
         promise.reject(err);
     }
 
