@@ -2,7 +2,8 @@ const { join, resolve } = require('path');
 const { existsSync } = require('fs');
 const config = require('./widget.json');
 
-if (typeof config !== 'object') throw new Error('widget.json was not parsed as an object');
+if (typeof config !== 'object')
+    throw new Error('widget.json was not parsed as an object');
 
 // open is used to run the fmp:// protocol
 const open = require('open');
@@ -19,11 +20,16 @@ const {
 // Construct the base FMP URL
 const fmpUrl = `fmp://${server}/${file}`;
 
-// Get the path to index.html, and upload the original if no dist HTML was found
+// Get the path to the distribution index.html
 const builtPath = join(__dirname, 'dist', 'index.html');
-const filePath = existsSync(builtPath)? builtPath: resolve(__dirname, '..', 'just-another-calendar.html');
 
-if (!existsSync(filePath)) throw new Error(`The module HTML-file was not found. The following paths were checked: ${builtPath}, ${filePath}`);
+// Default to the original if no built index.html was found
+const filePath = existsSync(builtPath)
+    ? builtPath
+    : resolve(__dirname, '..', 'just-another-calendar.html');
+
+if (!existsSync(filePath))
+    throw new Error(`The module HTML-file was not found. The following paths were checked: ${builtPath}, ${filePath}`);
 
 // Parameters to pass to the script
 const params = { name, filePath, ...extra };
