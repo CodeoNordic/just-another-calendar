@@ -30,7 +30,7 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
             setTooSmall((divRef.current.clientHeight ?? 0) < (childRef.current.scrollHeight ?? 0))
         }
 
-        setTimeout(listener);
+        setTimeout(listener, 100);
         divRef.current.addEventListener('resize', listener);
         return () => divRef.current?.removeEventListener('resize', listener);
     }, [divRef, childRef]);
