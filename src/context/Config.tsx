@@ -155,9 +155,9 @@ const ConfigProvider: FC = ({ children }) => {
             const parsedConfig = parseConfig(cfg);
             if (!parsedConfig) return;
 
+            window._config = parsedConfig;
             setConfig(parsedConfig);
 
-            window._config = parsedConfig;
             runLoadCallbacks();
         }
     }, []);

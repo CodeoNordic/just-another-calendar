@@ -6,8 +6,7 @@ declare global {
         init(config: string): void;
 
         /** Set a specific value in the config */
-        setConfigValue<K extends string & keyof JAC.Config>(k: K, prop: JAC.Config[K]): void;
-        setConfigProp<K extends string & keyof JAC.Config>(k: K, prop: JAC.Config[K]): void;
+        setConfigValue<K extends string & keyof JAC.Config>(k: K, prop: JAC.Config[K], type?: number): void;
 
 
         /** Add one or more events */
