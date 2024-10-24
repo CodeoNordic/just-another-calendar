@@ -34,7 +34,7 @@ export default async function fetchFromFileMaker<T = RSAny>(
     param?: any,
     option?: Parameters<typeof window['FileMaker']['PerformScriptWithOption']>[2],
     directScriptName: boolean = false,
-    timeoutInMs: number = 30_000
+    timeoutInMs: number = 0
 ): Promise<T|null> {
     // Waits until config has loaded before running
     if (!window._config && !directScriptName) {
@@ -68,21 +68,21 @@ export default async function fetchFromFileMaker<T = RSAny>(
 
     return new Promise<T>((res, rej) => {
         // Configure the timeout
-        const timeout = setTimeout(() => {
+        const timeout = timeoutInMs > 0? setTimeout(() => {
             promises.delete(uuid);
             rej('Timed out');
-        }, timeoutInMs);
+        }, timeoutInMs): null;
 
         // Add a callback to the promise map
         promises.set(uuid, {
             resolve: data => {
-                clearTimeout(timeout);
+                timeout && clearTimeout(timeout);
 
                 if (data instanceof Error) rej(data);
                 else res(data);
             },
             reject: err => {
-                clearTimeout(timeout);
+                timeout && clearTimeout(timeout);
                 rej(err);
             }
         });
@@ -94,7 +94,7 @@ export default async function fetchFromFileMaker<T = RSAny>(
         }, option);
 
         if (status !== true) {
-            clearTimeout(timeout);
+            timeout && clearTimeout(timeout);
             rej(status);
         }
     });
