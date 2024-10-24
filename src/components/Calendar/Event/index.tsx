@@ -26,7 +26,8 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
         if (!divRef.current || !childRef.current) return;
 
         const listener = () => {
-            setTooSmall(divRef.current!.clientHeight < childRef.current!.scrollHeight)
+            if (!divRef.current || !childRef.current) return;
+            setTooSmall((divRef.current.clientHeight ?? 0) < (childRef.current.scrollHeight ?? 0))
         }
 
         setTimeout(listener);

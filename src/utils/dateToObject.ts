@@ -20,6 +20,7 @@ export default function dateToObject(d: Date|string) {
         day: d.getDate(),
         iso: d.toISOString(),
         utc: d.toUTCString(),
-        unix: Math.floor(d.valueOf() / 1000)
+        unix: Math.floor(d.valueOf() / 1000),
+        time: d.toLocaleTimeString('en-uk')
     }
 }

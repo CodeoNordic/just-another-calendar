@@ -173,7 +173,7 @@ const FullCalendar: FC = () => {
             initialDate={currentDate}
 
             editable
-            eventResourceEditable={false}
+            eventResourceEditable={[1, true].includes(config.eventResourceEditable!)}
             eventStartEditable
             eventDurationEditable
             nowIndicator={config.nowIndicator}
@@ -335,14 +335,24 @@ const FullCalendar: FC = () => {
                 const start = info.event.start!;
                 const end = info.event.end!;
 
-                performScript('onEventChange', {
+                const oldResource = info.oldEvent.getResources().pop();
+                const newResource = info.event.getResources().pop();
+
+                const param: RSAny = {
                     event: info.event.extendedProps.event,
                     start: dateToObject(start),
                     end: dateToObject(end),
-                    oldResource: (info as EventDropArg).oldResource?.toJSON(),
-                    newResource: (info as EventDropArg).newResource?.toJSON(),
                     revertId
-                });
+                };
+
+                if (oldResource?.id !== newResource?.id) {
+                    param.oldResource = oldResource?.toJSON();
+                    param.newResource = newResource?.toJSON();
+
+                    newResource && (info.event.extendedProps.resourceId = newResource.id);
+                }
+
+                performScript('onEventChange', param);
 
                 // Update the event dates and times
                 setConfig(prev => {
@@ -359,6 +369,8 @@ const FullCalendar: FC = () => {
 
                     event.endTime = end.toTimeString().substring(0, 5);
                     event.timeEnd = event.endTime;
+
+                    newResource && (event.resourceId = newResource.id);
 
                     return {
                         ...cfg,
@@ -436,10 +448,11 @@ const FullCalendar: FC = () => {
                     id: id || randomUUID(),
                     start: start.toISOString(),
                     end: end.toISOString(),
-                    resourceId: info.resource?.id
+                    resourceId: info.resource?.id,
+                    _instant: info.draggedEl.getAttribute('data-instant') !== null
                 };
 
-                if (config.eventCreation && info.draggedEl.getAttribute('data-instant') === null) {
+                if (config.eventCreation && !parsedEvent?._instant) {
                     config.newEventFields?.forEach(field => {
                         if (!field.defaultValue) return;
                         if ([undefined, null, NaN, ''].includes(parsedEvent[field.name]))
@@ -494,15 +507,15 @@ const FullCalendar: FC = () => {
                 const dates = newEvent && datesFromEvent(newEvent);
                 const eventParam = newEvent && {
                     ...newEvent,
-                    _start: dates?.start && dateToObject(dates.start),
-                    _end: dates?.end && dateToObject(dates.end)
+                    start: dates?.start && dateToObject(dates.start),
+                    end: dates?.end && dateToObject(dates.end)
                 };
 
                 if (!creatingEvent && !createTemplate && newEvent && config.scriptNames?.onEventCreated) {
                     performScript('onEventCreated', eventParam)
                 }
 
-                else if (createTemplate && !config.eventCreation && config.scriptNames?.onEventCreated) {
+                else if (createTemplate && (!config.eventCreation || newEvent?._instant) && config.scriptNames?.onEventCreated) {
                     performScript('onEventCreated', eventParam);
                     setCreateTemplate(false);
                 }

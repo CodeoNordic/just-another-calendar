@@ -4,7 +4,7 @@ declare global {
         type Event = FM.Event<{
             type?: 'event'|'backgroundEvent';
             _component?: string;
-
+            _instant?: boolean;
 
             id: string;
             resourceId?: string|string[];
