@@ -1,6 +1,11 @@
 @import 'Collapse';
 @import 'DatePicker';
 
+@mixin padding {
+    border-radius: 5px;
+    padding: 4px;
+}
+
 .side-menu {
     width: 100%;
     height: 100vh;
@@ -52,8 +57,7 @@
     }
     
     .insertable-event {
-        border-radius: 5px;
-        padding: 4px;
+        @include padding;
 
         margin-top: 2px;
         cursor: grab;
@@ -171,6 +175,10 @@
     align-items: center;
     column-gap: 4px;
     flex-wrap: wrap;
+}
+
+body > .insertable-event.fc-event-dragging {
+    @include padding;
 }
 
 /*.fc-event-dragging {
