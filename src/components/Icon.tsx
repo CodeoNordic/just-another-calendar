@@ -5,7 +5,7 @@ import combineClasses from '@utils/combineClasses';
 
 import { warn } from '@utils/log';
 
-const Icon: FC<{src: string}> = props => {
+const Icon: FC<{ src: string; }> = props => {
     const config = useConfig();
     const src = useMemo(() => {
         if (!props.src) return null;
@@ -48,7 +48,11 @@ const Icon: FC<{src: string}> = props => {
         return icon;
     }, [config?.icons, props.src]);
 
-    return <div className={combineClasses('jac-icon', props.className)} dangerouslySetInnerHTML={{ __html: src ?? '' }} />
+    return <div
+        className={combineClasses('jac-icon', props.className)}
+        dangerouslySetInnerHTML={{ __html: src ?? '' }}
+        style={props.style}
+    />
 }
 
 export default Icon;

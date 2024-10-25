@@ -25,7 +25,10 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
             icon: props.icon
         });
 
-        if (typeof props.htmlTemplate === 'string' && props.htmlTemplate[0] === '<' && value !== null) return <div dangerouslySetInnerHTML={{ __html: value }} />
+        if (typeof props.htmlTemplate === 'string' && props.htmlTemplate[0] === '<' && value !== null) return <div
+            dangerouslySetInnerHTML={{ __html: value }}
+        />
+
         return value;
     }, [props.htmlTemplate, props.event, props.eval, props.htmlTemplate, props.template, props.value, props.icon, config]);
 
@@ -41,7 +44,10 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
     }, [props.icon, props.event, config]);
 
     if (!filterCheck) return null;
-    const fieldIcon = (fieldIconSrc) && <Icon src={fieldIconSrc} />
+    const fieldIcon = (fieldIconSrc) && <Icon src={fieldIconSrc} style={{
+        marginLeft: props.iconPosition === 'right'? '4px': undefined,
+        marginRight: props.iconPosition !== 'right'? '4px': undefined
+    }} />
 
     if (!props.showIfEmpty && fieldValue === null && fieldIconSrc === null) return null;
     const fieldType = props.type?.toLowerCase() || 'text';

@@ -29,7 +29,6 @@ export function templateKey(event: JAC.Event, key: string) {
     // If the key starts with 'Time:' return a formatted time
     if (key.toLowerCase().startsWith('time:')) {
         const pair = key.substring(5).split('+');    
-        
         const date = dateFromString(String(get(event, pair[0])));
 
         if (pair[1] && date) {
@@ -40,7 +39,14 @@ export function templateKey(event: JAC.Event, key: string) {
                 date.setHours(Number(time));
         }
 
-        return date?.toLocaleTimeString(window._config?.locale, { hour: '2-digit', minute: '2-digit' }) || '';
+        else {
+            const dummy = new Date();
+            const time = String(get(event, pair[0])).split(':');
+            dummy.setHours(Number(time[0]), Number(time[1]));
+            return dummy.toLocaleTimeString(window._config?.locale ?? 'en-gb', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        return date?.toLocaleTimeString(window._config?.locale ?? 'en_gb', { hour: '2-digit', minute: '2-digit' }) || '';
     }
 
     // If the key starts with 'Eval:' parse the following JS code

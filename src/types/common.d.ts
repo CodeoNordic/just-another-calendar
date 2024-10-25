@@ -9,7 +9,10 @@ declare global {
 
 
     /** Shortcut to React.FC<React.PropsWithChildren<Props & { className?: string }>> */
-    type FC<T = {}> = React.FC<React.PropsWithChildren<T & { className?: string }>>;
+    type FC<T = {}> = React.FC<React.PropsWithChildren<T & {
+        className?: string;
+        style?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>['style'];
+    }>>;
 
     /**
          * Custom state shortcut. Provides autocomplete for react states.
