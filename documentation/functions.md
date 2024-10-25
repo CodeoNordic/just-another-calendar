@@ -6,8 +6,10 @@ Initialise the calendar with one singular configuration object. (JSON)
 
 Check the [init documentation](./init.md) for more information.
 
-### setConfigValue(key, value) (alias: setConfigProp)
+### setConfigValue(key, value, [type]) (alias: setConfigProp)
 Change a specific value in the config. The key can be any of the values mentioned in the [configuration](./init.md#json-structure). This function should be used when changing e.g the `date` or `view` of the calendar.
+
+The passed type is compatible with FileMaker's JSON-types, meaning you can pass E.G `JSONBoolean` to ensure that the passed value is parsed as a boolean.
 
 ```js
 // Change the displayed date to November 19th 2024
@@ -15,6 +17,9 @@ setConfigValue('date', '2024-11-19'); // The European date format can also be pa
 
 // Change the FullCalendar view
 setConfigValue('view', 'resourceTimeGridDay');
+
+// Set 'eventResourceEditable' to false
+setConfigValue('eventResourceEditable', 0, JSONBoolean); // JSONBoolean is only available in FileMaker
 ```
 
 ### addEvents(events) (alias: addEvent)

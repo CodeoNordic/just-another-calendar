@@ -1,10 +1,11 @@
 .jac-field {
     display: inline-flex;
     align-items: center;
-    column-gap: 4px;
+    margin-right: 4px;
 
     &.field-fullwidth {
         width: 100%;
+        margin-right: 0;
     }
 
     button {
