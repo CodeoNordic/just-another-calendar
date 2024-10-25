@@ -6,6 +6,7 @@ import { warn } from '@utils/log';
 import fetchFromFileMaker from "@utils/fetchFromFilemaker";
 import { useEffect, useMemo, useState } from "react";
 import ChevronDown from 'jsx:@svg/chevron-down.svg';
+import CalendarIcon from 'jsx:@svg/calendar.svg';
 import Event from "@components/Calendar/Event";
 import calculateContrast from "@utils/contrast";
 import { eventToFcEvent } from "@components/Calendar/mapEvents";
@@ -18,10 +19,10 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
     const [config] = useConfigState();
     const [events, setEvents] = useState<JAC.Event[]>([]);
     const [eventClickScript, setEventClickScript] = useState<string | undefined>(undefined);
+    const [eventShowScript, setEventShowScript] = useState<string | undefined>(undefined);
 
     const eventList = useMemo(() => {
         return events.map(event => {
-            console.log("1", event);
             const affectingFilters = getAffectingFilters(event, config!);
             event._affectingFilters = affectingFilters
             eventToFcEvent(event, config!);
@@ -47,12 +48,14 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
             else if (result.dynamicDropdown && result.script) {
                 fetchFromFileMaker(result.script, result, undefined, true, 30000).then((value) => {
                     const result = value as any;
+                    console.log(result);
                     if (result && result.Status) {
                         setError(null);
                         setPrevious(i);
                         setActive("events");
                         setEvents(JSON.parse(result.EVNT_List));
                         setEventClickScript(result.Script_edit);
+                        setEventShowScript(result.Script_show);
                     } else {
                         setError(props.noResults || 'No results found');
                         setPrevious(i);
@@ -65,19 +68,21 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
                 {Array.isArray(result.title) ? result.title.map(title => <p className="dropdown-child-title">{title}</p>) : <p className="dropdown-child-title">{result.title}</p>}
             </div>
             {(result.dynamicDropdown) && <ChevronDown className="forward-arrow" />}
-        </div>) : eventList.map((event, i) => {
-            console.log("2", event);
-
-            return <div key={i} className="search-event" style={{
-                    border: `1px solid ${event.colors?.border || '#000'}`,
-                    backgroundColor: event.colors?.background || "#3788d8",
-                    color: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config!.contrastMin)) ?
-                        (calculateContrast("#000", event.colors?.background || "#3788d8", config!.contrastMin) ? "#000" : "#fff") : event.colors?.text
-                }}
-                onClick={() => eventClickScript && performScript(eventClickScript, { id: event.id, source: event.source }, undefined, true)}
-            >
-            <Event {...event} />
-        </div>})}
+        </div>) : eventList.map((event, i) => <div key={i} className="search-event" style={{
+            border: `1px solid ${event.colors?.border || '#000'}`,
+            backgroundColor: event.colors?.background || "#3788d8",
+            color: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config!.contrastMin)) ?
+                (calculateContrast("#000", event.colors?.background || "#3788d8", config!.contrastMin) ? "#000" : "#fff") : event.colors?.text
+        }}>
+            <div className="search-event-event">
+                <div>{event.dateStart}</div>
+                <Event {...event} />
+            </div>
+            <div className="search-event-icons">
+                <ChevronDown className="arrow" onClick={() => eventClickScript && performScript(eventClickScript, { id: event.id, source: event.source }, undefined, true)} />
+                <CalendarIcon className="calendar" onClick={() => eventShowScript && performScript(eventShowScript, { resources: event.resourceId, date: event.startDate }, undefined, true)}/>
+            </div>
+        </div>)}
     </div>
 }
 
