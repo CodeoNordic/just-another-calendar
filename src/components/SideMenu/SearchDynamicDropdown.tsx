@@ -4,7 +4,7 @@ import performScript from "@utils/performScript";
 
 import { warn } from '@utils/log';
 import fetchFromFileMaker from "@utils/fetchFromFilemaker";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ChevronDown from 'jsx:@svg/chevron-down.svg';
 import CalendarIcon from 'jsx:@svg/calendar.svg';
 import Event from "@components/Calendar/Event";
@@ -45,10 +45,9 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
         {error ? <div className="search-error">{error}</div> :
         active == "parent" ? props.dynamicDropdownParent.map((result, i) => <div key={i} onClick={() => {
             if (result.script && !result.dynamicDropdown) performScript(result.script);
-            else if (result.dynamicDropdown && result.script) {
+            else if (result.script && result.dynamicDropdown) {
                 fetchFromFileMaker(result.script, result, undefined, true, 30000).then((value) => {
                     const result = value as any;
-                    console.log(result);
                     if (result && result.Status) {
                         setError(null);
                         setPrevious(i);
@@ -80,7 +79,7 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
             </div>
             <div className="search-event-icons">
                 <ChevronDown className="arrow" onClick={() => eventClickScript && performScript(eventClickScript, { id: event.id, source: event.source }, undefined, true)} />
-                <CalendarIcon className="calendar" onClick={() => eventShowScript && performScript(eventShowScript, { resources: event.resourceId, date: event.startDate }, undefined, true)}/>
+                <CalendarIcon className="calendar" onClick={() => eventShowScript && performScript(eventShowScript, { resources: event.resourceId, date: event.dateStart }, undefined, true)}/>
             </div>
         </div>)}
     </div>
@@ -129,7 +128,6 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
                         setError(searchField.noResults || 'No results found');
                         setSearching(false);
                     });
-        
                 }
             }}
         />
