@@ -233,6 +233,17 @@ init(JSON.stringify({
         },
         {
             searchBy: [
+                "FirstName"
+            ],
+            title: "Søk etter navn (!instant test)",
+            placeholder: "Søk",
+
+            instant: false,
+            open: true,
+            sort: 0.5
+        },
+        {
+            searchBy: [
                 "start",
                 "end"
             ],
