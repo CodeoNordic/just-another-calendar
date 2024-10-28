@@ -7,6 +7,8 @@ import fetchFromFileMaker from "@utils/fetchFromFilemaker";
 import { useMemo, useState } from "react";
 import ChevronDown from 'jsx:@svg/chevron-down.svg';
 import CalendarIcon from 'jsx:@svg/calendar.svg';
+import Crossmark from 'jsx:@svg/crossmark.svg';
+import SearchIcon from 'jsx:@svg/search.svg';
 import Event from "@components/Calendar/Event";
 import calculateContrast from "@utils/contrast";
 import { eventToFcEvent } from "@components/Calendar/mapEvents";
@@ -20,6 +22,7 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
     const [events, setEvents] = useState<JAC.Event[]>([]);
     const [eventClickScript, setEventClickScript] = useState<string | undefined>(undefined);
     const [eventShowScript, setEventShowScript] = useState<string | undefined>(undefined);
+    const [searching, setSearching] = useState<boolean>(false);
 
     const eventList = useMemo(() => {
         return events.map(event => {
@@ -45,7 +48,8 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
         {error ? <div className="search-error">{error}</div> :
         active == "parent" ? props.dynamicDropdownParent.map((result, i) => <div key={i} onClick={() => {
             if (result.script && !result.dynamicDropdown) performScript(result.script);
-            else if (result.script && result.dynamicDropdown) {
+            else if (result.script && result.dynamicDropdown && !searching) {
+                setSearching(true);
                 fetchFromFileMaker(result.script, result, undefined, true, 30000).then((value) => {
                     const result = value as any;
                     if (result && result.Status) {
@@ -60,6 +64,11 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
                         setPrevious(i);
                         setActive("events");
                     }
+                    setSearching(false);
+                }).catch((error) => {
+                    console.error(error);
+                    setError(props.noResults || 'No results found');
+                    setSearching(false);
                 });
             }
         }} className="dropdown-child-item">            
@@ -104,35 +113,46 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
         });
     }
 
-    return <div className="search-dropdown">
-        <input type="text" placeholder={searchField.placeholder ?? "Search"}
-            value={searchField.value || ""}
-            onChange={e => setSearch(e.target.value)}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' && !searching && (e.target as HTMLInputElement).value.length > 2) {
-                    setSearching(true);
-                    fetchFromFileMaker(searchField.script!, {
-                        searchField, searchValue: searchField.value, index
-                    }, undefined, true, 30000).then((result) => {
-                        setSearching(false);
-                        if (result) {
-                            setDynamicDropdownParent(result as JAC.SearchResult[])
-                            setError(null);
-                        } else {
-                            setDynamicDropdownParent([]);
-                            setError(searchField.noResults || 'No results found');
-                        }
-                    }).catch((error) => {
-                        console.error(error);
-                        setDynamicDropdownParent([]);
-                        setError(searchField.noResults || 'No results found');
-                        setSearching(false);
-                    });
+    const search = () => {
+        if (!searching && searchField.value && searchField.value.length > 2) {
+            setSearching(true);
+            fetchFromFileMaker(searchField.script!, {
+                searchField, searchValue: searchField.value, index
+            }, undefined, true, 30000).then((result) => {
+                if (result) {
+                    setDynamicDropdownParent(result as JAC.SearchResult[])
+                    setError(null);
+                } else {
+                    setDynamicDropdownParent([]);
+                    setError(searchField.noResults || 'No results found');
                 }
-            }}
-        />
-        {error ? <div className="search-error">{error}</div>
-        : <SearchDropdownItems dynamicDropdownParent={dynamicDropdownParent} noResults={searchField.noResults} />}
+                setSearching(false);
+            }).catch((error) => {
+                console.error(error);
+                setDynamicDropdownParent([]);
+                setError(searchField.noResults || 'No results found');
+                setSearching(false);
+            });
+        }   
+    }
+
+    return <div className="search-dropdown">
+        <div className="search-field">
+            <input type="text" placeholder={searchField.placeholder ?? "Search"}
+                value={searchField.value || ""}
+                onChange={e => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && search()}
+            />
+            <SearchIcon onClick={() => search()} />
+
+            {searchField.emptyButton !== false && <Crossmark onClick={() => {
+                setSearch("");
+                setDynamicDropdownParent([]);    
+            }} />}
+        </div>
+        {searching ? <p className="loading-anim">Loading<span>.</span><span>.</span><span>.</span></p> 
+                   : error ? <div className="search-error">{error}</div>
+                           : <SearchDropdownItems dynamicDropdownParent={dynamicDropdownParent} noResults={searchField.noResults} />}
     </div>
 }
 

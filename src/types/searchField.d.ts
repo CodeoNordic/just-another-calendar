@@ -17,6 +17,10 @@ declare global {
         
             hidden?: boolean; // Whether the search field is hidden or not
 
+            instant?: boolean; // Whether the search field should search on enter or on change
+
+            emptyButton?: boolean; // Whether the search field should have a button to clear the search
+
             // NEW PROPERTIES
             dynamicDropdown?: boolean;
             noResults?: string; // Text to display if there is no results
