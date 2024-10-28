@@ -51,7 +51,7 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
         resourceId: resourceIds[0],
         resourceIds,
         backgroundColor: event.colors?.background || "#3788d8",
-        borderColor: event.colors?.border || "#3788d8",
+        borderColor: event.colors?.border || event.colors?.background || "#3788d8",
         textColor: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config.contrastMin)) ? 
         (calculateContrast("#000", event.colors?.background || "#3788d8", config.contrastMin) ? "#000" : "#fff") : event.colors?.text,
         start: eventStart,
