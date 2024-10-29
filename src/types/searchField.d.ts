@@ -29,6 +29,9 @@ declare global {
         // Each search result
         interface SearchResult {
             title?: string|string[]; // Text displayed for the result. If an array is passed, the strings will be separated by a line break
+            event?: JAC.Event; // Event to display instead of the title
+            eventEdit?: string; // Script for editing the event when clicking a button
+            eventShow?: string; // Script for showing the event in the calendar when clicking a button
             script?: string; // Script to run when the result is clicked
             id?: string; // ID to send to the script 
 

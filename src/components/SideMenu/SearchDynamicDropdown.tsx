@@ -4,7 +4,7 @@ import performScript from "@utils/performScript";
 
 import { warn } from '@utils/log';
 import fetchFromFileMaker from "@utils/fetchFromFilemaker";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ChevronDown from 'jsx:@svg/chevron-down.svg';
 import CalendarIcon from 'jsx:@svg/calendar.svg';
 import Crossmark from 'jsx:@svg/crossmark.svg';
@@ -19,6 +19,7 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
     const [previous, setPrevious] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
     const [config] = useConfigState();
+
     const [events, setEvents] = useState<JAC.Event[]>([]);
     const [eventClickScript, setEventClickScript] = useState<string | undefined>(undefined);
     const [eventShowScript, setEventShowScript] = useState<string | undefined>(undefined);
@@ -38,7 +39,7 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
     return <div className="dropdown-child">
         {active == "events" && <div className="dropdown-child-header">
             <ChevronDown onClick={() => {
-                setActive("parent")
+                setActive("parent");
                 setError(null);    
             }} className="back-arrow"/>
             <p>{Array.isArray(props.dynamicDropdownParent[previous].title) 
@@ -50,15 +51,14 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
             if (result.script && !result.dynamicDropdown) performScript(result.script);
             else if (result.script && result.dynamicDropdown && !searching) {
                 setSearching(true);
-                fetchFromFileMaker(result.script, result, undefined, true, 30000).then((value) => {
-                    const result = value as any;
-                    if (result && result.Status) {
+                fetchFromFileMaker(result.script, result, undefined, true, 30000).then((value: any) => {
+                    if (value) {
                         setError(null);
                         setPrevious(i);
                         setActive("events");
-                        setEvents(JSON.parse(result.EVNT_List));
-                        setEventClickScript(result.Script_edit);
-                        setEventShowScript(result.Script_show);
+                        setEvents(JSON.parse(value.EVNT_List));
+                        setEventClickScript(value.Script_edit);
+                        setEventShowScript(value.Script_show);
                     } else {
                         setError(props.noResults || 'No results found');
                         setPrevious(i);
@@ -94,6 +94,117 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
     </div>
 }
 
+const getDebugData = (): JAC.SearchResult[] => {
+    return [
+        {
+            title: "Example Result 1",
+            script: "exampleScript1",
+            dynamicDropdown: true,
+        },
+        {
+            title: ["Example Result 2 Line 1", "Example Result 2 Line 2"],
+            script: "exampleScript2",
+            dynamicDropdown: true,
+        },
+        {
+            title: "Example Result 3",
+            script: "exampleScript3",
+            dynamicDropdown: true,
+        },
+    ];
+};
+
+const SearchDropdownItemsNew: FC<{dynamicDropdownParent: JAC.SearchResult[], noResults: string|undefined}> = (props) => {
+    const [error, setError] = useState<string | null>(null);
+    const [config] = useConfigState();
+    const [searching, setSearching] = useState<boolean>(false);
+    const [children, setChildren] = useState<(JAC.SearchResult & { prevOuter?: number, prevInner?: number })[][]>([[]]);
+    const [active, setActive] = useState<number>(0);
+
+    const eventList = useMemo(() => {
+        return children[active].map(child => {
+            if (!child.event) {
+                return null;
+            }
+            const affectingFilters = getAffectingFilters(child.event, config!);
+            child.event._affectingFilters = affectingFilters
+            eventToFcEvent(child.event, config!);
+            return child.event;
+        }).filter(event => event !== null);
+    }, [children, active, config]);
+
+    useEffect(() => {
+        if (props.dynamicDropdownParent.length) {
+            setChildren([props.dynamicDropdownParent]);
+        }
+    }, [props.dynamicDropdownParent]);
+    
+    const search = (searchResult: JAC.SearchResult, outer: number, inner: number) => {
+        const result = getDebugData();
+        setError(null);
+        setChildren([...children, result.map((child) => ({ ...child, prevOuter: outer, prevInner: inner }))]);
+        setActive(children.length); 
+        if (1 == 1) return;
+
+        if (searchResult.script && !searching) {
+            if (searchResult.dynamicDropdown) {
+                setSearching(true);
+                fetchFromFileMaker(searchResult.script, searchResult, undefined, true, 30000).then((value: RSAny | null) => {
+                    const result = value as JAC.SearchResult[] | null;
+                    console.log(result);
+                    if (result) {
+                        setError(null);
+                        setChildren([...children, result.map((child) => ({ ...child, outer, inner }))]);
+                    } else {
+                        setError(props.noResults || 'No results found');
+                    }
+                    setSearching(false);
+                }).catch((error) => {
+                    console.error(error);
+                    setError(props.noResults || 'No results found');
+                    setSearching(false);
+                })
+            } else performScript(searchResult.script)    
+        }
+    }
+
+    if (!props.dynamicDropdownParent.length) return <></>;
+
+    return <div className="dropdown-child">
+        {children[active][0].prevOuter !== undefined && children[active][0].prevInner !== undefined && active !== 0 && (
+            <div className="dropdown-child-header">
+                <ChevronDown onClick={() => {
+                    setActive(children[active][0].prevOuter!);
+                    setError(null);
+                }} className="back-arrow" />
+                <p>{Array.isArray(children[children[active][0].prevOuter!][children[active][0].prevInner!].title)
+                    ? children[children[active][0].prevOuter!][children[active][0].prevInner!].title?.[0]
+                    : children[children[active][0].prevOuter!][children[active][0].prevInner!].title}</p>
+            </div>
+        )}
+        {error ? <div className="search-error">{error}</div> : eventList.length ? eventList.map((event, i) => <div key={i} className="search-event" style={{
+            border: `1px solid ${event.colors?.border || '#000'}`,
+            backgroundColor: event.colors?.background || "#3788d8",
+            color: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config!.contrastMin)) ?
+                (calculateContrast("#000", event.colors?.background || "#3788d8", config!.contrastMin) ? "#000" : "#fff") : event.colors?.text
+        }}>
+            <div className="search-event-event">
+                <div>{event.dateStart}</div>
+                <Event {...event} />
+            </div>
+            <div className="search-event-icons">
+                {children[active][i].eventEdit && <ChevronDown className="arrow" onClick={() => performScript(children[active][i].eventEdit!, { id: event.id, source: event.source }, undefined, true)} />}
+                {children[active][i].eventShow && <CalendarIcon className="calendar" onClick={() => performScript(children[active][i].eventShow!, { resources: event.resourceId, date: event.dateStart }, undefined, true)}/>}
+            </div>
+        </div>) : children[active].map((result, i) => <div key={i} onClick={() => search(result, active, i)} className="dropdown-child-item">
+            <div>
+                {Array.isArray(result.title) ? result.title.map(title => <p className="dropdown-child-title">{title}</p>) : <p className="dropdown-child-title">{result.title}</p>}
+            </div>
+            {(result.dynamicDropdown) && <ChevronDown className="forward-arrow" />}
+        </div>)}
+    </div>
+}
+
 const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (props) => {
     const [, setConfig] = useConfigState();
     const [dynamicDropdownParent, setDynamicDropdownParent] = useState<JAC.SearchResult[]>([]);
@@ -114,6 +225,11 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
     }
 
     const search = () => {
+        const result = getDebugData();
+        setDynamicDropdownParent(result);
+        setError(null);
+        if (1 == 1) return;
+
         if (!searching && searchField.value && searchField.value.length > 2) {
             setSearching(true);
             fetchFromFileMaker(searchField.script!, {
@@ -144,34 +260,34 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
                 onKeyDown={(e) => e.key === 'Enter' && search()}
             />
             <SearchIcon onClick={() => search()} />
-
             {searchField.emptyButton !== false && <Crossmark onClick={() => {
                 setSearch("");
                 setDynamicDropdownParent([]);    
             }} />}
         </div>
-        {searching ? <p className="loading-anim">Loading<span>.</span><span>.</span><span>.</span></p> 
-                   : error ? <div className="search-error">{error}</div>
-                           : <SearchDropdownItems dynamicDropdownParent={dynamicDropdownParent} noResults={searchField.noResults} />}
+        {searching ? (
+            <p className="loading-anim">Loading<span>.</span><span>.</span><span>.</span></p>
+        ) : error ? (
+            <div className="search-error">{error}</div>
+        ) : (
+            <SearchDropdownItemsNew dynamicDropdownParent={dynamicDropdownParent} noResults={searchField.noResults} />
+        )}
     </div>
 }
 
 const SearchDynamicDropdown: FC<{searchField: JAC.SearchField, index: number}> = (props) => {
-    const searchField = props.searchField;
-    const index = props.index;
-    
-    if (!searchField.script) {
-        warn('Script is required for dynamic search dropdown, will not be used.', searchField);
+    if (!props.searchField.script) {
+        warn('Script is required for dynamic search dropdown, will not be used.', props.searchField);
         return null;
     };
     
     return <>
-        {searchField.title ? <Collapse className="search" top={<>
-            <div>{searchField.title}</div>
+        {props.searchField.title ? <Collapse className="search" top={<>
+            <div>{props.searchField.title}</div>
         </>}
-        collapsed={searchField.open === false}>
-            <SearchDropdownField searchField={searchField} index={index} />
-        </Collapse> : <SearchDropdownField searchField={searchField} index={index} />}
+        collapsed={props.searchField.open === false}>
+            <SearchDropdownField searchField={props.searchField} index={props.index} />
+        </Collapse> : <SearchDropdownField searchField={props.searchField} index={props.index} />}
     </>
 }
 
