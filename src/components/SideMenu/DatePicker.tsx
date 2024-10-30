@@ -37,8 +37,6 @@ const DatePicker: FC = () => {
         if (!config?.scriptNames?.onDateSelected) return setConfig(prev => {
             if (!prev) return null;
 
-            console.log(selected.toISOString());
-
             return {
                 ...prev,
                 date: selected.toISOString()
