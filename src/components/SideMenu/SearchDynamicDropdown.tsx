@@ -30,9 +30,12 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
             const affectingFilters = getAffectingFilters(event, config!);
             event._affectingFilters = affectingFilters
             eventToFcEvent(event, config!);
+            console.log(event);
             return event;
         });
     }, [events, config]);
+
+    console.log(eventList);
 
     if (!props.dynamicDropdownParent.length) return <></>;
 
@@ -79,7 +82,7 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
         </div>) : eventList.map((event, i) => <div key={i} className="search-event" style={{
             border: `1px solid ${event.colors?.border || '#000'}`,
             backgroundColor: event.colors?.background || "#3788d8",
-            color: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config!.contrastMin)) ?
+            color: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config!.contrastMin)) ? 
                 (calculateContrast("#000", event.colors?.background || "#3788d8", config!.contrastMin) ? "#000" : "#fff") : event.colors?.text
         }}>
             <div className="search-event-event">
@@ -95,23 +98,78 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
 }
 
 const getDebugData = (): JAC.SearchResult[] => {
-    return [
+    const data: JAC.SearchResult[] = [
         {
-            title: "Example Result 1",
+            event: {
+                id: '1',
+                FirstName: "Joakim",
+                Test: "TEST VALUE",
+                ButtonText: "BUTTON",
+                start: '2024-07-17T12:00',
+                end: '2024-07-17T13:00',
+                allDay: false,
+                tooltip: 'TEST TOOLTIP JOAKIM',
+                resourceId: '1F',
+                filterId: ['filter1', 'source1'],
+                colors: {
+                    background: '#0000ff',
+                    border: '#000000'
+                }
+            },
             script: "exampleScript1",
             dynamicDropdown: true,
         },
         {
-            title: ["Example Result 2 Line 1", "Example Result 2 Line 2"],
+            event: {
+                id: '1',
+                FirstName: "Joakim",
+                Test: "TEST VALUE",
+                ButtonText: "BUTTON",
+                start: '2024-07-17T12:00',
+                end: '2024-07-17T13:00',
+                allDay: false,
+                tooltip: 'TEST TOOLTIP JOAKIM',
+                resourceId: '1F',
+                filterId: ['filter1', 'source1'],
+                colors: {
+                    background: '#ff0000',
+                    border: '#000000'
+                }
+            },
             script: "exampleScript2",
             dynamicDropdown: true,
         },
         {
-            title: "Example Result 3",
+            event: {
+                id: '1',
+                FirstName: "Joakim",
+                Test: "TEST VALUE",
+                ButtonText: "BUTTON",
+                start: '2024-07-17T12:00',
+                end: '2024-07-17T13:00',
+                allDay: false,
+                tooltip: 'TEST TOOLTIP JOAKIM',
+                resourceId: '1F',
+                filterId: ['filter1', 'source1'],
+                colors: {
+                    background: '#00ff00',
+                    border: '#000000'
+                }
+            },
             script: "exampleScript3",
             dynamicDropdown: true,
-        },
+        }
     ];
+
+    // Shuffle the array
+    for (let i = data.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [data[i], data[j]] = [data[j], data[i]];
+    }
+
+    // Select a random length for the array
+    const randomLength = Math.floor(Math.random() * data.length) + 1;
+    return data.slice(0, randomLength);
 };
 
 const SearchDropdownItemsNew: FC<{dynamicDropdownParent: JAC.SearchResult[], noResults: string|undefined}> = (props) => {
@@ -128,10 +186,12 @@ const SearchDropdownItemsNew: FC<{dynamicDropdownParent: JAC.SearchResult[], noR
             }
             const affectingFilters = getAffectingFilters(child.event, config!);
             child.event._affectingFilters = affectingFilters
-            eventToFcEvent(child.event, config!);
+            console.log(eventToFcEvent(child.event, config!))
             return child.event;
         }).filter(event => event !== null);
     }, [children, active, config]);
+
+    console.log(eventList);
 
     useEffect(() => {
         if (props.dynamicDropdownParent.length) {
@@ -171,7 +231,7 @@ const SearchDropdownItemsNew: FC<{dynamicDropdownParent: JAC.SearchResult[], noR
     if (!props.dynamicDropdownParent.length) return <></>;
 
     return <div className="dropdown-child">
-        {children[active][0].prevOuter !== undefined && children[active][0].prevInner !== undefined && active !== 0 && (
+        {active !== 0 && (
             <div className="dropdown-child-header">
                 <ChevronDown onClick={() => {
                     setActive(children[active][0].prevOuter!);
@@ -198,7 +258,7 @@ const SearchDropdownItemsNew: FC<{dynamicDropdownParent: JAC.SearchResult[], noR
             </div>
         </div>) : children[active].map((result, i) => <div key={i} onClick={() => search(result, active, i)} className="dropdown-child-item">
             <div>
-                {Array.isArray(result.title) ? result.title.map(title => <p className="dropdown-child-title">{title}</p>) : <p className="dropdown-child-title">{result.title}</p>}
+                {Array.isArray(result.title) ? result.title.map((title, i) => <p key={i} className="dropdown-child-title">{title}</p>) : <p className="dropdown-child-title">{result.title}</p>}
             </div>
             {(result.dynamicDropdown) && <ChevronDown className="forward-arrow" />}
         </div>)}
