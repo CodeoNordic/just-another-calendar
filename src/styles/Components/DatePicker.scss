@@ -27,6 +27,13 @@
             }
         }
 
+        .today {
+            background-color: transparent;
+            border: none;
+            padding: 8px;
+
+            @include buttonEffects;
+        }
     }
 
     .date-picker-wrapper {

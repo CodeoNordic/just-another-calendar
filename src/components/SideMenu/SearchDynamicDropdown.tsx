@@ -186,12 +186,9 @@ const SearchDropdownItemsNew: FC<{dynamicDropdownParent: JAC.SearchResult[], noR
             }
             const affectingFilters = getAffectingFilters(child.event, config!);
             child.event._affectingFilters = affectingFilters
-            console.log(eventToFcEvent(child.event, config!))
             return child.event;
         }).filter(event => event !== null);
     }, [children, active, config]);
-
-    console.log(eventList);
 
     useEffect(() => {
         if (props.dynamicDropdownParent.length) {

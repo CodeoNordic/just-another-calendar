@@ -37,6 +37,8 @@ const DatePicker: FC = () => {
         if (!config?.scriptNames?.onDateSelected) return setConfig(prev => {
             if (!prev) return null;
 
+            console.log(selected.toISOString());
+
             return {
                 ...prev,
                 date: selected.toISOString()
@@ -62,12 +64,15 @@ const DatePicker: FC = () => {
         return nums;
     }, [dates]);
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     return <div className="date-picker">
         <Collapse top={<>
             <span className="title">{monthTitle}</span>
             
             <button className="today" onClick={() => {
-                setSelectedMonth(new Date());
+                onDateSelected(today);
             }}>
                 {config?.translations?.todayButton || "Today"}
             </button>
@@ -98,6 +103,7 @@ const DatePicker: FC = () => {
                     {dates.start.map((date, i) => <button
                         key={i}
                         className="extra-date"
+                        style={date.toISOString() === today.toISOString() ? { background: 'rgba(255, 220, 40, 0.3)' } : {}}
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
@@ -106,6 +112,7 @@ const DatePicker: FC = () => {
                     {dates.middle.map((date, i) => <button
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
+                        style={(date.toISOString() === today.toISOString() && date.toISOString() !== new Date(selectedDate.setHours(0, 0, 0, 0)).toISOString()) ? { background: 'rgba(255, 220, 40, 0.3)' } : {}}
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
@@ -114,6 +121,7 @@ const DatePicker: FC = () => {
                     {dates.end.map((date, i) => <button
                         key={i}
                         className="extra-date"
+                        style={date.toISOString() === today.toISOString() ? { background: 'rgba(255, 220, 40, 0.3)' } : {}}
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
