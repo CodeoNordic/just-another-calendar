@@ -65,6 +65,12 @@ const DatePicker: FC = () => {
     return <div className="date-picker">
         <Collapse top={<>
             <span className="title">{monthTitle}</span>
+            
+            <button className="today" onClick={() => {
+                setSelectedMonth(new Date());
+            }}>
+                {config?.translations?.todayButton || "Today"}
+            </button>
 
             <button className="prev-month" onClick={() => {
                 setSelectedMonth(new Date(selectedMonth.setMonth(selectedMonth.getMonth() - 1)))

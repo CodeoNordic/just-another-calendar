@@ -245,8 +245,11 @@ const SearchDropdownItemsNew: FC<{dynamicDropdownParent: JAC.SearchResult[], noR
         {error ? <div className="search-error">{error}</div> : eventList.length ? eventList.map((event, i) => <div key={i} className="search-event" style={{
             border: `1px solid ${event.colors?.border || '#000'}`,
             backgroundColor: event.colors?.background || "#3788d8",
-            color: (config?.contrastCheck !== false && !calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config!.contrastMin)) ?
-                (calculateContrast("#000", event.colors?.background || "#3788d8", config!.contrastMin) ? "#000" : "#fff") : event.colors?.text
+            color: config?.contrastCheck !== false ? ( 
+                calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config?.contrastMin)
+                    ? event.colors?.text || "#fff" 
+                    : calculateContrast("#000", event.colors?.background || "#3788d8", config?.contrastMin) ? "#000" : "#fff"
+            ) : event.colors?.text || "#fff"
         }}>
             <div className="search-event-event">
                 <div>{event.dateStart}</div>

@@ -1,6 +1,8 @@
 declare global {
     namespace JAC {
         interface Translations {
+            todayButton?: string;
+
             weekNumberHeader?: string;
 
             allDaySlot?: string;

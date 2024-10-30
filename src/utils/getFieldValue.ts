@@ -30,16 +30,14 @@ export function templateKey(event: JAC.Event, key: string) {
     if (key.toLowerCase().startsWith('time:')) {
         const pair = key.substring(5).split('+');    
         const date = dateFromString(String(get(event, pair[0])));
-
+        
         if (pair[1] && date) {
             const time = String(get(event, pair[1])).split(':');
             if (time[1])
                 date.setHours(Number(time[0]), Number(time[1]));
             else
                 date.setHours(Number(time));
-        }
-
-        else {
+        } else if (!date) {
             const dummy = new Date();
             const time = String(get(event, pair[0])).split(':');
             dummy.setHours(Number(time[0]), Number(time[1]));
