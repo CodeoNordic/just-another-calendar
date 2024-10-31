@@ -30,12 +30,9 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
             const affectingFilters = getAffectingFilters(event, config!);
             event._affectingFilters = affectingFilters
             eventToFcEvent(event, config!);
-            console.log(event);
             return event;
         });
     }, [events, config]);
-
-    console.log(eventList);
 
     if (!props.dynamicDropdownParent.length) return <></>;
 
@@ -208,7 +205,6 @@ const SearchDropdownItemsNew: FC<{dynamicDropdownParent: JAC.SearchResult[], noR
                 setSearching(true);
                 fetchFromFileMaker(searchResult.script, searchResult, undefined, true, 30000).then((value: RSAny | null) => {
                     const result = value as JAC.SearchResult[] | null;
-                    console.log(result);
                     if (result) {
                         setError(null);
                         setChildren([...children, result.map((child) => ({ ...child, outer, inner }))]);

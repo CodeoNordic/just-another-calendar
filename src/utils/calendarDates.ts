@@ -51,6 +51,7 @@ export default function getCalendarDates(date: Date, firstDay: string|number = '
     startDate.setDate(1);
 
     const endDate = new Date(date);
+    endDate.setDate(1);
     endDate.setMonth(endDate.getMonth() + 1);
     endDate.setDate(0);
 
@@ -82,6 +83,7 @@ export default function getCalendarDates(date: Date, firstDay: string|number = '
     }
 
     const nextMonth = new Date(date);
+    nextMonth.setDate(1);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
 
     const nextMonthBase = `${nextMonth.getFullYear()}/${nextMonth.getMonth() + 1}`;

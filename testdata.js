@@ -1,9 +1,9 @@
 init(JSON.stringify({
     view: 'resourceTimeGridDay',
     resources: [
-        { id: '1F', title: 'Ressurs 1' },
-        { id: '2F', title: 'Ressurs 2' },
-        { id: '3F', title: 'Ressurs 3' },
+        { id: '1F', title: 'Ressurs 2' },
+        { id: '2F', title: 'Ressurs 3' },
+        { id: '3F', title: 'Ressurs 1', sort: 1 },
     ],
     date: '2024-07-16',
     icons: [

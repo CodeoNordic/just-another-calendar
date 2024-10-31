@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
-import { useConfig, useConfigState } from '@context/Config';
+import { useConfigState } from '@context/Config';
 
 import Collapse from './Collapse';
 import performScript from '@utils/performScript';
@@ -110,7 +110,7 @@ const DatePicker: FC = () => {
                     {dates.middle.map((date, i) => <button
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
-                        style={(date.toISOString() === today.toISOString() && date.toISOString() !== new Date(selectedDate.setHours(0, 0, 0, 0)).toISOString()) ? { background: 'rgba(255, 220, 40, 0.3)' } : {}}
+                        style={(date.toISOString() === today.toISOString() && date.toISOString() !== selectedDate.toISOString()) ? { background: 'rgba(255, 220, 40, 0.3)' } : {}}
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
