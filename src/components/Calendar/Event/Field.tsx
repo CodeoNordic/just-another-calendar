@@ -1,4 +1,4 @@
-import { useMemo, forwardRef } from 'react';
+import { useMemo } from 'react';
 
 import Icon from '@components/Icon'
 import combineClasses from '@utils/combineClasses';

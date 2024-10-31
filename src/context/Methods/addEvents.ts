@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useConfigState } from '@context/Config';
 
 import { useCreateMethod } from '@utils/createMethod';
