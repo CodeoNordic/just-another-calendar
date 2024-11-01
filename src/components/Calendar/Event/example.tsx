@@ -7,7 +7,7 @@ export default Logo;
 
 [
     {
-        "template": "{time:dateStart+timeStart} - {time:dateEnd+timeEnd}",
+        "template": "{time:timeStart} - {time:timeEnd}",
         "fullWidth": true
     },
 
