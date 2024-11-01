@@ -232,7 +232,7 @@
     td.fc-day-wed:has(+ td.fc-day:not(.fc-day-wed)),
     td.fc-day-thu:has(+ td.fc-day:not(.fc-day-thu)),
     td.fc-day-fri:has(+ td.fc-day:not(.fc-day-fri)),
-    td.fc-day-say:has(+ td.fc-day:not(.fc-day-say)),
+    td.fc-day-sat:has(+ td.fc-day:not(.fc-day-sat)),
     td.fc-day-sun:has(+ td.fc-day:not(.fc-day-sun)) {
         border-right: 1px solid #000 !important;
     }
