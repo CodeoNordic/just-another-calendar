@@ -110,7 +110,12 @@ const DatePicker: FC = () => {
                     {dates.middle.map((date, i) => <button
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
-                        style={(date.toISOString() === today.toISOString() && date.toISOString() !== selectedDate.toISOString()) ? { background: 'rgba(255, 220, 40, 0.3)' } : {}}
+                        style={(date.toISOString() === today.toISOString()) ? { 
+                            background: date.toISOString() !== selectedDate.toISOString() ? 'rgba(255, 220, 40, 0.3)' : '', 
+                            border: '1px solid black',
+                            margin: '-1px',
+                            fontWeight: 700
+                        } : {}}
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}

@@ -182,49 +182,9 @@ Controls how [event filters](./event-filters.md) behave in relation to one anoth
 **Default value:** `groupedAny`
 
 ### `searchFields` (array)
-A list of search fields that should be available in the side-menu.
+A list of search  fields that should be available in the side-menu.
 
-Search fields can either be client-only, or call a script that should update the event list.
-If a search field does not have one of the following values: `searchBy`, `eval`, or `script`,
-it will not be included in the list, and a warning will be issued to the console.
-
-```json
-{
-    "events": [
-        {
-            "id": "abcd-efgh-ijkl-mnop",
-
-            "Title": "Just Another Calendar",
-            "Sponsor": "Andreas Haandlykken"
-        }
-    ],
-
-    "searchFields": [
-        {
-            "searchBy": ["YourCustomName"], // List of values to use from an event when searching client-side
-
-            "title": "Search by Name", // Optional text displayed above the search field, area is not collapsible if this field is empty
-            "placeholder": "Type a name...", // Placeholder text shown when the field is empty
-
-            "open": false, // Whether or not the area should be opened
-            "value": "", // The current search value, not required
-
-            "script": "[TRG] = EVNT Search", // Optional script to run when searching
-            "sort": 3 // the order the area appears in the side menu
-        },
-
-        {
-            "eval": "(input, event, config) => event.Title.toLowerCase() === input.toLowerCase()", // JS function to check if an event matches the search
-
-            "title": "Search by title",
-            "placeholder": "Type a title...",
-
-            "open": true,
-            "sort": 7
-        }
-    ]
-}
-```
+Check the [searching definition](./searching.md) for more information.
 
 ### `contrastCheck` (boolean)
 Controls whether or not the built-in contrast checker should be used when displaying certain elements,
