@@ -234,6 +234,6 @@
     td.fc-day-fri:has(+ td.fc-day:not(.fc-day-fri)),
     td.fc-day-sat:has(+ td.fc-day:not(.fc-day-sat)),
     td.fc-day-sun:has(+ td.fc-day:not(.fc-day-sun)) {
-        border-right: 1px solid #000 !important;
+        border-right: 2px solid #000 !important;
     }
 }
