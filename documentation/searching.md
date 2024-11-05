@@ -34,7 +34,6 @@ it will not be included in the list, and a warning will be issued to the console
             "script": "[TRG] = EVNT Search", // Optional script to run when searching
             "sort": 3 // the order the area appears in the side menu
         },
-
         {
             "eval": "(input, event, config) => event.Title.toLowerCase() === input.toLowerCase()", // JS function to check if an event matches the search
 
@@ -57,12 +56,13 @@ Example of a dynamic dropdown search field:
 {
     "searchFields": [
         {
-            "dynamicDropdown": true, 
-            "script": "[TRG] = EVNT Dynamic Search", 
+            "dynamicDropdown": true, // This field will be a dynamic dropdown
+            "script": "[TRG] = EVNT Dynamic Search", // Script to run when searching, is required
 
+            // Optional fields
             "title": "Search by Name", 
             "placeholder": "Type a name...",
-
+            
             "open": false,
             "sort": 3
         }
@@ -84,7 +84,7 @@ Example of a script that returns a list of `SearchResult` objects, that when cli
 }
 ```
 
-example of a script that returns a list of `SearchResult` objects, that are displayed as events:
+Example of a script that returns a list of `SearchResult` objects, that are displayed as events (you cant mix events and search results in the same list):
 ```json
 {
     "searchResults": [
