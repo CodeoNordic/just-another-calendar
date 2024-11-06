@@ -61,6 +61,8 @@ const defaultConfig: Partial<JAC.Config> = {
     sideMenuOpen: false,
     ignoreWarnings: false,
     eventFilterBehaviour: 'groupedAny',
+    calendarStartTime: "08:00",
+    calendarEndTime: "21:15",
 };
 
 

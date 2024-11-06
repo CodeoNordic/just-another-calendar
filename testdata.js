@@ -73,8 +73,8 @@ init(JSON.stringify({
             FirstName: "Vetle :)",
             Test: "TEST VALUE 2",
             ButtonText: "BUTTON 2",
-            start: '2024-07-19T9:00',
-            end: '2024-07-19T9:45',
+            start: '2024-07-19T09:00',
+            end: '2024-07-19T09:45',
             resourceId: '3F',
             filterId: ['filter3', 'source2']
         },
@@ -92,7 +92,36 @@ init(JSON.stringify({
             filterId: ['source3', 'filter1']
         }
     ],
-
+    heatMapEvents: [
+        {
+            date: '2024-07-16',
+            hours: 3.5,
+        },
+        {
+            date: '2024-07-17',
+            hours: 2,
+        },
+        {
+            date: '2024-07-18',
+            hours: 1.5,
+        },
+        {
+            date: '2024-07-19',
+            hours: 1,
+        },
+        {
+            date: '2024-07-20',
+            hours: 5,
+        },
+        {
+            date: '2024-07-21',
+            hours: 0.25,
+        },
+        {
+            date: '2024-07-1',
+            hours: 8.25,
+        },
+    ],
     eventComponent: 'default',
     eventComponents: [{
         name: "default",
@@ -168,8 +197,6 @@ init(JSON.stringify({
             },
             eventColorPriority: 2,
 
-            hidden: true,
-
             enabled: false,
             locked: false,
         },
@@ -218,7 +245,7 @@ init(JSON.stringify({
             title: "Kilder",
             open: false,
             sort: 3,
-            hidden: true
+            hidden: false
         }
     ],
     searchFields: [
@@ -376,7 +403,7 @@ init(JSON.stringify({
             sort: 1
         }
     ],
-
+    useEventsForHeatMap: true,
     newEventFields: [
         {
             name: "FirstName",

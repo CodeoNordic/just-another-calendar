@@ -7,6 +7,14 @@ declare global {
 
             events: JAC.Event[];
 
+            heatMapEvents?: {
+                date: string; // Date in format 'YYYY-MM-DD'
+                hours?: number; // Hours occupied by events
+
+                color?: string; // Color to be used instead of calculating one from hours
+            }[];
+            useEventsForHeatMap?: boolean; // Use events for heatmap instead of heatMapEvents
+
             sideMenuOpen?: boolean;
             sideMenuDisabled?: boolean;
 

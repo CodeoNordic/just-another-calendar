@@ -23,43 +23,39 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
 
     const eventList = useMemo(() => {
         return children[active].map(child => {
-            if (!child.event) {
-                return null;
-            }
-            const affectingFilters = getAffectingFilters(child.event, config!);
-            child.event._affectingFilters = affectingFilters
+            if (!child.event) return null;
+            
+            child.event._affectingFilters = getAffectingFilters(child.event, config!);
             eventToFcEvent(child.event, config!);
+            
             return child.event;
         }).filter(event => event !== null);
     }, [children, active, config]);
 
     useEffect(() => {
-        if (props.dynamicDropdownParent.length) {
-            setChildren([props.dynamicDropdownParent]);
-        }
+        props.dynamicDropdownParent.length && setChildren([props.dynamicDropdownParent]);
     }, [props.dynamicDropdownParent]);
     
     const search = (searchResult: JAC.SearchResult, outer: number, inner: number) => {
-        if (searchResult.script && !searching) {
-            if (searchResult.dynamicDropdown) {
-                setSearching(true);
-                fetchFromFileMaker(searchResult.script, searchResult, undefined, true, 30000).then((value: RSAny | null) => {
-                    const result = value as JAC.SearchResult[] | null;
-                    if (result && result.length) {
-                        setError(null);
-                        setChildren([...children, result.map((child) => ({ ...child, prevOuter: outer, prevInner: inner }))]);
-                        setActive(children.length);
-                    } else {
-                        setError({message: props.noResults || 'No results found', prev: inner});
-                    }
-                    setSearching(false);
-                }).catch((error) => {
-                    console.error(error);
-                    setError({message: props.noResults || 'No results found', prev: inner});
-                    setSearching(false);
-                })
-            } else performScript(searchResult.script)    
-        }
+        if (!searchResult.script || searching) return;
+        if (!searchResult.dynamicDropdown) return performScript(searchResult.script)
+        
+        setSearching(true);
+        fetchFromFileMaker(searchResult.script, searchResult, undefined, true, 30000).then((value: RSAny | null) => {
+            const result = value as JAC.SearchResult[] | null;
+            if (result && result.length) {
+                setError(null);
+                setChildren([...children, result.map((child) => ({ ...child, prevOuter: outer, prevInner: inner }))]);
+                setActive(children.length);
+            } else {
+                setError({message: props.noResults || 'No results found', prev: inner});
+            }
+            setSearching(false);
+        }).catch((error) => {
+            console.error(error);
+            setError({message: props.noResults || 'No results found', prev: inner});
+            setSearching(false);
+        })
     }
 
     if (!props.dynamicDropdownParent.length) return <></>;

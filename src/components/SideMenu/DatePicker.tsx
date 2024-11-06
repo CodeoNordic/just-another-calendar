@@ -12,6 +12,20 @@ import dateToObject from '@utils/dateToObject';
 import ArrowUp from 'jsx:@svg/arrow-up.svg';
 import ArrowDown from 'jsx:@svg/arrow-down.svg';
 import combineClasses from '@utils/combineClasses';
+import { warn } from '@utils/log';
+import datesFromEvent from '@utils/datesFromEvent';
+import clamp from '@utils/clamp';
+
+const colorFromPercentage = (percentage: number): string => {
+    const startColor = { r: 255, g: 255, b: 0 }; // Yellow
+    const endColor = { r: 255, g: 0, b: 0 }; // Red
+
+    const r = Math.round(startColor.r + (endColor.r - startColor.r) * percentage);
+    const g = Math.round(startColor.g + (endColor.g - startColor.g) * percentage);
+    const b = Math.round(startColor.b + (endColor.b - startColor.b) * percentage);
+
+    return `rgb(${r}, ${g}, ${b})`;
+};
 
 const DatePicker: FC = () => {
     const [config, setConfig] = useConfigState();
@@ -62,6 +76,51 @@ const DatePicker: FC = () => {
         return nums;
     }, [dates]);
 
+    const heatmap = useMemo(() => {
+
+        const heatmap: { [key: string]: {color: string, hours: number} } = {};
+        
+        const fullDayHours = Number(config!.calendarEndTime!.substring(0, 2)) - Number(config!.calendarStartTime!.substring(0, 2)) + (Number(config!.calendarEndTime!.substring(3)) - Number(config!.calendarStartTime!.substring(3))) / 60; 
+
+        if (config?.useEventsForHeatMap) {
+            config.events.forEach(event => {
+                const dates = datesFromEvent(event);
+                if (!dates.start || !dates.end) return warn('Event is missing start or end date, will not be used', event);
+                
+                const iso = new Date(new Date(dates.start).setHours(0, 0, 0, 0)).toISOString();
+
+                const hours = (dates.end.valueOf() - dates.start.valueOf()) / 1000 / 60 / 60;
+                const oldHours = heatmap[iso]?.hours || 0;
+
+                const percentage = clamp((hours + oldHours), 0, fullDayHours) / fullDayHours;
+                const color = colorFromPercentage(percentage);
+
+                if (!heatmap[iso]) heatmap[iso] = { color: '', hours: 0 };
+                heatmap[iso].color = color;
+                heatmap[iso].hours += hours;
+            });
+        } else if (config?.heatMapEvents?.length) {
+            config.heatMapEvents.forEach(event => {
+                if (!event.hours && !event.color) return warn('Heatmap event is missing hours and color, will not be used', event);
+                
+                const iso = dateFromString(event.date)?.toISOString();
+                if (!iso) return warn('Heatmap event has invalid or missing date, will not be used', event);
+
+                let color = event.color || '';
+
+                if (event.hours && !event.color) {
+                    color = colorFromPercentage(clamp(event.hours, 0, fullDayHours) / fullDayHours);
+                }
+
+                if (!heatmap[iso]) heatmap[iso] = { color: '', hours: 0 };
+                heatmap[iso].color = color;
+                heatmap[iso].hours = event.hours || 0;
+            });
+        }
+
+        return heatmap;
+    }, [allDates, config?.calendarEndTime, config?.calendarStartTime, config?.events, config?.heatMapEvents, config?.useEventsForHeatMap]);
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -101,30 +160,37 @@ const DatePicker: FC = () => {
                     {dates.start.map((date, i) => <button
                         key={i}
                         className="extra-date"
-                        style={date.toISOString() === today.toISOString() ? { background: 'rgba(255, 220, 40, 0.3)' } : {}}
+                        style={{ 
+                            background: date.toISOString() === today.toISOString() ? 'rgba(255, 220, 40, 0.3)' 
+                                : heatmap?.[date.toISOString()]?.color || '',
+                        }}
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
                     </button>)}
 
-                    {dates.middle.map((date, i) => <button
+                    {dates.middle.map((date, i) => {
+                        return<button
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
-                        style={(date.toISOString() === today.toISOString()) ? { 
-                            background: date.toISOString() !== selectedDate.toISOString() ? 'rgba(255, 220, 40, 0.3)' : '', 
-                            border: '1px solid black',
-                            margin: '-1px',
-                            fontWeight: 700
-                        } : {}}
+                        style={{ 
+                            background: (date.toISOString() !== selectedDate.toISOString()) ? (date.toISOString() === today.toISOString()) ? 'rgba(255, 220, 40, 0.3)' : heatmap?.[date.toISOString()]?.color || '' : '',
+                            border: date.toISOString() === today.toISOString() ? '1px solid black' : '',
+                            margin: date.toISOString() === today.toISOString() ? '-1px' : '',
+                            fontWeight: date.toISOString() === today.toISOString() ? 700 : 400,
+                        }}
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
-                    </button>)}
+                    </button>})}
 
                     {dates.end.map((date, i) => <button
                         key={i}
                         className="extra-date"
-                        style={date.toISOString() === today.toISOString() ? { background: 'rgba(255, 220, 40, 0.3)' } : {}}
+                        style={{ 
+                            background: date.toISOString() === today.toISOString() ? 'rgba(255, 220, 40, 0.3)' 
+                                : heatmap?.[date.toISOString()]?.color || '',
+                        }}
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}

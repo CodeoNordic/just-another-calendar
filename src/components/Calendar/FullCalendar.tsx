@@ -302,8 +302,8 @@ const FullCalendar: FC = () => {
             eventTimeFormat={config.eventTimeFormat ?? 'HH:mm'}
             
             // These will be switched out for config values in the future
-            slotMinTime={config.calendarStartTime || "08:00"} 
-            slotMaxTime={config.calendarEndTime || "21:15"}
+            slotMinTime={config.calendarStartTime} 
+            slotMaxTime={config.calendarEndTime}
 
             slotLabelFormat={config.view?.startsWith('resourceTimeline') ? { day: 'numeric', weekday: 'short' }: { hour: '2-digit', minute: '2-digit' }}
             slotDuration={config.view?.startsWith('resourceTimeline') ? { days: 1 }: { minutes: 15 }}
