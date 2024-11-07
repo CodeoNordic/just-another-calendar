@@ -15,17 +15,7 @@ import combineClasses from '@utils/combineClasses';
 import { warn } from '@utils/log';
 import datesFromEvent from '@utils/datesFromEvent';
 import clamp from '@utils/clamp';
-
-const colorFromPercentage = (percentage: number): string => {
-    const startColor = { r: 255, g: 255, b: 0 }; // Yellow
-    const endColor = { r: 255, g: 0, b: 0 }; // Red
-
-    const r = Math.round(startColor.r + (endColor.r - startColor.r) * percentage);
-    const g = Math.round(startColor.g + (endColor.g - startColor.g) * percentage);
-    const b = Math.round(startColor.b + (endColor.b - startColor.b) * percentage);
-
-    return `rgb(${r}, ${g}, ${b})`;
-};
+import calculateContrast from '@utils/contrast';
 
 const DatePicker: FC = () => {
     const [config, setConfig] = useConfigState();
@@ -76,11 +66,24 @@ const DatePicker: FC = () => {
         return nums;
     }, [dates]);
 
-    const heatmap = useMemo(() => {
+    const colorFromPercentage = (percentage: number): string => {
+        const startColor = { r: 173, g: 216, b: 230 }; // Light Blue
+        const endColor = { r: 0, g: 0, b: 255 }; // Dark Blue
+    
+        const r = Math.round(startColor.r + (endColor.r - startColor.r) * percentage);
+        const g = Math.round(startColor.g + (endColor.g - startColor.g) * percentage);
+        const b = Math.round(startColor.b + (endColor.b - startColor.b) * percentage);
+    
+        return `rgb(${r}, ${g}, ${b})`;
+    };    
 
+    const heatmap = useMemo(() => {
         const heatmap: { [key: string]: {color: string, hours: number} } = {};
         
-        const fullDayHours = Number(config!.calendarEndTime!.substring(0, 2)) - Number(config!.calendarStartTime!.substring(0, 2)) + (Number(config!.calendarEndTime!.substring(3)) - Number(config!.calendarStartTime!.substring(3))) / 60; 
+        const dayStart = dateFromString(config?.calendarStartTime);
+        const dayEnd = dateFromString(config?.calendarEndTime);
+
+        const fullDayHours = (dayEnd!.valueOf() - dayStart!.valueOf()) / 1000 / 60 / 60;
 
         if (config?.useEventsForHeatMap) {
             config.events.forEach(event => {
@@ -101,8 +104,9 @@ const DatePicker: FC = () => {
             });
         } else if (config?.heatMapEvents?.length) {
             config.heatMapEvents.forEach(event => {
-                if (!event.hours && !event.color) return warn('Heatmap event is missing hours and color, will not be used', event);
-                
+                if (event.hours === undefined && !event.color) return warn('Heatmap event is missing hours and color, will not be used', event);
+                if (!event.hours) return;
+
                 const iso = dateFromString(event.date)?.toISOString();
                 if (!iso) return warn('Heatmap event has invalid or missing date, will not be used', event);
 
@@ -136,6 +140,7 @@ const DatePicker: FC = () => {
 
             <button className="prev-month" onClick={() => {
                 setSelectedMonth(new Date(selectedMonth.setMonth(selectedMonth.getMonth() - 1)))
+                performScript('onMonthChange', dateToObject(selectedMonth));
             }}>
                 <ArrowUp />
             </button>
@@ -163,6 +168,7 @@ const DatePicker: FC = () => {
                         style={{ 
                             background: date.toISOString() === today.toISOString() ? 'rgba(255, 220, 40, 0.3)' 
                                 : heatmap?.[date.toISOString()]?.color || '',
+                            color: heatmap?.[date.toISOString()] && calculateContrast(heatmap?.[date.toISOString()]?.color || '') ? 'white' : 'black',
                         }}
                         onClick={() => onDateSelected(date)}
                     >
@@ -178,6 +184,7 @@ const DatePicker: FC = () => {
                             border: date.toISOString() === today.toISOString() ? '1px solid black' : '',
                             margin: date.toISOString() === today.toISOString() ? '-1px' : '',
                             fontWeight: date.toISOString() === today.toISOString() ? 700 : 400,
+                            color: heatmap?.[date.toISOString()] && calculateContrast(heatmap?.[date.toISOString()]?.color || '') ? 'white' : 'black',
                         }}
                         onClick={() => onDateSelected(date)}
                     >
@@ -190,6 +197,7 @@ const DatePicker: FC = () => {
                         style={{ 
                             background: date.toISOString() === today.toISOString() ? 'rgba(255, 220, 40, 0.3)' 
                                 : heatmap?.[date.toISOString()]?.color || '',
+                            color: heatmap?.[date.toISOString()] && calculateContrast(heatmap?.[date.toISOString()]?.color || '') ? 'white' : 'black',
                         }}
                         onClick={() => onDateSelected(date)}
                     >

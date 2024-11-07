@@ -505,7 +505,6 @@ const FullCalendar: FC = () => {
                 Boolean(config.scriptNames.onEventCreated)}
             select={info => {
                 const dates = newEvent && datesFromEvent(newEvent);
-                console.log(dates);
                 const eventParam = newEvent && {
                     ...newEvent,
                     start: dates?.start && dateToObject(dates.start),
@@ -524,7 +523,6 @@ const FullCalendar: FC = () => {
                 else if (config.scriptNames?.onRangeSelected) {
                     const start = info.start;
                     const end = info.end;
-                    //console.log(newEvent);
                     performScript("onRangeSelected", {
                         start: {
                             ...dateToObject(start),

@@ -47,6 +47,9 @@ declare global {
 
             /** Runs when an event template area is closed */
             onEventTemplateAreaClosed?: string;
+
+            /** Runs when the month in the DatePicker is changed */
+            onMonthChange?: string;
         }
     }
 }
