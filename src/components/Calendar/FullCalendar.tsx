@@ -535,6 +535,8 @@ const FullCalendar: FC = () => {
                         resourceId: info.resource?.id,
                         event: createTemplate? eventParam: undefined
                     });
+
+                    setCreateTemplate(false);
                 }
 
                 if (!config.eventCreation || createTemplate) return;
