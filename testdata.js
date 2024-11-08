@@ -96,6 +96,9 @@ init(JSON.stringify({
         {
             date: '2024-07-16',
             hours: 3.5,
+            _filter: {
+                FirstName: ""
+            }
         },
         {
             date: '2024-07-17',

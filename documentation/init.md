@@ -387,6 +387,33 @@ Controls whether or not events are able to be created by dragging in the calenda
 
 **Default value:** `true`
 
+### `useEventsForHeatMap` (boolean)
+Controls whether or not the events should be used to calculate the heatmap in the date picker in the sidemenu, instead of sending the time they take in with `heatMapEvents`.
+
+```json
+{
+    "useEventsForHeatMap": true
+}
+```
+
+**Default value:** `false`
+
+### `heatMapEvents` (array)
+A list of the length of events that should be displayed as a heatmap in the date picker in the sidemenu, instead of using the events in the calendar. Can be useful if you dont want to send in all events to the calendar, but still want to display a heatmap.
+
+```json
+{
+    "heatMapEvents": [
+        {
+            "date": "19.11.2024", // The date of the events
+            "hours": 3.5, // The length of the event in hours
+
+            "color": "#ff0000" // Color to use instead of calculating with hours
+        }
+    ]
+}
+```
+
 ### `newEventFields` (array)
 Controls which input fields to display in the built-in event-creation popup.
 

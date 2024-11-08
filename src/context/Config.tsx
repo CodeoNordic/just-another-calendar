@@ -63,6 +63,8 @@ const defaultConfig: Partial<JAC.Config> = {
     eventFilterBehaviour: 'groupedAny',
     calendarStartTime: "08:00",
     calendarEndTime: "21:15",
+    useEventsForHeatMap: false,
+    locale: "en",
 };
 
 

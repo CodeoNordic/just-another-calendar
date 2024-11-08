@@ -80,10 +80,10 @@ const DatePicker: FC = () => {
     const heatmap = useMemo(() => {
         const heatmap: { [key: string]: {color: string, hours: number} } = {};
         
-        const dayStart = dateFromString(config?.calendarStartTime);
-        const dayEnd = dateFromString(config?.calendarEndTime);
+        const [startHour, startMinute] = config!.calendarStartTime!.split(':').map(Number);
+        const [endHour, endMinute] = config!.calendarEndTime!.split(':').map(Number);
 
-        const fullDayHours = (dayEnd!.valueOf() - dayStart!.valueOf()) / 1000 / 60 / 60;
+        const fullDayHours = (endHour - startHour) + (endMinute - startMinute) / 60;
 
         if (config?.useEventsForHeatMap) {
             config.events.forEach(event => {
@@ -175,8 +175,7 @@ const DatePicker: FC = () => {
                         {new Date(date).getDate()}
                     </button>)}
 
-                    {dates.middle.map((date, i) => {
-                        return<button
+                    {dates.middle.map((date, i) => <button
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
                         style={{ 
@@ -189,7 +188,7 @@ const DatePicker: FC = () => {
                         onClick={() => onDateSelected(date)}
                     >
                         {new Date(date).getDate()}
-                    </button>})}
+                    </button>)}
 
                     {dates.end.map((date, i) => <button
                         key={i}
