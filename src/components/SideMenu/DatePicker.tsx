@@ -183,7 +183,7 @@ const DatePicker: FC = () => {
                             border: date.toISOString() === today.toISOString() ? '1px solid black' : '',
                             margin: date.toISOString() === today.toISOString() ? '-1px' : '',
                             fontWeight: date.toISOString() === today.toISOString() ? 700 : 400,
-                            color: date.toISOString() !== selectedDate.toISOString() && heatmap?.[date.toISOString()] && calculateContrast(heatmap?.[date.toISOString()]?.color || '') ? 'white' : 'black',
+                            color: date.toISOString() !== selectedDate.toISOString() && date.toISOString() !== today.toISOString() && heatmap?.[date.toISOString()] && calculateContrast(heatmap?.[date.toISOString()]?.color || '') ? 'white' : 'black',
                         }}
                         onClick={() => onDateSelected(date)}
                     >

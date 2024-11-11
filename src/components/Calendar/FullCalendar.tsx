@@ -467,8 +467,8 @@ const FullCalendar: FC = () => {
                 setNewEvent(parsedEvent);
 
                 setCreateTemplate(true);
-                if (!config.scriptNames?.onRangeSelected) setCreatingEvent(true);
-                
+                if (!config.scriptNames?.onRangeSelected && !parsedEvent._instant) setCreatingEvent(true);
+
                 setTimeout(() => {
                     if (start.getHours() === 0) {
                         const startNew = start.toISOString(); 
