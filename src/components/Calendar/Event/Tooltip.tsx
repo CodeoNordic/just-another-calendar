@@ -96,6 +96,14 @@ const TooltipProvider: FC = ({ children }) => {
         })), true);
     }, []);
 
+    // Set invisible when config changes
+    useEffect(() => {
+        setTooltip(prev => ({
+            ...prev,
+            visible: false
+        }));
+    }, [config]);
+
     useEffect(() => {
         const div = divRef.current;
         if (!div) return;
