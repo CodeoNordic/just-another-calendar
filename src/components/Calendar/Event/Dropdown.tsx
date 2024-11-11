@@ -40,6 +40,14 @@ const EventDropdownProvider: FC = props => {
         })), true);
     }, []);
 
+    // Set invisible when config changes
+    useEffect(() => {
+        setDropdown(prev => ({
+            ...prev,
+            visible: false
+        }));
+    }, [config]);
+
     return <>
         <div className="event-dropdown" ref={divRef} style={{
             // Do not display if no buttons are defined
