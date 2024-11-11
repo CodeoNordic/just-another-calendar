@@ -423,18 +423,11 @@ const FullCalendar: FC = () => {
 
             droppable
             drop={info => {
-                let ev: JAC.Event|null = null;
-
-                try {
-                    ev = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
-                } catch(err) {
-                    console.error(err);
-                }
+                const ev = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}') as JAC.Event | null;
 
                 if (!ev) return;
-                const { id, ...event } = ev;
+                const { id, ...event } = { ...ev };
 
-                //const { id, ...event } = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}');
                 if (!Object.keys(event).length) return;
 
                 const start = new Date(info.date);
@@ -442,7 +435,7 @@ const FullCalendar: FC = () => {
 
                 const end = new Date(start.getTime());
                 end.setMinutes(end.getMinutes() + Number(minutes) + Number(hours) * 60);
-                
+
                 const parsedEvent: JAC.Event = {
                     ...event,
                     id: id || randomUUID(),
@@ -452,37 +445,30 @@ const FullCalendar: FC = () => {
                     _instant: info.draggedEl.getAttribute('data-instant') !== null
                 };
 
+                function getNestedValue(obj: any, path: string): any {
+                    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+                }
+
                 if (config.eventCreation && !parsedEvent?._instant) {
                     config.newEventFields?.forEach(field => {
                         if (!field.defaultValue) return;
-                        if ([undefined, null, NaN, ''].includes(parsedEvent[field.name]))
+                        const value = getNestedValue(parsedEvent, field.name);
+                        if ([undefined, null, NaN, ''].includes(value)) {
                             set(parsedEvent, field.name, field.defaultValue);
+                        }
                     });
-                    
-                    setNewEvent(parsedEvent);
-                    setCreatingEvent(true);
-                }
-
-                else {
+                } else if (config.eventCreation && parsedEvent?._instant) {
                     setConfig(prev => prev && ({
                         ...prev,
                         events: [...(prev.events ?? []), parsedEvent]
                     }));
-                    
-                    setNewEvent(parsedEvent);
                 }
-                /*if (config.eventCreation)
-                    setNewEvent(prev => ({
-                        //...prev,
-                        ...parsedEvent
-                    }));
-                else
-                    setConfig(prev => prev && {
-                        ...prev,
-                        events: [...(prev.events ?? []), parsedEvent]
-                    })*/
+
+                setNewEvent(parsedEvent);
 
                 setCreateTemplate(true);
+                if (!config.scriptNames?.onRangeSelected) setCreatingEvent(true);
+                
                 setTimeout(() => {
                     if (start.getHours() === 0) {
                         const startNew = start.toISOString(); 
@@ -523,6 +509,7 @@ const FullCalendar: FC = () => {
                 else if (config.scriptNames?.onRangeSelected) {
                     const start = info.start;
                     const end = info.end;
+
                     performScript("onRangeSelected", {
                         start: {
                             ...dateToObject(start),
@@ -533,7 +520,7 @@ const FullCalendar: FC = () => {
                             time: end.toTimeString().split(' ')[0]
                         },
                         resourceId: info.resource?.id,
-                        event: createTemplate? eventParam: undefined
+                        event: createTemplate ? eventParam : undefined
                     });
 
                     setCreateTemplate(false);

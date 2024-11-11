@@ -179,11 +179,11 @@ const DatePicker: FC = () => {
                         key={i}
                         className={combineClasses('date', (new Date(date).valueOf() === selectedDate.valueOf()) && 'selected')}
                         style={{ 
-                            background: (date.toISOString() !== selectedDate.toISOString()) ? (date.toISOString() === today.toISOString()) ? 'rgba(255, 220, 40, 0.3)' : heatmap?.[date.toISOString()]?.color || '' : '',
+                            background: date.toISOString() !== selectedDate.toISOString() ? date.toISOString() === today.toISOString() ? 'rgba(255, 220, 40, 0.3)' : heatmap?.[date.toISOString()]?.color || '' : '',
                             border: date.toISOString() === today.toISOString() ? '1px solid black' : '',
                             margin: date.toISOString() === today.toISOString() ? '-1px' : '',
                             fontWeight: date.toISOString() === today.toISOString() ? 700 : 400,
-                            color: heatmap?.[date.toISOString()] && calculateContrast(heatmap?.[date.toISOString()]?.color || '') ? 'white' : 'black',
+                            color: date.toISOString() !== selectedDate.toISOString() && heatmap?.[date.toISOString()] && calculateContrast(heatmap?.[date.toISOString()]?.color || '') ? 'white' : 'black',
                         }}
                         onClick={() => onDateSelected(date)}
                     >

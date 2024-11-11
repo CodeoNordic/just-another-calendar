@@ -70,18 +70,14 @@ const NewEvent: FC<NewEventProps> = props => {
     
             if (y + rect.height > window.innerHeight) {
                 y = window.innerHeight - rect.height - 5;
-            } else if (y < 0) {
-                y = 5;
-            }
+            } else if (y < 0) y = 5;
 
             if (x < 0) {
                 x = 5;
                 arrowPosX = rect.width + 5;
             }
 
-            if (y < 0) {
-                y = 5;
-            }
+            if (y < 0) y = 5;
     
             if (arrowPosY + 20 > window.innerHeight) {
                 arrowPosY = window.innerHeight - 27;
@@ -90,9 +86,7 @@ const NewEvent: FC<NewEventProps> = props => {
             setPosition({ x, y });
             setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
             
-            setTimeout(() => {
-                setVisible(true);
-            }, 0);
+            setTimeout(() => setVisible(true), 0);
         }
     }, [creatingEvent, newEvent, eventRef, visible]);
 
@@ -138,6 +132,7 @@ const NewEvent: FC<NewEventProps> = props => {
             start: newEvent?.start && dateToObject(newEvent.start),
             end: newEvent?.end && dateToObject(newEvent.end)
         });
+
         stopNewEvent();
         setCreateTemplate(false);
     }
@@ -151,7 +146,7 @@ const NewEvent: FC<NewEventProps> = props => {
         setCreateTemplate(false);
     }
 
-    const setNewEventField = (fieldName: string, value: string|number|boolean|Date) => {
+    const setNewEventField = (fieldName: string, value: string|number|boolean|Date|string[]) => {
         const newEventCopy = { ...newEvent };
         set(newEventCopy, fieldName, value);
         
@@ -210,9 +205,7 @@ const NewEvent: FC<NewEventProps> = props => {
         }
     };
 
-    const handleMouseUp = () => {
-        setIsDragging(false);
-    };
+    const handleMouseUp = () => setIsDragging(false);
 
     useEffect(() => {
         const fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
@@ -231,12 +224,9 @@ const NewEvent: FC<NewEventProps> = props => {
             el.style.overflow = 'hidden';
             fcElParent?.appendChild(el);
         }
-    
     }, [newEvent, position]);
 
-    return <div style={{
-        display: visible ? "block" : "none"
-    }}>
+    return <div style={{display: visible ? "block" : "none"}}>
         <div
             className='create-arrow'
             style={{
@@ -247,15 +237,13 @@ const NewEvent: FC<NewEventProps> = props => {
             }}
         >
             <div
-            className='create-arrow-inner'
-            style={{
-                marginLeft: arrowPos.dir == 0 ? 1 : -11, 
-                borderRight: arrowPos.dir == 0 ? "10px solid white" : "none",
-                borderLeft: arrowPos.dir == 1 ? "10px solid white" : "none",
-            }}
-            >
-
-            </div>
+                className='create-arrow-inner'
+                style={{
+                    marginLeft: arrowPos.dir == 0 ? 1 : -11, 
+                    borderRight: arrowPos.dir == 0 ? "10px solid white" : "none",
+                    borderLeft: arrowPos.dir == 1 ? "10px solid white" : "none",
+                }}
+            ></div>
         </div>
         <div ref={eventRef} className='create-event' style={{
                 top: position.y,
@@ -278,20 +266,22 @@ const NewEvent: FC<NewEventProps> = props => {
                             {field.title && <p>{field.title}</p>}
                             {field.type === "dropdown" ? <select 
                                 className='dropdown-input'
-                                value={get(newEvent as JAC.Event, field.name) || ''}
-                                onChange={e => setNewEventField(field.name, e.target.value)}
+                                value={field.multiple ? (get(newEvent as JAC.Event, field.name) || []) : (get(newEvent as JAC.Event, field.name) || '')}
+                                onChange={e => {
+                                    if (field.multiple) {
+                                        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                                        setNewEventField(field.name, selectedOptions);
+                                    } else setNewEventField(field.name, e.target.value)}}
                                 multiple={field.multiple}
                             >
-                                {field.dropdownItems?.map(item => {
-                                    return typeof item === "string" 
+                                {field.dropdownItems?.map(item => typeof item === "string" 
                                         ? <option key={item} value={item}>{item}</option> 
-                                        : <option key={item.value} value={item.value}>{item.label}</option>;
-                                })}
-                            </select>
-                            : <input 
-                                lang={config?.locale ?? "en"}
+                                        : <option key={item.value} value={item.value}>{item.label}</option>
+                                )}
+                            </select> : <input 
+                                lang={config.locale}
                                 type={field.type ?? "string"} 
-                                className={field.type ? `${field.type}-input` : "string-input"}
+                                className={`${field.type ?? "string"}-input`}
                                 value={field.type === "time" 
                                     ? (() => {
                                         const date = dateFromString(get(newEvent as JAC.Event, field.name))
