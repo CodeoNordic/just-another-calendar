@@ -64,6 +64,7 @@ const defaultConfig: Partial<JAC.Config> = {
     calendarEndTime: "21:15",
     heatmap: false,
     locale: "en",
+    eventTimeFormat: "HH:mm",
 };
 
 

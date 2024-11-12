@@ -13,6 +13,7 @@ import Event from "@components/Calendar/Event";
 import calculateContrast from "@utils/contrast";
 import { getAffectingFilters } from "@components/Calendar/filterEvents";
 import { eventToFcEvent } from "@components/Calendar/mapEvents";
+import Icon from "@components/Icon";
 
 const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResults: string|undefined}> = (props) => {
     const [error, setError] = useState<{message: string, prev: number} | null>(null);
@@ -58,6 +59,12 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
         })
     }
 
+    const prevChild = error && children[active][error.prev] !== undefined
+        ? children[active][error.prev]
+            : (children[active] && children[active][0] && children[active][0].prevOuter !== undefined && children[active][0].prevInner !== undefined)
+                ? children[children[active][0].prevOuter][children[active][0].prevInner]
+                : null;
+
     if (!props.dynamicDropdownParent.length) return <></>;
 
     return <div className="dropdown-child">
@@ -69,16 +76,16 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
                     !error && setActive(children[active][0].prevOuter!);
                     setError(null);
                 }} className="back-arrow" />
-                <p>{error 
-                    ? (
-                        (Array.isArray(children[active][error.prev].title) && children[active][error.prev].title?.length) 
-                            ? children[active][error.prev].title![0] 
-                            : children[active][error.prev].title
-                    ) : (
-                        Array.isArray(children[children[active][0].prevOuter!][children[active][0].prevInner!].title)
-                            ? children[children[active][0].prevOuter!][children[active][0].prevInner!].title?.[0]
-                            : children[children[active][0].prevOuter!][children[active][0].prevInner!].title
-                    )}</p>
+                <p>{Array.isArray(prevChild?.title)
+                        ? prevChild.title?.[0]
+                        : prevChild?.title
+                    }</p>
+                {prevChild?.button && <div onClick={(e) => {
+                    e.stopPropagation();
+                    performScript(prevChild.button!.script, { result: prevChild, id: prevChild?.button?.id }, undefined, true);
+                }}>
+                    <Icon src={prevChild.button.icon} />
+                </div>}
             </div>
         )}
         {error ? <div className="search-error">{error.message}</div> : eventList.length ? eventList.map((event, i) => <div key={i} className="search-event" style={{
@@ -102,7 +109,15 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
             <div>
                 {Array.isArray(result.title) ? result.title.map((title, i) => <p key={i} className="dropdown-child-title">{title}</p>) : <p className="dropdown-child-title">{result.title}</p>}
             </div>
-            {(result.dynamicDropdown) && <ChevronDown className="forward-arrow" />}
+            <div className="buttons">
+                {result.button && <div onClick={(e) => {
+                    e.stopPropagation();
+                    performScript(result.button!.script, { result, id: result?.button?.id }, undefined, true);
+                }}>
+                    <Icon src={result.button.icon} />
+                </div>}
+                {result.dynamicDropdown && <ChevronDown className="forward-arrow" />}
+            </div>
         </div>)}
     </div>
 }

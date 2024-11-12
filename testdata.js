@@ -133,9 +133,7 @@ init(JSON.stringify({
             areaName: "filters",
 
             color: "#AAEEAA",
-
             eventColor: "#AAEEAA",
-
 
             enabled: true,
             locked: true,
@@ -146,7 +144,6 @@ init(JSON.stringify({
             areaName: "filters",
 
             color: "#ff0000",
-
             eventColor: "#ff0000",
             eventColorPriority: -1,
 
@@ -175,7 +172,6 @@ init(JSON.stringify({
             title: "Kilde 1",
             areaName: "sources",
             color: "#ff0000",
-
 
             enabled: true,
             locked: false,
@@ -232,7 +228,7 @@ init(JSON.stringify({
             searchBy: [
                 "FirstName"
             ],
-            title: "Søk etter navn (!instant test)",
+            title: "Søk etter navn (ikke instant test)",
             placeholder: "Søk",
 
             instant: false,
@@ -365,7 +361,6 @@ init(JSON.stringify({
             open: true,
             sort: 0
         },
-
         {
             name: 'area2',
             title: 'Template area 2',

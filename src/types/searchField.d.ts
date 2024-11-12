@@ -35,6 +35,13 @@ declare global {
             script?: string; // Script to run when the result is clicked
             id?: string; // ID to send to the script 
 
+            button?: { // Button to display next to the result
+                icon: string; // name of icon from icons
+
+                script: string; // name of script
+                id?: string; // ID to send to the script
+            }
+
             dynamicDropdown?: boolean; // "Recursive" dropdowns, allows for sub-popups 
         }
     }

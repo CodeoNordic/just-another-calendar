@@ -160,6 +160,24 @@ const FullCalendar: FC = () => {
         }
     }, []);
 
+    useEffect(() => {
+        if (!createTemplate || !newEvent) return;
+
+        if (!config.scriptNames?.onRangeSelected && !newEvent._instant) setCreatingEvent(true);
+
+        const start = newEvent?.start ? new Date(newEvent.start) : new Date();
+        const end = newEvent?.end ? new Date(newEvent.end) : new Date();
+
+        if (start.getHours() === 0) {
+            const startNew = start.toISOString(); 
+            calendarRef.current?.getApi().select({ start: startNew, end: undefined, allDay: false, resourceId: newEvent.resourceId });
+        } else {
+            calendarRef.current?.getApi().select({ start, end, allDay: false, resourceId: newEvent.resourceId });
+        }
+            
+        setCreateTemplate(false);
+    }, [createTemplate, newEvent]);
+
     return <div>
         <FullCalendarReact
             ref={cal => calendarRef.current = cal}
@@ -299,9 +317,8 @@ const FullCalendar: FC = () => {
                 right: ''
             }}
             
-            eventTimeFormat={config.eventTimeFormat ?? 'HH:mm'}
+            eventTimeFormat={config.eventTimeFormat}
             
-            // These will be switched out for config values in the future
             slotMinTime={config.calendarStartTime} 
             slotMaxTime={config.calendarEndTime}
 
@@ -467,8 +484,9 @@ const FullCalendar: FC = () => {
                 setNewEvent(parsedEvent);
 
                 setCreateTemplate(true);
-                if (!config.scriptNames?.onRangeSelected && !parsedEvent._instant) setCreatingEvent(true);
+                //if (!config.scriptNames?.onRangeSelected && !parsedEvent._instant) setCreatingEvent(true);
 
+                /*
                 setTimeout(() => {
                     if (start.getHours() === 0) {
                         const startNew = start.toISOString(); 
@@ -476,7 +494,10 @@ const FullCalendar: FC = () => {
                     } else {
                         calendarRef.current?.getApi().select({ start, end, allDay: false, resourceId: info.resource?.id });
                     }
+                    
+                    setCreateTemplate(false);
                 }, 0);
+                */
             }}
 
             // Can be used when dropping events
@@ -499,14 +520,10 @@ const FullCalendar: FC = () => {
 
                 if (!creatingEvent && !createTemplate && newEvent && config.scriptNames?.onEventCreated) {
                     performScript('onEventCreated', eventParam)
-                }
-
-                else if (createTemplate && (!config.eventCreation || newEvent?._instant) && config.scriptNames?.onEventCreated) {
+                } else if (createTemplate && (!config.eventCreation || newEvent?._instant) && config.scriptNames?.onEventCreated) {
                     performScript('onEventCreated', eventParam);
                     setCreateTemplate(false);
-                }
-
-                else if (config.scriptNames?.onRangeSelected) {
+                } else if (config.scriptNames?.onRangeSelected) {
                     const start = info.start;
                     const end = info.end;
 
@@ -522,8 +539,6 @@ const FullCalendar: FC = () => {
                         resourceId: info.resource?.id,
                         event: createTemplate ? eventParam : undefined
                     });
-
-                    setCreateTemplate(false);
                 }
 
                 if (!config.eventCreation || createTemplate) return;

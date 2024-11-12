@@ -220,6 +220,17 @@
             overflow-x: hidden;
             border: 1px solid rgba(0, 0, 0, 0.3);
 
+            svg{
+                border-radius: 9999px;
+                padding: 2px;
+                scale: 1.25;
+                
+                &:hover {
+                    cursor: pointer;
+                    background-color: var(--button-hover);
+                }       
+            }
+
             .dropdown-child-item{
                 display: flex;
                 justify-content: space-between;
@@ -233,17 +244,25 @@
                     border-top: none;
                 }
 
+                .buttons{
+                    display: flex;
+                    gap: 4px;
+
+                    .forward-arrow{
+                        height: 16px;
+                        width: 16px;
+                        stroke-width: .145em;
+                        transform: rotate(-90deg);
+                    }    
+                }
+                
+
                 .dropdown-child-title{
                     margin: 0;
                     padding-bottom: 2px;
                 }
-
-                .forward-arrow{
-                    transform: rotate(-90deg);
-                    scale: 1.25;
-                    stroke-width: .145em;
-                }
             }
+
             .dropdown-child-header{
                 display: flex;
                 align-items: center;
