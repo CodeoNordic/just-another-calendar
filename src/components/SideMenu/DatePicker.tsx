@@ -85,7 +85,7 @@ const DatePicker: FC = () => {
 
         const fullDayHours = (endHour - startHour) + (endMinute - startMinute) / 60;
 
-        if (config?.useEventsForHeatMap) {
+        if (config?.heatmap === true && config?.events?.length) {
             config.events.forEach(event => {
                 const dates = datesFromEvent(event);
                 if (!dates.start || !dates.end) return warn('Event is missing start or end date, will not be used', event);
@@ -102,8 +102,8 @@ const DatePicker: FC = () => {
                 heatmap[iso].color = color;
                 heatmap[iso].hours += hours;
             });
-        } else if (config?.heatMapEvents?.length) {
-            config.heatMapEvents.forEach(event => {
+        } else if (Array.isArray(config?.heatmap) && config?.heatmap.length) {
+            config.heatmap.forEach(event => {
                 if (event.hours === undefined && !event.color) return warn('Heatmap event is missing hours and color, will not be used', event);
                 if (!event.hours) return;
 
@@ -123,7 +123,7 @@ const DatePicker: FC = () => {
         }
 
         return heatmap;
-    }, [allDates, config?.calendarEndTime, config?.calendarStartTime, config?.events, config?.heatMapEvents, config?.useEventsForHeatMap]);
+    }, [allDates, config?.calendarEndTime, config?.calendarStartTime, config?.events, config?.heatmap]);
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);

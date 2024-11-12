@@ -57,13 +57,12 @@ const defaultConfig: Partial<JAC.Config> = {
     contrastCheck: true,
     contrastMin: 2,
     nowIndicator: true,
-    eventTemplatesOpen: true,
     sideMenuOpen: false,
     ignoreWarnings: false,
     eventFilterBehaviour: 'groupedAny',
     calendarStartTime: "08:00",
     calendarEndTime: "21:15",
-    useEventsForHeatMap: false,
+    heatmap: false,
     locale: "en",
 };
 

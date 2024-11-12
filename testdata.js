@@ -92,39 +92,6 @@ init(JSON.stringify({
             filterId: ['source3', 'filter1']
         }
     ],
-    heatMapEvents: [
-        {
-            date: '2024-07-16',
-            hours: 3.5,
-            _filter: {
-                FirstName: ""
-            }
-        },
-        {
-            date: '2024-07-17',
-            hours: 2,
-        },
-        {
-            date: '2024-07-18',
-            hours: 1.5,
-        },
-        {
-            date: '2024-07-19',
-            hours: 1,
-        },
-        {
-            date: '2024-07-20',
-            hours: 5,
-        },
-        {
-            date: '2024-07-21',
-            hours: 0.25,
-        },
-        {
-            date: '2024-07-1',
-            hours: 8.25,
-        },
-    ],
     eventComponent: 'default',
     eventComponents: [{
         name: "default",
@@ -406,7 +373,7 @@ init(JSON.stringify({
             sort: 1
         }
     ],
-    useEventsForHeatMap: true,
+    heatmap: true,
     newEventFields: [
         {
             name: "FirstName",
@@ -439,6 +406,7 @@ init(JSON.stringify({
             title: "Filtrerings-id",
             defaultValue: "filter2",
             type: "dropdown",
+            multiple: true,
             dropdownItems: [
                 {
                     value: "filter1",
