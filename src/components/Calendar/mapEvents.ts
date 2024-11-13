@@ -4,6 +4,7 @@ import calculateContrast from '@utils/contrast';
 import datesFromEvent from '@utils/datesFromEvent';
 
 import { warn } from '@utils/log';
+import tinycolor from 'tinycolor2';
 
 export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number = 0, noIdCheck: boolean = false) {
     if (!event.id && !noIdCheck) {
@@ -16,26 +17,18 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
     const eventStart = dates.start;
     const eventEnd = dates.end;
 
-    if (event.type === 'backgroundEvent') return {
-        start: eventStart,
-        end: eventEnd,
-        allDay: true,
-        display: 'background',
-        backgroundColor: event.backgroundColor ?? '#eaa',
-        extendedProps: { event }
-    }
-
+    
     const resourceIds = event.resourceId instanceof Array? event.resourceId: (event.resourceId? [event.resourceId]: []);
-
+    
     if (event._affectingFilters?.some(filter => !!filter.eventColor) && !(event.colors?.background || event.colors?.border || event.colors?.text)) {
         const affectingFilter = event._affectingFilters.filter(filter => !!filter.eventColor).sort((a, b) => {
             return (a.eventColorPriority || 0) - (b.eventColorPriority || 0);
         }).pop(); 
-
+        
         event.colors ??= {};
-
+        
         const eventColor = affectingFilter?.eventColor!;
-
+        
         if (typeof eventColor === 'string') {
             !event.colors.background && (event.colors.background = eventColor);
             !event.colors.border && (event.colors.border = eventColor);
@@ -45,7 +38,23 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
             !event.colors.text && (event.colors.text = eventColor.text);
         }
     }
+    
+    if (event.type === 'backgroundEvent') {
+        const backgroundColor = tinycolor(event.colors?.background || '#eaa').setAlpha(0.3);
 
+        console.log(backgroundColor);
+
+        return {
+            start: eventStart,
+            end: eventEnd,
+            allDay: Boolean(event.allDay),
+            display: 'background',
+            backgroundColor: backgroundColor.toRgbString(),
+            resourceId: resourceIds[0],
+            resourceIds,
+            extendedProps: { event },
+    }}
+    
     return {
         id: event.id,
         resourceId: resourceIds[0],

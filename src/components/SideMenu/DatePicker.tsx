@@ -24,7 +24,7 @@ const DatePicker: FC = () => {
     const selectedDate = useMemo(() => {
         const d = dateFromString(config?.date) || new Date();
 
-        setSelectedMonth(new Date(d));
+        setSelectedMonth(new Date(new Date(d).setDate(1)));
         return d;
     }, [config?.date]);
 
@@ -139,14 +139,21 @@ const DatePicker: FC = () => {
             </button>
 
             <button className="prev-month" onClick={() => {
-                setSelectedMonth(new Date(selectedMonth.setMonth(selectedMonth.getMonth() - 1)))
-                performScript('onMonthChange', dateToObject(selectedMonth));
+                const newDate = new Date(selectedMonth);
+                newDate.setDate(1);
+                newDate.setMonth(newDate.getMonth() - 1);
+                setSelectedMonth(newDate);
+                performScript('onMonthChange', dateToObject(newDate));
             }}>
                 <ArrowUp />
             </button>
 
             <button className="next-month" onClick={() => {
-                setSelectedMonth(new Date(selectedMonth.setMonth(selectedMonth.getMonth() + 1)))
+                const newDate = new Date(selectedMonth);
+                newDate.setDate(1);
+                newDate.setMonth(newDate.getMonth() + 1);
+                setSelectedMonth(newDate);
+                performScript('onMonthChange', dateToObject(newDate));
             }}>
                 <ArrowDown />
             </button>

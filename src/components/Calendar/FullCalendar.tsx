@@ -43,6 +43,7 @@ import clamp from '@utils/clamp';
 import { v4 as randomUUID } from 'uuid';
 import set from 'lodash.set';
 import datesFromEvent from '@utils/datesFromEvent';
+import tinycolor from 'tinycolor2';
 
 const FullCalendar: FC = () => {
     const calendarRef = useCalendarRef();
@@ -239,12 +240,12 @@ const FullCalendar: FC = () => {
                             return start.valueOf() === current.valueOf();
                         });
 
-                        const firstColor = bgEvents[0]?.backgroundColor;
-                        return <span style={{ color: firstColor }}>
+                        const firstColor = tinycolor(bgEvents[0]?.backgroundColor).setAlpha(1); // TODO: something with backgroundText, fix text in event and add both to config.d.ts
+                        return <span style={{ color: firstColor.toRgbString() }}>
                             {base}
                             {!!bgEvents.length && <>
                                 <br />
-                                ({bgEvents.map(ev => ev.extendedProps!.event!.backgroundText).join(', ')})
+                                ({bgEvents.map(ev => ev.extendedProps!.event!.backgroundText).join(', ')}) 
                             </>}
                         </span>
                     },
@@ -305,7 +306,7 @@ const FullCalendar: FC = () => {
             }}
             
             // Additional config values
-            resourceAreaHeaderContent={() => <div className="date-header">{resourcesTitle}</div>}
+            resourceAreaHeaderContent={() => <div className="date-header">{"resourcesTitle"}</div>}
             resourceAreaWidth={config.resourcesWidth || '17.5rem'}
             filterResourcesWithEvents={false}
             fixedWeekCount={false}
@@ -316,7 +317,7 @@ const FullCalendar: FC = () => {
                 left: '',//'title',
                 right: ''
             }}
-            
+
             eventTimeFormat={config.eventTimeFormat}
             
             slotMinTime={config.calendarStartTime} 
