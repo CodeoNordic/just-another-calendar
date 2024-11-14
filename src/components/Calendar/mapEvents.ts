@@ -48,10 +48,9 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
             allDay: Boolean(event.allDay),
             display: 'background',
             backgroundColor: backgroundColor.toRgbString(),
-            resourceId: resourceIds[0],
-            resourceIds,
             extendedProps: { event },
-        }
+            ...(resourceIds.length > 0 && { resourceId: resourceIds[0], resourceIds })
+        };
     }
     
     return {

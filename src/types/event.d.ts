@@ -26,6 +26,10 @@ declare global {
             timestampStart?: string;
             timestampEnd?: string;
 
+            // For bakcground events
+            backgroundTitle?: string; // Title under date
+            backgroundText?: string; // Text in event
+
             // for filtering
             filterId?: string|string[];
             _affectingFilters?: JAC.EventFilter[];

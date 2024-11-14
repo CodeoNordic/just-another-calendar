@@ -164,8 +164,6 @@ const FullCalendar: FC = () => {
     useEffect(() => {
         if (!createTemplate || !newEvent) return;
 
-        console.log('Creating template');
-
         if (!config.scriptNames?.onRangeSelected && !newEvent._instant) setCreatingEvent(true);
 
         const start = newEvent?.start ? new Date(newEvent.start) : new Date();
@@ -242,12 +240,21 @@ const FullCalendar: FC = () => {
                             return start.valueOf() === current.valueOf();
                         });
 
-                        const firstColor = tinycolor(bgEvents[0]?.backgroundColor).setAlpha(1); // TODO: something with backgroundText, fix text in event and add both to config.d.ts
-                        return <span style={{ color: firstColor.toRgbString() }}>
+                        const text = bgEvents
+                            .map(ev => {
+                                const event = ev.extendedProps?.event;
+                                return event?.backgroundTitle || null;
+                            })
+                            .filter(title => title !== null)
+                            .join(', ');
+
+                        const color = tinycolor(bgEvents.find(ev => ev.extendedProps?.event?.backgroundTitle != undefined)?.extendedProps?.event.colors?.background || '#eaa').setAlpha(1);
+                        
+                        return <span style={{ color: !!text ? color.toRgbString() : "" }}>
                             {base}
-                            {!!bgEvents.length && <>
+                            {!!text && <>
                                 <br />
-                                ({bgEvents.map(ev => ev.extendedProps!.event!.backgroundText).join(', ')}) 
+                                ({text}) 
                             </>}
                         </span>
                     },
@@ -308,7 +315,7 @@ const FullCalendar: FC = () => {
             }}
             
             // Additional config values
-            resourceAreaHeaderContent={() => <div className="date-header">{"resourcesTitle"}</div>}
+            resourceAreaHeaderContent={() => <div className="date-header">{resourcesTitle}</div>}
             resourceAreaWidth={config.resourcesWidth || '17.5rem'}
             filterResourcesWithEvents={false}
             fixedWeekCount={false}
@@ -487,20 +494,6 @@ const FullCalendar: FC = () => {
                 setNewEvent(parsedEvent);
 
                 setCreateTemplate(true);
-                //if (!config.scriptNames?.onRangeSelected && !parsedEvent._instant) setCreatingEvent(true);
-
-                /*
-                setTimeout(() => {
-                    if (start.getHours() === 0) {
-                        const startNew = start.toISOString(); 
-                        calendarRef.current?.getApi().select({ start: startNew, end: undefined, allDay: false, resourceId: info.resource?.id });
-                    } else {
-                        calendarRef.current?.getApi().select({ start, end, allDay: false, resourceId: info.resource?.id });
-                    }
-                    
-                    setCreateTemplate(false);
-                }, 0);
-                */
             }}
 
             // Can be used when dropping events
