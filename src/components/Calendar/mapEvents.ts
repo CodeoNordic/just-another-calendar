@@ -42,8 +42,6 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
     if (event.type === 'backgroundEvent') {
         const backgroundColor = tinycolor(event.colors?.background || '#eaa').setAlpha(0.3);
 
-        console.log(backgroundColor);
-
         return {
             start: eventStart,
             end: eventEnd,
@@ -53,7 +51,8 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
             resourceId: resourceIds[0],
             resourceIds,
             extendedProps: { event },
-    }}
+        }
+    }
     
     return {
         id: event.id,

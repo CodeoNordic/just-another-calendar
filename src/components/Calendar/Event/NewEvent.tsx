@@ -208,9 +208,11 @@ const NewEvent: FC<NewEventProps> = props => {
     const handleMouseUp = () => setIsDragging(false);
 
     useEffect(() => {
-        const fcEl = document.querySelector('.fc-timegrid-bg-harness') as HTMLElement;
+        const fcElArr = Array.from(document.querySelectorAll('.fc-timegrid-bg-harness'));
+        
+        let fcEl = fcElArr.find(el => el.children[0].classList.contains('fc-highlight')) as HTMLElement;
         const fcElParent = fcEl?.parentElement;
-
+        
         if (fcEl && !fcElParent?.querySelector('.calendar-highlight')) {
             const el = document.createElement('div');
             el.className = 'calendar-highlight';

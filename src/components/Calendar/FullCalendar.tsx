@@ -164,6 +164,8 @@ const FullCalendar: FC = () => {
     useEffect(() => {
         if (!createTemplate || !newEvent) return;
 
+        console.log('Creating template');
+
         if (!config.scriptNames?.onRangeSelected && !newEvent._instant) setCreatingEvent(true);
 
         const start = newEvent?.start ? new Date(newEvent.start) : new Date();
