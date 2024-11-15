@@ -131,6 +131,7 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
     const index = props.index;
 
     const setSearch = (newValue: string) => {
+        
         setConfig(prev => {
             return {
                 ...prev,
@@ -139,6 +140,11 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
                 )
             } as JAC.Config;
         });
+
+        if (newValue == "") {
+            setDynamicDropdownParent([]);   
+            searchField.emptyScript && performScript(searchField.emptyScript, { index, searchField }, undefined, true);
+        }
     }
 
     const search = () => {
@@ -175,6 +181,7 @@ const SearchDropdownField: FC<{searchField: JAC.SearchField, index: number}> = (
             {searchField.emptyButton !== false && <Crossmark onClick={() => {
                 setSearch("");
                 setDynamicDropdownParent([]);    
+                searchField.emptyScript && performScript(searchField.emptyScript, { index, searchField }, undefined, true);
             }} />}
         </div>
         {searching ? (

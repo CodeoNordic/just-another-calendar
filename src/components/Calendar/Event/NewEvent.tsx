@@ -9,36 +9,36 @@ import { useCalendarRef } from '@context/CalendarRefProvider';
 import dateFromString from '@utils/dateFromString';
 import searchObject from '@utils/searchObject';
 import dateToObject from '@utils/dateToObject';
-
+import clamp from '@utils/clamp';
 
 interface NewEventProps {
     creatingState: State<boolean>;
     templateState: State<boolean>;
     eventState: State<JAC.Event|null>;
+    movedState: State<boolean>;
 }
 
 const NewEvent: FC<NewEventProps> = props => {
-    const [creatingEvent, setCreatingEvent] = props.creatingState;
-    const [, setCreateTemplate] = props.templateState;
-    const [newEvent, setNewEvent] = props.eventState;
+    const {
+        creatingState: [creatingEvent, setCreatingEvent],
+        templateState: [, setCreateTemplate],
+        eventState: [newEvent, setNewEvent],
+        movedState: [moved, setMoved],
+    } = props;
 
-    const eventRef = useRef<HTMLDivElement>(null);
-    
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [position, setPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [arrowPos, setArrowPos] = useState<{ x: number, y: number, dir: number }>({ x: 0, y: 0, dir: 0 })
     const [visible, setVisible] = useState(false);
-
-    const calendarRef = useCalendarRef();
-
     const [config, setConfig] = useConfigState();
+
+    const eventRef = useRef<HTMLDivElement>(null);
+    const calendarRef = useCalendarRef();
 
     if (!creatingEvent) return null;
 
     useEffect(() => {
-        if (!creatingEvent) return;
-
         const handleKeyDown = (e: KeyboardEvent) => {
             e.key === "Escape" && stopNewEvent();
             e.key === "Enter" && addEvent();
@@ -52,65 +52,61 @@ const NewEvent: FC<NewEventProps> = props => {
         let el = document.querySelector('.calendar-highlight') as HTMLElement;
         if (!el) el = document.querySelector('.fc-highlight') as HTMLElement
         
-        if (eventRef.current && el) {
-            const rect = eventRef.current.getBoundingClientRect();
-            const highlightRect = el.getBoundingClientRect();
-            
-            let x = highlightRect.left + highlightRect.width + 10;
-            let y = highlightRect.top + (highlightRect.height / 2) - (rect.height / 2);
-            let arrowPosX = highlightRect.left + highlightRect.width;
-            let arrowPosY = highlightRect.top + (highlightRect.height / 2) - 10;
-            let arrowDir = 0;
-    
-            if (x + rect.width > window.innerWidth) {
-                x = x - highlightRect.width - rect.width - 20;
-                arrowPosX = arrowPosX - highlightRect.width - 10;
-                arrowDir = 1;
-            }
-    
-            if (y + rect.height > window.innerHeight) {
-                y = window.innerHeight - rect.height - 5;
-            } else if (y < 0) y = 5;
+        if (!eventRef.current || !el || moved) return;
 
-            if (x < 0) {
-                x = 5;
-                arrowPosX = rect.width + 5;
-            }
+        const rect = eventRef.current.getBoundingClientRect();
+        const highlightRect = el.getBoundingClientRect();
+        
+        let x = highlightRect.left + highlightRect.width + 10;
+        let y = highlightRect.top + (highlightRect.height / 2) - (rect.height / 2);
+        let arrowPosX = highlightRect.left + highlightRect.width;
+        let arrowPosY = highlightRect.top + (highlightRect.height / 2) - 10;
+        let arrowDir = 0;
 
-            if (y < 0) y = 5;
-    
-            if (arrowPosY + 20 > window.innerHeight) {
-                arrowPosY = window.innerHeight - 27;
-            }
-
-            setPosition({ x, y });
-            setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
-            
-            setTimeout(() => setVisible(true), 0);
+        if (x + rect.width > window.innerWidth - 5) {
+            x = x - highlightRect.width - rect.width - 20;
+            arrowPosX = arrowPosX - highlightRect.width - 10;
+            arrowDir = 1;
+        } else if (x < 0) {
+            x = 5;
+            arrowPosX = rect.width + 5;
         }
+        
+        x = clamp(x, 5, window.innerWidth - rect.width - 1);
+        y = clamp(y, 5, window.innerHeight - rect.height - 5);
+        arrowPosY = clamp(arrowPosY, 0, window.innerHeight - 27);
+
+        setPosition({ x, y });
+        setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
+        
+        setTimeout(() => setVisible(true), 0);
     }, [creatingEvent, newEvent, eventRef, visible]);
 
     useEffect(() => {
-        if (isDragging) {
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-        } else {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        }
+        if (!isDragging) return;
+
+        const move = (e: MouseEvent) => handleMouseMove(e);
+        const stopDrag = () => setIsDragging(false);
+
+        document.addEventListener('mousemove', move);
+        document.addEventListener('mouseup', stopDrag);
 
         return () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
+            document.removeEventListener('mousemove', move);
+            document.removeEventListener('mouseup', stopDrag);
         };
     }, [isDragging]);
+
 
     useEffect(() => {
         const tempEvent = newEvent;
 
         calendarRef.current?.getApi().select({start: newEvent?.start, end: newEvent?.end, allDay: newEvent?.allDay, resourceId: newEvent?.resourceId});
         const arrow = document.querySelector('.create-arrow') as HTMLElement | null;
-        if (arrow) arrow.style.display = "block";
+        if (arrow) {
+            moved ? arrow.style.display = "none"
+                  : arrow.style.display = "block";
+        }
 
         setNewEvent(prev => ({
             ...prev,
@@ -138,6 +134,7 @@ const NewEvent: FC<NewEventProps> = props => {
     }
 
     const stopNewEvent = () => {
+        setMoved(false);
         setCreatingEvent(false);
         setNewEvent(null);
         document.querySelector('.calendar-highlight')?.remove();
@@ -182,30 +179,25 @@ const NewEvent: FC<NewEventProps> = props => {
                 x: e.clientX - rect.left,
                 y: e.clientY - rect.top,
             });
+            
             setIsDragging(true);
+            setMoved(true);
         }
     };
 
     const handleMouseMove = (e: MouseEvent) => {
         if (isDragging && eventRef.current) {
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-
             let top = e.clientY - dragOffset.y;
             let left = e.clientX - dragOffset.x;
 
             const rect = eventRef.current.getBoundingClientRect();
 
-            if (top < 0) top = 0;
-            if (left < 0) left = 0;
-            if (top + rect.height > viewportHeight - 1) top = viewportHeight - rect.height - 1; // -1 is for the border
-            if (left + rect.width > viewportWidth - 1) left = viewportWidth - rect.width - 1;
+            top = clamp(top, 0, window.innerWidth - rect.height - 1); // -1 is for the border
+            left = clamp(left, 0, window.innerHeight - rect.width - 1);
 
             setPosition({ x: left, y: top });
         }
     };
-
-    const handleMouseUp = () => setIsDragging(false);
 
     useEffect(() => {
         const fcElArr = Array.from(document.querySelectorAll('.fc-timegrid-bg-harness'));
@@ -254,11 +246,13 @@ const NewEvent: FC<NewEventProps> = props => {
             <div className='inputs-wrapper'>
                 <div 
                     className='top-inputs' 
-                    style={{
+                    style={{ 
                         cursor: config?.newEventMovable ? "grab" : "default",
-                        background: newEvent?.colors?.background || "#3788d8"
+                        backgroundColor: "rgb(240, 240, 240)",
+                        borderBottom: "1px solid rgba(0, 0, 0, 0.3)"
                     }}
-                    onMouseDown={handleMouseDown}>
+                    onMouseDown={handleMouseDown}
+                >
                     <Crossmark className='icon' onClick={stopNewEvent}/>
                 </div>
                 <div className='body-inputs'>

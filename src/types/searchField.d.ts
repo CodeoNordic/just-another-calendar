@@ -21,6 +21,8 @@ declare global {
 
             emptyButton?: boolean; // Whether the search field should have a button to clear the search
 
+            emptyScript?: string; // Script to run when the empty button is clicked or the search field is cleared
+
             // NEW PROPERTIES
             dynamicDropdown?: boolean;
             noResults?: string; // Text to display if there is no results

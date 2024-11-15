@@ -38,9 +38,14 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
             !event.colors.text && (event.colors.text = eventColor.text);
         }
     }
-    
+
+    const backgroundColor = tinycolor(event.colors?.background || '#3788d8');
+    const borderColor = tinycolor(event.colors?.border || event.colors?.background || '#3788d8');
+    const textColor = event.colors?.text || '#fff';
+
     if (event.type === 'backgroundEvent') {
-        const backgroundColor = tinycolor(event.colors?.background || '#eaa').setAlpha(0.3);
+        backgroundColor.setAlpha(0.3);
+        borderColor.setAlpha(0.3);
 
         return {
             start: eventStart,
@@ -48,6 +53,12 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
             allDay: Boolean(event.allDay),
             display: 'background',
             backgroundColor: backgroundColor.toRgbString(),
+            borderColor: borderColor.toRgbString(),
+            textColor: config?.contrastCheck !== false ? ( 
+                calculateContrast(textColor, backgroundColor.toRgbString(), config.contrastMin)
+                    ? textColor 
+                    : calculateContrast("#000", backgroundColor.toRgbString(), config.contrastMin) ? "#000" : "#fff"
+            ) : textColor, 
             extendedProps: { event },
             ...(resourceIds.length > 0 && { resourceId: resourceIds[0], resourceIds })
         };
@@ -57,13 +68,13 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
         id: event.id,
         resourceId: resourceIds[0],
         resourceIds,
-        backgroundColor: event.colors?.background || "#3788d8",
-        borderColor: event.colors?.border || event.colors?.background || "#3788d8",
+        backgroundColor: backgroundColor.toRgbString(),
+        borderColor: borderColor.toRgbString(),
         textColor: config?.contrastCheck !== false ? ( 
-                calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config.contrastMin)
-                    ? event.colors?.text || "#fff" 
-                    : calculateContrast("#000", event.colors?.background || "#3788d8", config.contrastMin) ? "#000" : "#fff"
-            ) : event.colors?.text || "#fff",
+                calculateContrast(textColor, backgroundColor.toRgbString(), config.contrastMin)
+                    ? textColor 
+                    : calculateContrast("#000", backgroundColor.toRgbString(), config.contrastMin) ? "#000" : "#fff"
+            ) : textColor,
         start: eventStart,
         end: eventEnd,
         duration: event.duration,

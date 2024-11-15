@@ -9,6 +9,23 @@ You can add any amount of additional fields, as long as they do not conflict wit
 already in use by the calendar. It is recommended to avoid using `camelCase`-casing for
 additional fields, as the calendar uses this format. 
 
+Some of the fields for events are:
+
+- `allDay` (boolean) - If the event is an all-day event
+- `tooltip` (string) - Text displayed when hovering over the event
+- `type` (string) - Type of event (event or backgroundEvent)
+
+## Background Events
+If `type` is set to `backgroundEvent`, the event will be displayed in the background of the calendar.
+Background events are events that are not clickable, and are partially see through.
+
+A background event does not need a `resourceId`, if no `resourceId` is supplied, it will be displayed in the background of all resources for the given time.
+
+The fields specific to background events are:
+
+- `backgroundTitle` (string) - Text displayed under the date in the calendar
+- `backgroundText` (string) - Text displayed in the event
+
 ## Start+End
 Due to a diversity in preference, there are multiple ways of defining a date/time range for events:
 

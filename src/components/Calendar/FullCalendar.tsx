@@ -53,6 +53,7 @@ const FullCalendar: FC = () => {
     const [creatingEvent, setCreatingEvent] = useState(false);
     const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
     const [createTemplate, setCreateTemplate] = useState<boolean>(false);
+    const [moved, setMoved] = useState<boolean>(false);
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
     //const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
@@ -563,6 +564,7 @@ const FullCalendar: FC = () => {
                     document.querySelector('.calendar-highlight')?.remove();
                     setCreatingEvent(false);
                     setNewEvent(null);
+                    setMoved(false);
                 }, { once: true });
             }}
         />
@@ -571,6 +573,7 @@ const FullCalendar: FC = () => {
             eventState={[newEvent, setNewEvent]}
             templateState={[createTemplate, setCreateTemplate]}
             creatingState={[creatingEvent, setCreatingEvent]}
+            movedState={[moved, setMoved]}
         />}
     </div>
 }

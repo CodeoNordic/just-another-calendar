@@ -31,6 +31,10 @@ const SearchField: FC<{searchField: JAC.SearchField, index: number}> = (props) =
                 } as JAC.Config;
             });
         }
+
+        if (newValue == "" && props.searchField.emptyScript) {
+            performScript(props.searchField.emptyScript, { index: props.index, searchField: props.searchField }, undefined, true);
+        }
     }
 
     return <div className="search-field">
@@ -54,6 +58,7 @@ const SearchField: FC<{searchField: JAC.SearchField, index: number}> = (props) =
         {props.searchField.emptyButton !== false && <Crossmark onClick={() => {
             setSearch(""); 
             setAltSearch("");
+            props.searchField.emptyScript && performScript(props.searchField.emptyScript, { index: props.index, searchField: props.searchField }, undefined, true);
         }} />}
     </div>
 }

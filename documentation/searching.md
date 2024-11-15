@@ -62,6 +62,9 @@ Example of a dynamic dropdown search field:
             // Optional fields
             "title": "Search by Name", 
             "placeholder": "Type a name...",
+
+            "noResults": "No results found", // Text displayed when no results are found
+            "emptyScript": "[TRG] = EVNT Empty Search", // Script to run when the search field is emptied
             
             "open": false,
             "sort": 3
