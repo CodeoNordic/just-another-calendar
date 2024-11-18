@@ -71,7 +71,7 @@ const NewEvent: FC<NewEventProps> = props => {
             x = 5;
             arrowPosX = rect.width + 5;
         }
-        
+
         x = clamp(x, 5, window.innerWidth - rect.width - 1);
         y = clamp(y, 5, window.innerHeight - rect.height - 5);
         arrowPosY = clamp(arrowPosY, 0, window.innerHeight - 27);
@@ -192,8 +192,8 @@ const NewEvent: FC<NewEventProps> = props => {
 
             const rect = eventRef.current.getBoundingClientRect();
 
-            top = clamp(top, 0, window.innerWidth - rect.height - 1); // -1 is for the border
-            left = clamp(left, 0, window.innerHeight - rect.width - 1);
+            left = clamp(left, 0, window.innerWidth - rect.width - 1); // -1 is for the border
+            top = clamp(top, 0, window.innerHeight - rect.height - 1);
 
             setPosition({ x: left, y: top });
         }
