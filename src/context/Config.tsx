@@ -47,6 +47,11 @@ const defaultConfig: Partial<JAC.Config> = {
             name: "allDay",
             title: "All Day",
             type: "checkbox"
+        },
+        {
+            name: "colors.background",
+            title: "Background Color",
+            type: "color"
         }
     ],
     scriptNames: {},
