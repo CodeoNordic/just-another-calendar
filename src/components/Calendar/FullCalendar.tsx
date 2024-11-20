@@ -361,7 +361,15 @@ const FullCalendar: FC = () => {
                 setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
 
                 const start = info.event.start!;
-                const end = info.event.end!;
+                let end = info.event.end!;
+
+                const events = config.events;
+                const event = events?.find(ev => ev.id === info.event.id)!;
+
+                if (!end) {
+                    const timeSinceStart = dateFromString(event.end)!.getTime() - dateFromString(event.start)!.getTime();
+                    end = new Date(start.getTime() + timeSinceStart);
+                }    
 
                 const oldResource = info.oldEvent.getResources().pop();
                 const newResource = info.event.getResources().pop();
@@ -387,7 +395,6 @@ const FullCalendar: FC = () => {
                     if (!prev) return prev;
 
                     const { events, ...cfg } = prev;
-                    const event = events?.find(ev => ev.id === info.event.id)!;
 
                     event.start = start.toISOString();
                     event.end = end.toISOString();
@@ -397,6 +404,8 @@ const FullCalendar: FC = () => {
 
                     event.endTime = end.toTimeString().substring(0, 5);
                     event.timeEnd = event.endTime;
+
+                    event.allDay = info.event.allDay;
 
                     newResource && (event.resourceId = newResource.id);
 
@@ -451,6 +460,8 @@ const FullCalendar: FC = () => {
 
             droppable
             drop={info => {
+                console.log(info);
+
                 const ev = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}') as JAC.Event | null;
 
                 if (!ev) return;
@@ -504,9 +515,9 @@ const FullCalendar: FC = () => {
             }}*/
             
             selectable={
-                config.eventCreation ||
-                (Boolean(config.scriptNames.onRangeSelected)/* && Boolean(config.eventTemplates?.length)*/) ||
-                Boolean(config.scriptNames.onEventCreated)}
+                config.eventCreation 
+                    || (Boolean(config.scriptNames.onRangeSelected)/* && Boolean(config.eventTemplates?.length)*/) 
+                    || Boolean(config.scriptNames.onEventCreated)}
             select={info => {
                 const dates = newEvent && datesFromEvent(newEvent);
                 const eventParam = newEvent && {
@@ -515,9 +526,10 @@ const FullCalendar: FC = () => {
                     end: dates?.end && dateToObject(dates.end)
                 };
 
-                if (!creatingEvent && !createTemplate && newEvent && config.scriptNames?.onEventCreated) {
+                // check for different scripts in config
+                if (!creatingEvent && !createTemplate && config.scriptNames?.onEventCreated && eventParam) {
                     performScript('onEventCreated', eventParam)
-                } else if (createTemplate && (!config.eventCreation || newEvent?._instant) && config.scriptNames?.onEventCreated) {
+                } else if (createTemplate && (!config.eventCreation || newEvent?._instant) && config.scriptNames?.onEventCreated && eventParam) {
                     performScript('onEventCreated', eventParam);
                     setCreateTemplate(false);
                 } else if (config.scriptNames?.onRangeSelected) {
@@ -534,6 +546,7 @@ const FullCalendar: FC = () => {
                             time: end.toTimeString().split(' ')[0]
                         },
                         resourceId: info.resource?.id,
+                        allDay: info.allDay,
                         event: createTemplate ? eventParam : undefined
                     });
                 }
@@ -548,7 +561,8 @@ const FullCalendar: FC = () => {
                     id: randomUUID(),
                     start: info.start.toISOString(),
                     end: info.end.toISOString(),
-                    resourceId: info.resource?.id || ""
+                    resourceId: info.resource?.id || "",
+                    allDay: info.allDay,
                 } as JAC.Event;
                 
                 config.newEventFields?.forEach(field => {
