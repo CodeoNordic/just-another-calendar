@@ -77,7 +77,10 @@ const NewEvent: FC<NewEventProps> = props => {
         arrowPosY = clamp(arrowPosY, 0, window.innerHeight - 27);
 
         setPosition({ x, y });
-        setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
+
+        if (arrowPosX > x && arrowPosX < x + rect.width && arrowPosY > y && arrowPosY < y + rect.height) {
+            setArrowPos({ x: 0, y: 0, dir: 0 });
+        } else setArrowPos({ x: arrowPosX, y: arrowPosY, dir: arrowDir });
         
         setTimeout(() => setVisible(true), 0);
     }, [creatingEvent, newEvent, eventRef, visible]);
@@ -224,6 +227,7 @@ const NewEvent: FC<NewEventProps> = props => {
         <div
             className='create-arrow'
             style={{
+                display: arrowPos.x == 0 && arrowPos.y == 0 ? "none" : "block",
                 top: arrowPos.y,
                 left: arrowPos.x + (arrowPos.dir == 0 ? 1 : -1),
                 borderRight: arrowPos.dir == 0 ? "10px solid rgba(0, 0, 0, .3)" : "none",

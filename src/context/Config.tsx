@@ -6,6 +6,7 @@ import { loadCallbacks } from '@utils/performScript';
 import { info, warn } from '@utils/log';
 
 const defaultConfig: Partial<JAC.Config> = {
+    view: "timeGridWeek",
     defaultEventComponent: "default",
     eventComponents: [
         {
@@ -38,12 +39,6 @@ const defaultConfig: Partial<JAC.Config> = {
             type: "time"
         },
         {
-            name: "description",
-            title: "Description",
-            placeholder: "Add a description",
-            type: "string"
-        },
-        {
             name: "allDay",
             title: "All Day",
             type: "checkbox"
@@ -51,7 +46,8 @@ const defaultConfig: Partial<JAC.Config> = {
         {
             name: "colors.background",
             title: "Background Color",
-            type: "color"
+            type: "color",
+            defaultValue: "#3788d8"
         }
     ],
     scriptNames: {},

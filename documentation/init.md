@@ -65,7 +65,12 @@ view if the value is changed in the config through E.G [`setConfigValue`](./func
 - `listMonth`
 - `listYear`
 
-**Resource Timeline**
+**Timeline**
+- `timeline`
+- `timelineDay`
+- `timelineWeek`
+- `timelineMonth`
+- `timelineYear`
 - `resourceTimeline`
 - `resourceTimelineDay`
 - `resourceTimelineWeek`
@@ -80,6 +85,8 @@ view if the value is changed in the config through E.G [`setConfigValue`](./func
     "view": "resourceDayGrid" // The view most commonly used by Codeo
 }
 ```
+
+**Default value:** `timeGridWeek`
 
 ### `events` (array)
 The list of events to display in the calendar.
@@ -188,7 +195,7 @@ Check the [searching definition](./searching.md) for more information.
 
 ### `contrastCheck` (boolean)
 Controls whether or not the built-in contrast checker should be used when displaying certain elements,
-such as the event and source filters, to try and optimize accessibility.
+such as the events and filters, to try and optimize accessibility.
 
 ```json
 {
@@ -240,6 +247,7 @@ Translation table for various labels in the calendar.
 ```json
 {
     "weekNumberHeader": "U", // Defaults to 'W' for 'Week'
+    "todayButton": "I dag", // Defaults to 'Today'
 
     "eventTemplatesHeader": "Avtalemaler", // Defaults to 'Event Templates', only used if no areas are defined
 
