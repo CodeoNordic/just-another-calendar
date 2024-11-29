@@ -16,7 +16,6 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
 
     const eventStart = dates.start;
     const eventEnd = dates.end;
-
     
     const resourceIds = event.resourceId instanceof Array? event.resourceId: (event.resourceId? [event.resourceId]: []);
     

@@ -398,7 +398,7 @@ Controls whether or not events are able to be created by dragging in the calenda
 ### `heatmap` (array or boolean)
 
 **Boolean**
-- `true` - Uses all calendar events to calculate and display a heatmap in the sidebar date picker.
+- `true` - Uses passed calendar events to calculate and display a heatmap in the sidebar date picker.
 - `false` - Disables the heatmap.
 
 **Array**
@@ -406,10 +406,10 @@ Controls whether or not events are able to be created by dragging in the calenda
 You can also pass an array of specific events for a custom heatmap, without sending all events to the calendar. Each entry in the array should include:
 
 - `date` - The date of the event (e.g., "19.11.2024").
-- `hours` - Event duration in hours (e.g., 3.5).
-- `color` - (optional): Custom color for the event, overriding the default heatmap color.
+- `hours` - Total duration in hours (e.g., 3.5). Used to calculate "resource load"
+- `color` - (optional): Custom color for the date, overriding the default heatmap color.
 
-If you have color, you dont need to set hours, as the color will be used instead of calculating with hours, and vice versa.
+If `color` is set, `hours` is not required, as the calculation will be overridden by the custom color.
 
 ```json
 {

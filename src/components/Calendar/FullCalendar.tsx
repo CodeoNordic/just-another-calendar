@@ -15,13 +15,14 @@ import mapEvents, { eventToFcEvent } from './mapEvents';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
-import { EventDropArg, EventSourceInput } from '@fullcalendar/core';
+import { EventSourceInput } from '@fullcalendar/core';
 
 // Import Calendar plugins
 import momentPlugin from '@fullcalendar/moment';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import scrollGridPlugin from '@fullcalendar/scrollgrid';
 
 import resourcePlugin, { ResourceApi } from '@fullcalendar/resource'
 import resourceDayGridPlugin from '@fullcalendar/resource-daygrid';
@@ -44,6 +45,7 @@ import { v4 as randomUUID } from 'uuid';
 import set from 'lodash.set';
 import datesFromEvent from '@utils/datesFromEvent';
 import tinycolor from 'tinycolor2';
+import combineClasses from '@utils/combineClasses';
 
 const FullCalendar: FC = () => {
     const calendarRef = useCalendarRef();
@@ -57,7 +59,7 @@ const FullCalendar: FC = () => {
 
     const [currentDate, setCurrentDate] = useState<Date>(dateFromString(config.date) || new Date());
     //const [dateRange, setDateRange] = useState<{ start: Date; end: Date }|null>(null);
-    const [resourcesTitle, setResourcesTitle] = useState<string>('');
+    const [calendarTitle, setCalendarTitle] = useState<string>('');
 
     const [,setRevertFunctions] = useState<Record<string, Function>>({});
     const [,setDropdown] = useEventDropdown();
@@ -209,6 +211,7 @@ const FullCalendar: FC = () => {
                 interactionPlugin,
                 dayGridPlugin,
                 timeGridPlugin,
+                scrollGridPlugin,
 
                 resourcePlugin,
                 resourceDayGridPlugin,
@@ -219,8 +222,65 @@ const FullCalendar: FC = () => {
                 multiMonthPlugin
             ]}
 
+            duration={{ days: config.days ?? 1 }}
+            dayHeaderContent={(typeof config.scriptNames?.onDateHeaderClick === 'string')? (info => <span
+                onClick={() => performScript('onDateHeaderClick', dateToObject(info.date))}
+                className="jac-clickable-date-header"
+            >
+                {info.text}
+            </span>): undefined}
+
             // Set up views
             views={{
+                // TODO duplicate code, reduce to reusable function
+                resourceTimeline: {
+                    slotLabelContent: info => {
+                        const base = capitalize(info.text, true);
+
+                        const bgEvents = eventsBase.filter(ev => {
+                            if (ev.extendedProps!.event.type !== 'backgroundEvent') return false;
+
+                            const start = new Date(ev.start as number);
+                            const current = new Date(info.date);
+
+                            start.setHours(0, 0, 0, 0);
+                            current.setHours(0, 0, 0, 0);
+
+                            return start.valueOf() === current.valueOf();
+                        });
+
+                        const text = bgEvents
+                            .map(ev => {
+                                const event = ev.extendedProps?.event;
+                                return event?.backgroundTitle || null;
+                            })
+                            .filter(title => title !== null)
+                            .join(', ');
+
+                        const color = tinycolor(bgEvents.find(ev => ev.extendedProps?.event?.backgroundTitle != undefined)?.extendedProps?.event.colors?.background || '#eaa').setAlpha(1);
+
+                        return <span
+                            onClick={() => performScript('onDateHeaderClick', dateToObject(info.date))}
+                            className={
+                                combineClasses(
+                                    (typeof config.scriptNames?.onDateHeaderClick === 'string') && 'jac-clickable-date-header',
+                                    !!text && 'jac-date-header-with-bg-event'
+                                )
+                            }
+                            style={!!text? {
+                                color: !!text ? `${color.toRgbString()}` : "",
+                                textDecoration: 'none'
+                            }: undefined}
+                        >
+                            {base}
+                            {!!text && <>
+                                <br />
+                                ({text}) 
+                            </>}
+                        </span>
+                    }
+                },
+
                 resourceTimeGrid: {
                     dayHeaderContent: info => {
                         const base = capitalize(info.date.toLocaleDateString(config.locale, {
@@ -251,7 +311,19 @@ const FullCalendar: FC = () => {
 
                         const color = tinycolor(bgEvents.find(ev => ev.extendedProps?.event?.backgroundTitle != undefined)?.extendedProps?.event.colors?.background || '#eaa').setAlpha(1);
                         
-                        return <span style={{ color: !!text ? color.toRgbString() : "" }}>
+                        return <span
+                            onClick={() => performScript('onDateHeaderClick', dateToObject(info.date))}
+                            className={
+                                combineClasses(
+                                    (typeof config.scriptNames?.onDateHeaderClick === 'string') && 'jac-clickable-date-header',
+                                    !!text && 'jac-date-header-with-bg-event'
+                                )
+                            }
+                            style={!!text? {
+                                color: !!text ? `${color.toRgbString()}` : "",
+                                textDecoration: 'none'
+                            }: undefined}
+                        >
                             {base}
                             {!!text && <>
                                 <br />
@@ -276,12 +348,13 @@ const FullCalendar: FC = () => {
                         </span>
                     },
 
-                    duration: { days: config.days ?? 7 },
                     dayHeaders: true,
                     datesAboveResources: true,
 
                     allDayContent: <div className='jac-all-day'>{config.translations?.allDaySlot ?? 'All day'}</div>,
-                    allDaySlot: config.allDaySlot !== false
+                    allDaySlot: config.allDaySlot !== false,
+
+                    duration: { days: config.days ?? 7 }
                 }
             }}
 
@@ -316,17 +389,20 @@ const FullCalendar: FC = () => {
             }}
             
             // Additional config values
-            resourceAreaHeaderContent={() => <div className="date-header">{resourcesTitle}</div>}
+            resourceAreaHeaderContent={() => <div className="date-header">{calendarTitle}</div>}
             resourceAreaWidth={config.resourcesWidth || '17.5rem'}
+            
             filterResourcesWithEvents={false}
             fixedWeekCount={false}
             slotEventOverlap={false}
             
             buttonIcons={false}
             headerToolbar={{
-                left: '',//'title',
-                right: ''
+                left: '',
+                right: '',
+                center: (config.view?.startsWith('resourceTimeGrid') && !/\d+[^\d]+\d+/.test(calendarTitle))? 'title':''
             }}
+            titleFormat={{ weekday: 'long', day: 'numeric', month: 'long' }}
 
             eventTimeFormat={config.eventTimeFormat}
             
@@ -361,21 +437,24 @@ const FullCalendar: FC = () => {
                 setRevertFunctions(prev => ({ ...prev, [revertId]: info.revert }));
 
                 const start = info.event.start!;
-                let end = info.event.end!;
+                let end = info.event.end;
 
                 const events = config.events;
                 const event = events?.find(ev => ev.id === info.event.id)!;
 
                 if (!end) {
-                    const timeSinceStart = dateFromString(event.end)!.getTime() - dateFromString(event.start)!.getTime();
-                    end = new Date(start.getTime() + timeSinceStart);
+                    // TODO make default duration dynamic
+                    end = new Date(start.getTime() + 1000 * 60 * 15);
                 }    
 
                 const oldResource = info.oldEvent.getResources().pop();
                 const newResource = info.event.getResources().pop();
 
                 const param: RSAny = {
-                    event: info.event.extendedProps.event,
+                    event: {
+                        ...info.event.extendedProps.event,
+                        allDay: info.event.allDay
+                    },
                     start: dateToObject(start),
                     end: dateToObject(end),
                     revertId
@@ -397,12 +476,12 @@ const FullCalendar: FC = () => {
                     const { events, ...cfg } = prev;
 
                     event.start = start.toISOString();
-                    event.end = end.toISOString();
+                    end && (event.end = end.toISOString());
 
                     event.startTime = start.toTimeString().substring(0, 5);
                     event.timeStart = event.startTime;
 
-                    event.endTime = end.toTimeString().substring(0, 5);
+                    end && (event.endTime = end.toTimeString().substring(0, 5));
                     event.timeEnd = event.endTime;
 
                     event.allDay = info.event.allDay;
@@ -415,6 +494,9 @@ const FullCalendar: FC = () => {
                     } as JAC.Config;
                 });
             }}
+
+            dayMinWidth={typeof config.dayMinWidth === 'number'? config.dayMinWidth: undefined}
+            slotMinWidth={80}
 
             eventMouseEnter={info => {
                 const rect = info.el.getBoundingClientRect();
@@ -453,14 +535,27 @@ const FullCalendar: FC = () => {
             }}
             
             datesSet={info => {
-                setResourcesTitle(info.view.title);
+                setCalendarTitle(info.view.title);
             }}
 
             dragRevertDuration={0}
+            slotLaneClassNames={info => {
+                return (info.date?.getMinutes() === 0)? 'whole-hour':'';
+            }}
+
+            resourceLabelContent={(typeof config.scriptNames?.onResourceLabelClick === 'string')? (info => {
+                return <span className="jac-clickable-resource-label" onClick={() => {
+                    performScript('onResourceLabelClick', {
+                        id: info.resource.id,
+                        title: info.resource.title,
+                        ...info.resource.extendedProps
+                    })
+                }}>{info.resource.title}</span>
+            }): undefined}
 
             droppable
             drop={info => {
-                console.log(info);
+                //console.log('drop', info);
 
                 const ev = JSON.parse(info.draggedEl.getAttribute('data-event') || '{}') as JAC.Event | null;
 

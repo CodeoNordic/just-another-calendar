@@ -130,7 +130,7 @@ const TooltipProvider: FC = ({ children }) => {
     }, [eventHover, tooltipHover, buttonHover, tooltipPos, tooltip.visible, hoverTimeout, textLines.length]);
 
     return <>
-        <div className="event-tooltip" ref={divRef} style={{
+        {<div className="event-tooltip" ref={divRef} style={{
             // Do not display if the text is empty
             display: ((tooltip.visible || tooltipHover) && (cleanedText.length && textLines.length > 0) && !buttonHover)? 'block': 'none',
             position: 'fixed',
@@ -145,7 +145,7 @@ const TooltipProvider: FC = ({ children }) => {
             >
                 {line === '---'? null: line}
             </div>)}
-        </div>
+        </div>}
 
         <TooltipContext.Provider value={[{ ...tooltip, onPointerMove, onPointerLeave }, setTooltip]}>
             {children}

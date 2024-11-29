@@ -1,9 +1,10 @@
-@import 'index';
+@use 'mixins' as *;
+@use 'index';
 
 // Import components
-@import 'Components/Calendar';
-@import 'Components/Event';
-@import 'Components/SideMenu';
-@import 'Components/Icon';
-@import 'Components/EventFilters';
-@import 'Components/CreateEvent';
+@use 'Components/Calendar';
+@use 'Components/Event';
+@use 'Components/SideMenu';
+@use 'Components/Icon';
+@use 'Components/EventFilters';
+@use 'Components/CreateEvent';

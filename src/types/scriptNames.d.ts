@@ -17,6 +17,12 @@ declare global {
             /** Runs when a date is selected in the side-menu's date picker */
             onDateSelected?: string;
 
+            /** Runs when a date header is clicked */
+            onDateHeaderClick?: string;
+
+            /** Runs when a resource label is clicked */
+            onResourceLabelClick?: string;
+
             /** Runs when E.G an event is moved */
             onEventChange?: string;
 
@@ -27,8 +33,6 @@ declare global {
             onSearch?: string;
 
             poll?: string;
-
-            //newEvent?: string; // duplicate of the old 'createEvent'
 
             /** Runs when the side-menu is opened */
             onSideMenuOpened?: string;

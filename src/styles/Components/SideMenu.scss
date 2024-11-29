@@ -1,5 +1,7 @@
-@import 'Collapse';
-@import 'DatePicker';
+@use '../mixins' as *;
+
+@use 'Collapse';
+@use 'DatePicker';
 
 @mixin padding {
     border-radius: 5px;

@@ -49,7 +49,7 @@ it will not be included in the list, and a warning will be issued to the console
 
 ## Dynamic Dropdown
 
-If you use the `dynamicDropdown` field, you also need to define a `script` field, which will be run when the user searches. This script should return a list of `SearchResult` objects, which will be displayed in the dropdown, and can be clicked to either just run a script defined in the object, or get another list of `SearchResult` objects from a script. 
+If you use the `dynamicDropdown` field, you also need to define a `script` field, which will be run when the user searches. This script should return a list of `SearchResult` objects, which will be displayed in the dropdown, and can be clicked to either run a `script`, or get another list of `SearchResult` objects from said script. 
 
 Example of a dynamic dropdown search field:
 ```json
@@ -57,7 +57,7 @@ Example of a dynamic dropdown search field:
     "searchFields": [
         {
             "dynamicDropdown": true, // This field will be a dynamic dropdown
-            "script": "[TRG] = EVNT Dynamic Search", // Script to run when searching, is required
+            "script": "[TRG] = EVNT Dynamic Search", // Script to run when searching, required
 
             // Optional fields
             "title": "Search by Name", 
@@ -87,7 +87,7 @@ Example of a script that returns a list of `SearchResult` objects, that when cli
 }
 ```
 
-Example of a script that returns a list of `SearchResult` objects, that are displayed as events (you cant mix events and search results in the same list):
+Example of a script that returns a list of `SearchResult` objects, that are displayed as events (you cannot mix events and search results in the same list):
 ```json
 {
     "searchResults": [

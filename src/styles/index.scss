@@ -1,4 +1,4 @@
-@import 'mixins';
+@use 'mixins' as *;
 
 :root {
     --jac-font: Tahoma, Geneva, Verdana, sans-serif;

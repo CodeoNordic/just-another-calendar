@@ -60,9 +60,9 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
     }
 
     const prevChild = error && children[active][error.prev] !== undefined
-        ? children[active][error.prev]
+        ? children?.[active]?.[error.prev]
             : (children[active] && children[active][0] && children[active][0].prevOuter !== undefined && children[active][0].prevInner !== undefined)
-                ? children[children[active][0].prevOuter][children[active][0].prevInner]
+                ? children?.[children[active][0].prevOuter!]?.[children[active][0].prevInner!]
                 : null;
 
     if (!props.dynamicDropdownParent.length) return <></>;
@@ -89,21 +89,21 @@ const SearchDropdownItems: FC<{dynamicDropdownParent: JAC.SearchResult[], noResu
             </div>
         )}
         {error ? <div className="search-error">{error.message}</div> : eventList.length ? eventList.map((event, i) => <div key={i} className="search-event" style={{
-            border: `1px solid ${event.colors?.border || '#000'}`,
-            backgroundColor: event.colors?.background || "#3788d8",
+            border: `1px solid ${event?.colors?.border || '#000'}`,
+            backgroundColor: event?.colors?.background || "#3788d8",
             color: config?.contrastCheck !== false ? ( 
-                calculateContrast(event.colors?.text || "#fff", event.colors?.background || "#3788d8", config?.contrastMin)
-                    ? event.colors?.text || "#fff" 
-                    : calculateContrast("#000", event.colors?.background || "#3788d8", config?.contrastMin) ? "#000" : "#fff"
-            ) : event.colors?.text || "#fff"
+                calculateContrast(event?.colors?.text || "#fff", event?.colors?.background || "#3788d8", config?.contrastMin)
+                    ? event?.colors?.text || "#fff" 
+                    : calculateContrast("#000", event?.colors?.background || "#3788d8", config?.contrastMin) ? "#000" : "#fff"
+            ) : event?.colors?.text || "#fff"
         }}>
             <div className="search-event-event">
-                <div>{event.dateStart}</div>
-                <Event {...event} />
+                <div>{event?.dateStart}</div>
+                <Event {...event!} />
             </div>
             <div className="search-event-icons">
-                {children[active][i].eventEdit && <ChevronDown className="arrow" onClick={() => performScript(children[active][i].eventEdit!, { id: event.id, source: event.source }, undefined, true)} />}
-                {children[active][i].eventShow && <CalendarIcon className="calendar" onClick={() => performScript(children[active][i].eventShow!, { resources: event.resourceId, date: event.dateStart }, undefined, true)}/>}
+                {children[active][i].eventEdit && <ChevronDown className="arrow" onClick={() => performScript(children[active][i].eventEdit!, { id: event!.id, source: event!.source }, undefined, true)} />}
+                {children[active][i].eventShow && <CalendarIcon className="calendar" onClick={() => performScript(children[active][i].eventShow!, { resources: event!.resourceId, date: event!.dateStart }, undefined, true)}/>}
             </div>
         </div>) : children[active].map((result, i) => <div key={i} onClick={() => search(result, active, i)} className="dropdown-child-item">
             <div>

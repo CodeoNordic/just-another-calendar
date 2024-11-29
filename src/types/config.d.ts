@@ -34,6 +34,7 @@ declare global {
             contrastCheck?: boolean;
             contrastMin?: number;
             
+            dayMinWidth?: number;
             resources?: Resource[];
             resourcesWidth?: string;
             eventResourceEditable?: boolean;

@@ -84,6 +84,7 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
             className="jac-event"
             onPointerMove={e => tooltip.onPointerMove(e, props)}
             onPointerLeave={() => tooltip.onPointerLeave()}
+            onMouseDown={() => tooltip.onPointerLeave()}
             dangerouslySetInnerHTML={{ __html: parsedHtml ?? '' }}
         />
     }
