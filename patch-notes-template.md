@@ -11,6 +11,8 @@
 This feature is an example feature used to perform a specific action in the calendar.
 It should include a description of its functionality, along with example usage, if applicable.
 
+The short name for {title} is {short}.
+
 ```json
 {
     // Config

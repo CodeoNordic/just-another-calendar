@@ -45,16 +45,20 @@ view if the value is changed in the config through E.G [`setConfigValue`](./func
 #### All Different Views
 
 **Time Grid**
+- `timeGrid`
 - `timeGridDay`
 - `timeGridWeek`
+- `resourceTimeGrid`
 - `resourceTimeGridDay`
 - `resourceTimeGridWeek`
 
 **Day Grid**
+- `dayGrid`
 - `dayGridDay`
 - `dayGridWeek`
 - `dayGridMonth`
 - `dayGridYear`
+- `resourceDayGrid`
 - `resourceDayGridDay`
 - `resourceDayGridWeek`
 - `resourceDayGridMonth`
@@ -82,7 +86,7 @@ view if the value is changed in the config through E.G [`setConfigValue`](./func
 
 ```json
 {
-    "view": "resourceDayGrid" // The view most commonly used by Codeo
+    "view": "resourceTimeGridDay" // The view most commonly used by Codeo
 }
 ```
 

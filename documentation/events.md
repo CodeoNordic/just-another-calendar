@@ -2,7 +2,7 @@
 To inject content into the calendar, events must be passed using the `events` key in the [config](./init.md#events-array).
 
 The minimum requirement for each event is a unique `id` (string), and a start+end time.
-If you are using a [FullCalendar view](./init.md#view-string), each event must also have
+If you are using a [FullCalendar view](./init.md#view-string) that includes resources, each event must also have
 an associated `resourceId` (string or array of strings).
 
 You can add any amount of additional fields, as long as they do not conflict with fields
@@ -29,9 +29,10 @@ The fields specific to background events are:
 ## Start+End
 Due to a diversity in preference, there are multiple ways of defining a date/time range for events:
 
-**Note:** FullCalendar by default DOES NOT respect timezones. Due to this, we've created a way
+**Note:** FullCalendar by default DOES NOT respect timezones. Due to this, we created a way
 of translating the event time to the correct timezone, but ONLY IF the event uses
-ISO timestamps.
+ISO or Unix timestamps. If you are not comfortable working with timezones, it is recommended
+to avoid using ISO and Unix. Functionality is not affected depending on which date/time definition you use.
 
 ### Valid Start date/time definitions
 - `start` (string) or `timestampStart` (string) - An ISO timestamp (E.G 2024-11-19T07:00:00.000Z)

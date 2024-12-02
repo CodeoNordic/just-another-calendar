@@ -44,7 +44,7 @@ For FileMaker Pro developers:
 You may contact our team for consulting regarding this module.
 
 - Company: Codeo Norge AS
-- Email: sales@codeo.no
+- Email: jac@codeo.no
 - Developers:
     - Andreas Haandlykken: ah@codeo.no - CEO of [Codeo Norway](https://codeo.no) and Senior FileMaker developer
     - Joakim Isaksen: ji@codeo.no React developer - Head developer of [www.codeo.no](https://codeo.no)

@@ -5,7 +5,7 @@ responsible for.
 
 Each event component defined in the [config](./init.md#eventcomponents-array)
 should have a list of fields to display, along with optional criteria to describe
-which events should use it.
+when they should be displayed.
 
 ## Field Definition
 Each field can be defined in three separate ways:
@@ -114,6 +114,10 @@ that the JavaScript code passed is correct.
 }
 ```
 
-Each field may also include a [`_filter`](./_filter.md). Codeo uses this to dynamically display
+Each field may include a [`_filter`](./_filter.md). Codeo uses this to dynamically display
 patient names/references based on a boolean which decides if personal info may be shown or not,
 making the solution highly GDPR-compliant.
+
+**Tip:** If you have multiple types of events displayed at once, each component may include its
+own [`_filter`](./_filter.md) that determines which events should use it. If an event matches more
+than one component, the first match will be used.

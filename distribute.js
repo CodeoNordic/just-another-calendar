@@ -134,6 +134,7 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
     const patchNoteValues = {
         name: packageJson.name,
         title: packageJson.title,
+        short: packageJson.title.split(' ').map(w => w[0]).join(''),
         version,
         author: packageJson.author.name
     }
