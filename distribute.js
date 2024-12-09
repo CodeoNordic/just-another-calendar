@@ -61,28 +61,46 @@ const yesNo = async question => {
     return yesNo(question);
 }
 
-/** @param {string} content */
-/** @param {string?} identifier */
+const commentRegex = /<!--.*--> *($|(\r?\n))/g;
+const trimRegex = /(^(\r?\n)+)|((\r?\n)+$)/g;
+
+const jsOnlyStartRegex = /<!-- *\[?JSONLY START\]? *--> *($|(\r?\n))/g;
+const jsOnlyEndRegex = /<!-- *\[?JSONLY END\]? *--> *($|(\r?\n))/g;
+
+/**
+ * @param {string} content
+ * @param {string?} identifier
+ */
 const filterOutJsOnly = (content, identifier = 'Text content') => {
+    /** @type {(RegExpMatchArray & { input: string })[]} */
     const jsTokensStart = Array.from(
-        content.matchAll(/<!-- *\[?JSONLY START\]? *--> *($|(\r?\n))/g)
+        content.matchAll(jsOnlyStartRegex)
     );
 
+    /** @type {(RegExpMatchArray & { input: string })[]} */
     const jsTokensEnd = Array.from(
-        content.matchAll(/<!-- *\[?JSONLY END\]? *--> *($|(\r?\n))/g)
+        content.matchAll(jsOnlyEndRegex)
     );
 
+    if (!jsTokensStart.length && !jsTokensEnd.length) return content;
     if (jsTokensStart.length !== jsTokensEnd.length)
-        throw new Error(`${identifier} has invalid JS ONLY markers. There are ${jsCountStart.length} start markers, but ${jsCountEnd.length} end markers.`);
+        throw new Error(
+            `${identifier} has an invalid count JS ONLY markers. There are ${jsTokensStart.length} start markers, but ${jsTokensEnd.length} end markers.`
+        );
 
+    content = '';
     for (let i = 0; i < jsTokensStart.length; i++) {
         const startToken = jsTokensStart[i];
-        const endToken = jsTokensEnd[i];
-
-        content = content.substring(0, startToken.index) + content.substring(endToken.index + (endToken[0].length));
+        const prevEndToken = i? jsTokensEnd[i - 1]: undefined;
+        
+        content += prevEndToken
+            ? prevEndToken.input.substring(
+                prevEndToken.index + prevEndToken[0].length, startToken.index - 1
+            ) : startToken.input.substring(0, startToken.index);
     }
 
-    return content;
+    const lastToken = jsTokensEnd[jsTokensEnd.length - 1];
+    return content + lastToken.input.substring(lastToken.index + lastToken[0].length);
 }
 
 let version = packageJson.version;
@@ -138,9 +156,6 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         version,
         author: packageJson.author.name
     }
-
-    const commentRegex = /<!--.*--> *($|(\r?\n))/g;
-    const trimRegex = /(^(\r?\n)+)|((\r?\n)+$)/g;
 
     const patchNoteMap = allPatchNotes.map(fileName => {
         let content = fs.readFileSync(join(patchNotesPath, fileName), 'utf-8');
@@ -249,13 +264,19 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         archiveLite.file('widget.dist.json', { name: 'widget.json' });
         
         // README
-        addFile('README.md', 'README.md', true);
-
         const readmePath = join(__dirname, 'README.md');
         const readmeContent = fs.readFileSync(readmePath, 'utf-8');
 
-        const readmeContentLite = filterOutJsOnly(readmeContent, 'README.md');
+        const readmeContentLite = filterOutJsOnly(readmeContent, 'README.md')
+            .replace(commentRegex, '')
+            .replace(trimRegex, '');
+        
         archiveLite.append(readmeContentLite, { name: 'README.md' });
+        archive.append(readmeContent
+            .replace(commentRegex, '')
+            .replace(trimRegex, ''),
+            { name: 'README.md' }
+        );
 
         // Documentation
         archive.glob('**/*', {
