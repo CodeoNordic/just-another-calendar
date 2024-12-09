@@ -38,6 +38,9 @@ declare global {
             resources?: Resource[];
             resourcesWidth?: string;
             eventResourceEditable?: boolean;
+
+            eventStartEditable?: boolean;
+            eventDurationEditable?: boolean;
             
             fullCalendarLicense?: string;
             locale?: string;

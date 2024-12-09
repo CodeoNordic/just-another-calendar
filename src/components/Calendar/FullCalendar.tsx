@@ -47,6 +47,8 @@ import datesFromEvent from '@utils/datesFromEvent';
 import tinycolor from 'tinycolor2';
 import combineClasses from '@utils/combineClasses';
 
+import { info as logInfo } from '@utils/log';
+
 const FullCalendar: FC = () => {
     const calendarRef = useCalendarRef();
 
@@ -196,8 +198,8 @@ const FullCalendar: FC = () => {
 
             editable
             eventResourceEditable={[1, true].includes(config.eventResourceEditable!)}
-            eventStartEditable
-            eventDurationEditable
+            eventStartEditable={config.eventStartEditable}
+            eventDurationEditable={config.eventDurationEditable}
             nowIndicator={config.nowIndicator}
             
             eventDisplay="block"
@@ -439,13 +441,18 @@ const FullCalendar: FC = () => {
                 const start = info.event.start!;
                 let end = info.event.end;
 
-                const events = config.events;
-                const event = events?.find(ev => ev.id === info.event.id)!;
+                logInfo(`Event '${info.event.id}' changed`, {
+                    start,
+                    end
+                });
 
                 if (!end) {
                     // TODO make default duration dynamic
                     end = new Date(start.getTime() + 1000 * 60 * 15);
-                }    
+                }
+
+                const events = config.events;
+                const event = events?.find(ev => ev.id === info.event.id)!;  
 
                 const oldResource = info.oldEvent.getResources().pop();
                 const newResource = info.event.getResources().pop();

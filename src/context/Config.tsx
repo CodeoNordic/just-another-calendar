@@ -58,6 +58,8 @@ const defaultConfig: Partial<JAC.Config> = {
     contrastCheck: true,
     contrastMin: 2,
     nowIndicator: true,
+    eventStartEditable: true,
+    eventDurationEditable: true,
     sideMenuOpen: false,
     ignoreWarnings: false,
     eventFilterBehaviour: 'groupedAny',
