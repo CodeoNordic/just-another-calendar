@@ -90,11 +90,16 @@ const TooltipProvider: FC = ({ children }) => {
     );
 
     useEffect(() => {
-        window.addEventListener('scroll', () => setTooltip(prev => ({
-            ...prev,
-            visible: false
-        })), true);
-    }, []);
+        window.addEventListener('scroll', () => {
+            tooltip?.visible && setTooltip(prev => ({
+                ...prev,
+                visible: false
+            }));
+
+            setEventHover(false);
+            setTooltipHover(false);
+        }, true);
+    }, [tooltip.visible]);
 
     // Set invisible when config changes
     useEffect(() => {

@@ -50,6 +50,7 @@ import combineClasses from '@utils/combineClasses';
 import { info as logInfo } from '@utils/log';
 
 const FullCalendar: FC = () => {
+    //console.log('FC Render');
     const calendarRef = useCalendarRef();
 
     const [config, setConfig] = useConfigState() as State<JAC.Config>;
@@ -64,7 +65,7 @@ const FullCalendar: FC = () => {
     const [calendarTitle, setCalendarTitle] = useState<string>('');
 
     const [,setRevertFunctions] = useState<Record<string, Function>>({});
-    const [,setDropdown] = useEventDropdown();
+    const setDropdown = useEventDropdown();
 
     // Determine dropdown buttons for each event
     const eventButtons = useCallback((r: JAC.Event) => {
@@ -114,15 +115,6 @@ const FullCalendar: FC = () => {
         }
     }, [calendarRef]);
 
-    useEffect(() => {
-        setTimeout(() => {
-            if (!calendarRef.current || !config?.initialScrollTime) return;
-            const api = calendarRef.current.getApi();
-
-            api.scrollToTime(config.initialScrollTime);
-        }, 50);
-    }, [calendarRef, config?.initialScrollTime, config?.view, config?.date]);
-
     useCreateMethod('scrollToTime', time => {
         if (!calendarRef.current || !time) return;
         const api = calendarRef.current.getApi();
@@ -168,7 +160,6 @@ const FullCalendar: FC = () => {
 
     useEffect(() => {
         if (!createTemplate || !newEvent) return;
-
         if (!config.scriptNames?.onRangeSelected && !newEvent._instant) setCreatingEvent(true);
 
         const start = newEvent?.start ? new Date(newEvent.start) : new Date();
@@ -404,7 +395,9 @@ const FullCalendar: FC = () => {
                 right: '',
                 center: (config.view?.startsWith('resourceTimeGrid') && !/\d+[^\d]+\d+/.test(calendarTitle))? 'title':''
             }}
+
             titleFormat={{ weekday: 'long', day: 'numeric', month: 'long' }}
+            scrollTime={config.initialScrollTime}
 
             eventTimeFormat={config.eventTimeFormat}
             
@@ -441,7 +434,7 @@ const FullCalendar: FC = () => {
                 const start = info.event.start!;
                 let end = info.event.end;
 
-                logInfo(`Event '${info.event.id}' changed`, {
+                logInfo(`Event changed (${info.event.id})`, {
                     start,
                     end
                 });
@@ -538,7 +531,7 @@ const FullCalendar: FC = () => {
             }}
 
             eventMouseLeave={() => {
-                setDropdown(prev => ({ ...prev, visible: false }))
+                setDropdown(false)
             }}
             
             datesSet={info => {

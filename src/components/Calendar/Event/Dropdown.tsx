@@ -1,4 +1,4 @@
-import { useRef, createContext, useContext, useState, useEffect } from 'react'
+import { useRef, createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 import { useConfig } from '@context/Config';
 import performScript from '@utils/performScript';
@@ -22,7 +22,7 @@ const defaultState: Dropdown = {
     buttons: [],
 };
 
-const DropdownContext = createContext<State<Dropdown>>([defaultState, ()=> {}]);
+const DropdownContext = createContext<(v: boolean|((d: Dropdown) => Dropdown)) => void>(()=> {});
 export const useEventDropdown = () => useContext(DropdownContext);
 
 const EventDropdownProvider: FC = props => {
@@ -33,19 +33,31 @@ const EventDropdownProvider: FC = props => {
 
     const divRef = useRef<HTMLDivElement|null>(null);
 
-    useEffect(() => {
-        window.addEventListener('scroll', () => setDropdown(prev => ({
+    const setVisibleCallback = useCallback((v: boolean|((d: Dropdown) => Dropdown)) => {
+        setDropdown(prev => (typeof v === 'boolean')? {
             ...prev,
-            visible: false
-        })), true);
+            visible: v
+        }: v(prev));
     }, []);
+
+    useEffect(() => {
+        const listener = () => {
+            dropdown?.visible && setDropdown(prev => ({
+                ...prev,
+                visible: false
+            }));
+        }
+
+        window.addEventListener('scroll', listener, true);
+        return () => window.removeEventListener('scroll', listener);
+    }, [dropdown.visible]);
 
     // Set invisible when config changes
     useEffect(() => {
         setDropdown(prev => ({
             ...prev,
             visible: false
-        }));
+        }))
     }, [config]);
 
     return <>
@@ -70,7 +82,8 @@ const EventDropdownProvider: FC = props => {
             </div>
         </div>
 
-        <DropdownContext.Provider value={[dropdown, setDropdown]}>
+        {/* TODO pass callback to prevent renders (add usecallback) */}
+        <DropdownContext.Provider value={setVisibleCallback}>
             {props.children}
         </DropdownContext.Provider>
     </>
