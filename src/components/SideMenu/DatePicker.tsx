@@ -143,7 +143,7 @@ const DatePicker: FC = () => {
                 newDate.setDate(1);
                 newDate.setMonth(newDate.getMonth() - 1);
                 setSelectedMonth(newDate);
-                performScript('onMonthChange', dateToObject(newDate));
+                config?.scriptNames?.onMonthChange && performScript('onMonthChange', dateToObject(newDate));
             }}>
                 <ArrowUp />
             </button>
@@ -153,7 +153,7 @@ const DatePicker: FC = () => {
                 newDate.setDate(1);
                 newDate.setMonth(newDate.getMonth() + 1);
                 setSelectedMonth(newDate);
-                performScript('onMonthChange', dateToObject(newDate));
+                config?.scriptNames?.onMonthChange && performScript('onMonthChange', dateToObject(newDate));
             }}>
                 <ArrowDown />
             </button>
