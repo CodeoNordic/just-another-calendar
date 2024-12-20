@@ -67,6 +67,10 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
         warn('A component was not found for the following event', props);
         return null;
     }
+
+    const style: React.CSSProperties = {
+        cursor: config.scriptNames.onEventClick? 'pointer': undefined
+    };
     
     if (component.htmlTemplate && component.htmlTemplate[0] === '<') {
         const parsedHtml = component.htmlTemplate
@@ -81,6 +85,7 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
                 .replaceAll('\\}', '}');
 
         return <div
+            style={style}
             className="jac-event"
             onPointerMove={e => tooltip.onPointerMove(e, props)}
             onPointerLeave={() => tooltip.onPointerLeave()}
@@ -90,6 +95,7 @@ const Event: FC<JAC.Event> = ({ children, ...props }) => {
     }
 
     return <div
+        style={style}
         ref={divRef}
         className={combineClasses("jac-event-wrapper", tooSmall && 'too-small')}
         onPointerMove={e => tooltip.onPointerMove(e, props)}
