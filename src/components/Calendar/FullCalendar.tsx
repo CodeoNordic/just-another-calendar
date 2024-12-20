@@ -15,7 +15,7 @@ import mapEvents, { eventToFcEvent } from './mapEvents';
 
 // Import FullCalendar
 import { default as FullCalendarReact } from '@fullcalendar/react';
-import { EventSourceInput } from '@fullcalendar/core';
+import { EventSourceInput, DayHeaderContentArg, SlotLabelContentArg } from '@fullcalendar/core';
 
 // Import Calendar plugins
 import momentPlugin from '@fullcalendar/moment';
@@ -175,6 +175,74 @@ const FullCalendar: FC = () => {
         setCreateTemplate(false);
     }, [createTemplate, newEvent]);
 
+    const slotLabelContent = (info: SlotLabelContentArg) => {
+        const str = info.date.toLocaleTimeString(
+            config.locale,
+            {
+                hour: '2-digit',
+                minute: '2-digit'
+            }
+        );
+
+        const isHourly = str.toLowerCase().match(/00 *(am|pm)?$/);
+
+        return <span className={isHourly? 'timeslot-large': 'timeslot-small'}>
+            {isHourly? str: str.substring(3, 5)}
+        </span>
+    };
+
+    const dayHeaderContent = (info: DayHeaderContentArg) => {
+        const base = capitalize(info.date.toLocaleDateString(config.locale, {
+            weekday: 'long',
+            day: '2-digit',
+            month: 'long'
+        }), true);
+        
+        const bgEvents = eventsBase.filter(ev => {
+            if (ev.extendedProps!.event.type !== 'backgroundEvent') return false;
+
+            const start = new Date(ev.start as number);
+            const current = new Date(info.date);
+
+            start.setHours(0, 0, 0, 0);
+            current.setHours(0, 0, 0, 0);
+
+            return start.valueOf() === current.valueOf();
+        });
+
+        const text = bgEvents
+            .map(ev => {
+                const event = ev.extendedProps?.event;
+                return event?.backgroundTitle || null;
+            })
+            .filter(title => title !== null)
+            .join(', ');
+
+        const color = tinycolor(bgEvents.find(ev => ev.extendedProps?.event?.backgroundTitle != undefined)?.extendedProps?.event.colors?.background || '#eaa').setAlpha(1);
+        
+        return <span
+            onClick={() => performScript('onDateHeaderClick', dateToObject(info.date))}
+            className={
+                combineClasses(
+                    (typeof config.scriptNames?.onDateHeaderClick === 'string') && 'jac-clickable-date-header',
+                    !!text && 'jac-date-header-with-bg-event'
+                )
+            }
+            style={!!text? {
+                color: !!text ? `${color.toRgbString()}` : "",
+                textDecoration: 'none'
+            }: undefined}
+        >
+            {base}
+            {!!text && <>
+                <br />
+                ({text}) 
+            </>}
+        </span>
+    }
+
+    const allDayContent = <div className='jac-all-day'>{config.translations?.allDaySlot ?? 'All day'}</div>;
+
     return <div>
         <FullCalendarReact
             ref={cal => calendarRef.current = cal}
@@ -225,131 +293,27 @@ const FullCalendar: FC = () => {
 
             // Set up views
             views={{
+                timeGrid: { slotLabelContent, dayHeaderContent },
+                timeline: { slotLabelContent, dayHeaderContent },
+
                 // TODO duplicate code, reduce to reusable function
                 resourceTimeline: {
-                    slotLabelContent: info => {
-                        const base = capitalize(info.text, true);
-
-                        const bgEvents = eventsBase.filter(ev => {
-                            if (ev.extendedProps!.event.type !== 'backgroundEvent') return false;
-
-                            const start = new Date(ev.start as number);
-                            const current = new Date(info.date);
-
-                            start.setHours(0, 0, 0, 0);
-                            current.setHours(0, 0, 0, 0);
-
-                            return start.valueOf() === current.valueOf();
-                        });
-
-                        const text = bgEvents
-                            .map(ev => {
-                                const event = ev.extendedProps?.event;
-                                return event?.backgroundTitle || null;
-                            })
-                            .filter(title => title !== null)
-                            .join(', ');
-
-                        const color = tinycolor(bgEvents.find(ev => ev.extendedProps?.event?.backgroundTitle != undefined)?.extendedProps?.event.colors?.background || '#eaa').setAlpha(1);
-
-                        return <span
-                            onClick={() => performScript('onDateHeaderClick', dateToObject(info.date))}
-                            className={
-                                combineClasses(
-                                    (typeof config.scriptNames?.onDateHeaderClick === 'string') && 'jac-clickable-date-header',
-                                    !!text && 'jac-date-header-with-bg-event'
-                                )
-                            }
-                            style={!!text? {
-                                color: !!text ? `${color.toRgbString()}` : "",
-                                textDecoration: 'none'
-                            }: undefined}
-                        >
-                            {base}
-                            {!!text && <>
-                                <br />
-                                ({text}) 
-                            </>}
-                        </span>
-                    }
+                    slotLabelContent: dayHeaderContent
                 },
 
                 resourceTimeGrid: {
-                    dayHeaderContent: info => {
-                        const base = capitalize(info.date.toLocaleDateString(config.locale, {
-                            weekday: 'long',
-                            day: '2-digit',
-                            month: 'long'
-                        }), true);
-                        
-                        const bgEvents = eventsBase.filter(ev => {
-                            if (ev.extendedProps!.event.type !== 'backgroundEvent') return false;
-
-                            const start = new Date(ev.start as number);
-                            const current = new Date(info.date);
-
-                            start.setHours(0, 0, 0, 0);
-                            current.setHours(0, 0, 0, 0);
-
-                            return start.valueOf() === current.valueOf();
-                        });
-
-                        const text = bgEvents
-                            .map(ev => {
-                                const event = ev.extendedProps?.event;
-                                return event?.backgroundTitle || null;
-                            })
-                            .filter(title => title !== null)
-                            .join(', ');
-
-                        const color = tinycolor(bgEvents.find(ev => ev.extendedProps?.event?.backgroundTitle != undefined)?.extendedProps?.event.colors?.background || '#eaa').setAlpha(1);
-                        
-                        return <span
-                            onClick={() => performScript('onDateHeaderClick', dateToObject(info.date))}
-                            className={
-                                combineClasses(
-                                    (typeof config.scriptNames?.onDateHeaderClick === 'string') && 'jac-clickable-date-header',
-                                    !!text && 'jac-date-header-with-bg-event'
-                                )
-                            }
-                            style={!!text? {
-                                color: !!text ? `${color.toRgbString()}` : "",
-                                textDecoration: 'none'
-                            }: undefined}
-                        >
-                            {base}
-                            {!!text && <>
-                                <br />
-                                ({text}) 
-                            </>}
-                        </span>
-                    },
-
-                    slotLabelContent: info => {
-                        const str = info.date.toLocaleTimeString(
-                            config.locale,
-                            {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            }
-                        );
-
-                        const isHourly = str.toLowerCase().match(/00 *(am|pm)?$/);
-
-                        return <span className={isHourly? 'timeslot-large': 'timeslot-small'}>
-                            {isHourly? str: str.substring(3, 5)}
-                        </span>
-                    },
+                    dayHeaderContent,
+                    slotLabelContent,
 
                     dayHeaders: true,
                     datesAboveResources: true,
 
-                    allDayContent: <div className='jac-all-day'>{config.translations?.allDaySlot ?? 'All day'}</div>,
-                    allDaySlot: config.allDaySlot !== false,
-
                     duration: { days: config.days ?? 7 }
                 }
             }}
+
+            allDayContent={allDayContent}
+            allDaySlot={config.allDaySlot !== false}
 
             // Add content
             resources={config.resources}
