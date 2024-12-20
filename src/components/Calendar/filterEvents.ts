@@ -5,7 +5,7 @@ import get from 'lodash.get';
 
 export const getAffectingFilters = (event: JAC.Event, config: JAC.Config) => {
     const filters = config.eventFilters || [];
-    if (!filters.length) return config.events;
+    if (!filters.length) return [];
 
     const filterIds = (typeof event.filterId === 'string')? [event.filterId]: (event.filterId || []);
 
@@ -40,13 +40,12 @@ export const getAffectingFilters = (event: JAC.Event, config: JAC.Config) => {
 
 export default function filterEvents(config: JAC.Config): JAC.Event[] {
     const filters = config.eventFilters || [];
-    if (!filters.length) return config.events;
+    if (!filters.length && !config.searchFields?.length) return config.events;
 
     const searchFields = config.searchFields instanceof Array? config.searchFields: [];
 
     return config?.events?.filter(event => {
         const affectingFilters = getAffectingFilters(event, config);
-
         affectingFilters && (event._affectingFilters = affectingFilters);
 
         let filterCheck = !affectingFilters.length;
