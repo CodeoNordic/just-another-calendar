@@ -328,13 +328,27 @@ const FullCalendar: FC = () => {
 
             // Automatically open/close resource groups on first load
             resourceGroupLabelDidMount={info => {
-                const resource = config.resources?.find(r => r.id === info.groupValue);
+                const group = config.groups?.find(g => g.id === info.groupValue);
+                const resource = config.resources?.find(r => (r as RSAny)[(config.resourceGroupField ?? 'groupId')] === info.groupValue);
+
+                if (!group || !resource) return null;
                 
-                const noEvents = !eventsBase.some(e => e.resourceIds?.includes(info.groupValue));
-                const collapsed = resource?.collapsed !== undefined? resource.collapsed: noEvents;
+                const noEvents = !eventsBase.some(e => (e.resourceId === group.id) || e.resourceIds?.includes(group.id));
+                const collapsed = group?.collapsed !== undefined? group.collapsed: noEvents;
 
                 const expander = info.el.querySelector(`.fc-datagrid-expander:has(.fc-icon-${collapsed? 'minus':'plus'}-square)`) as HTMLButtonElement;
                 expander?.click();
+            }}
+
+            resourceGroupField={config.resourceGroupField ?? 'groupId'}
+            resourceGroupLabelContent={info => {
+                const group = config.groups?.find(g => g.id === info.groupValue);
+                const resources = config.resources?.filter(r => r.groupId === group?.id);
+                
+                if (!group || !resources?.length) return null;
+
+                const events = eventsBase.filter(ev => (resources.some(r => (ev.resourceId === r.id) || ev.resourceIds?.includes(r.id))));
+                return `${group?.title ?? '---'} (${events.length})`;
             }}
 
             // Sorting

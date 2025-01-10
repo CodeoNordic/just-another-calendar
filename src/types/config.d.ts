@@ -6,6 +6,7 @@ declare global {
             ignoreInfo?: boolean;
 
             events: JAC.Event[];
+            groups?: JAC.Group[];
 
             heatmap?: {
                 date: string; // Date in format 'YYYY-MM-DD'
@@ -27,7 +28,7 @@ declare global {
             eventTemplates?: EventTemplate[];
             eventTemplateAreas: Area[];
             eventTemplatesHidden?: boolean;
-            
+
             searchFields?: SearchField[];
             searchFieldsHidden?: boolean;
             
@@ -37,6 +38,7 @@ declare global {
             dayMinWidth?: number;
             resources?: Resource[];
             resourcesWidth?: string;
+            resourceGroupField?: string;
             eventResourceEditable?: boolean;
 
             eventStartEditable?: boolean;

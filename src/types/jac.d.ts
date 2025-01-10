@@ -2,8 +2,9 @@ declare global {
     namespace JAC {
         interface Resource {
             id: string;
+            groupId?: string;
+
             title?: string;
-            collapsed?: boolean;
             disabled?: boolean;
 
             sort?: number;
@@ -137,6 +138,12 @@ declare global {
             open?: boolean;
             sort?: number;
             hidden?: boolean;
+        }
+
+        interface Group {
+            id: string;
+            title?: string;
+            collapsed?: boolean;
         }
     }
 }

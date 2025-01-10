@@ -269,6 +269,10 @@
         border-right: none !important;
     }
 
+    .fc-col-header > thead > tr:last-child > td {
+        border: none !important;
+    }
+
     .fc-resource-daygrid .fc-scrollgrid-section-header>th:first-child {
         border-right: none !important;
     }
@@ -290,6 +294,11 @@
                 text-transform: capitalize;
             }
         }
+    }
+
+    // Date header expander fix
+    .fc-datagrid-cell-cushion:has(.fc-datagrid-expander + .fc-datagrid-cell-main>.date-header) .fc-datagrid-expander {
+        display: none !important;
     }
 
     th.fc-resource {
