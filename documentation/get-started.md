@@ -20,6 +20,8 @@ The following lines should be checked:
 - 34 and 50 - Uses the `HTML::HTML`-field
 - 70 - Uses the `HTML::Name`-field
 
+**Alternatively, you can simply copy and paste the HTML-contents into the web viewer or `HTML`-table.**
+
 ## 2. Copy the `LoadHTML` script from the [`demo-file`](../Demo.fmp12)
 This script takes in three parameters through JSON to inject the HTML into your web viewer:
 - `moduleName` (string) - Name of the module to load from the `HTML`-table

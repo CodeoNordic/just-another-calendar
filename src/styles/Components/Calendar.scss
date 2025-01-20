@@ -282,6 +282,11 @@
         border-top: none;
     }
 
+    // Center slot label in timeline view
+    .fc-resource-timeline .fc-timeline-slot-frame:has(.fc-timeline-slot-cushion) {
+        justify-content: center !important;
+    }
+
     // Date header
     .fc-header-toolbar {
         padding-left: 93px;

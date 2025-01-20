@@ -48,6 +48,11 @@ const stdInterface = createInterface({
     output: process.stdout
 });
 
+let injectLicense = false;
+const askInjectLicense = async () => {
+    injectLicense = await yesNo(`Do you wish to inject Codeos FullCalendar license into index.html?`);
+};
+
 /** @param {string} question */
 const yesNo = async question => {
     const ans = (await stdInterface.question(`${question} ${cyanText}[y/n]${resetText}\n> `)).toLowerCase();
@@ -155,7 +160,7 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         short: packageJson.title.split(' ').map(w => w[0]).join(''),
         version,
         author: packageJson.author.name
-    }
+    };
 
     const patchNoteMap = allPatchNotes.map(fileName => {
         let content = fs.readFileSync(join(patchNotesPath, fileName), 'utf-8');
@@ -318,17 +323,20 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
         const base64WindowKey = btoa('codeoFcLicense');
 
         const indexContent = fs.readFileSync(indexPath, 'utf-8').toString();
-        const injectedContent = indexContent.replace(/<script[^>]*>/, `<script>window[atob('${base64WindowKey}')]=atob('${base64License}');`);
+        const injectedContent = injectLicense
+            ? indexContent.replace(/<script[^>]*>/, `<script>window[atob('${base64WindowKey}')]=atob('${base64License}');`)
+            : indexContent;
 
-        archive.append(injectedContent, { name: `${packageJson.name}-v${version}.html` });
-        archiveLite.append(injectedContent, { name: `${packageJson.name}-v${version}.html`});
+        archive.append(injectedContent, { name: `${packageJson.name}.html` });
+        archiveLite.append(injectedContent, { name: `${packageJson.name}.html`});
 
         await archive.finalize();
         await archiveLite.finalize();
 
         process.on('beforeExit', (exitCode) => {
             exitCode === 0 && console.log(
-                `${greenBackground}%s${resetText}`, `Distribution finished!${updateVersion? 'Remember to push package.json changes to GitHub.':''}`
+                `${greenBackground}%s${resetText}`, `Distribution finished!${updateVersion? 'Remember to push package.json changes to GitHub.':''}
+Also remember to ensure that the correct version is included in Demo.fmp12`
             );
         });
 
@@ -364,6 +372,8 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
     // Create the distribution build
     if (fs.existsSync(indexPath)) {
         answer = await yesNo('index.html was found. Do you still want to generate a new dist version of this?');
+        await askInjectLicense();
+
         if (answer) genDist();
 
         else {
@@ -374,8 +384,11 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
 
     else {
         answer = await yesNo('index.html was not found. Do you want to generate a new version of it?');
-        if (answer)
+        if (answer) {
+            await askInjectLicense();
             genDist();
+        }
+
         else
             throw new Error('Cannot continue without a valid index.html');
     }

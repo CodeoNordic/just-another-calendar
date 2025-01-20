@@ -294,11 +294,11 @@ const FullCalendar: FC = () => {
             // Set up views
             views={{
                 timeGrid: { slotLabelContent, dayHeaderContent },
-                timeline: { slotLabelContent, dayHeaderContent },
+                //timeline: { slotLabelContent, dayHeaderContent },
 
                 // TODO duplicate code, reduce to reusable function
                 resourceTimeline: {
-                    slotLabelContent: dayHeaderContent
+                    //slotLabelContent: dayHeaderContent
                 },
 
                 resourceTimeGrid: {
@@ -340,7 +340,7 @@ const FullCalendar: FC = () => {
                 expander?.click();
             }}
 
-            resourceGroupField={config.resourceGroupField ?? 'groupId'}
+            resourceGroupField={config.resourceGroupField}
             resourceGroupLabelContent={info => {
                 const group = config.groups?.find(g => g.id === info.groupValue);
                 const resources = config.resources?.filter(r => r.groupId === group?.id);
@@ -382,9 +382,19 @@ const FullCalendar: FC = () => {
             slotMinTime={config.calendarStartTime} 
             slotMaxTime={config.calendarEndTime}
 
-            slotLabelFormat={config.view?.toLowerCase().includes('timeline') ? { day: 'numeric', weekday: 'short' }: { hour: '2-digit', minute: '2-digit' }}
-            slotDuration={config.view?.toLowerCase().includes('timeline') ? { days: 1 }: { minutes: 15 }}
-            slotLabelInterval={config.view?.toLowerCase().includes('timeline') ? { days: 1 }: { minutes: 15 }}
+            //slotLabelFormat={/*config.view?.toLowerCase().includes('timeline') ? { day: 'numeric', weekday: 'short' }:*/ { hour: '2-digit', minute: '2-digit' }}
+            slotLabelFormat={config.slotLabelFormat ?? (
+                config.view?.toLowerCase().includes('timeline')? [
+                    { weekday: 'short', 'day': '2-digit' },
+                    { hour: '2-digit', minute: '2-digit' }
+                ]: {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }
+            )}
+
+            slotDuration={config.slotDuration ??/*config.view?.toLowerCase().includes('timeline') ? { days: 1 }:*/ { minutes: 15 }}
+            slotLabelInterval={config.slotLabelInterval ??/*config.view?.toLowerCase().includes('timeline') ? { days: 1 }:*/ { minutes: 15 }}
 
             firstDay={typeof config.firstDayOfWeek === 'number' ? 
                 clamp(config.firstDayOfWeek, 0, 6) : typeof config.firstDayOfWeek === "string" ? 

@@ -26,6 +26,9 @@ const stdInterface = createInterface({
 (async () => {
     const widgetFiles = readdirSync(__dirname)
         .filter(name => /^widget.*\.json$/.test(name));
+    
+    const htmlFiles = readdirSync(__dirname)
+        .filter(name => name.endsWith('.html'));
 
     let widgetFile = widgetFiles[0];
     if (!widgetFile)

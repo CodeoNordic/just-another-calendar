@@ -70,6 +70,9 @@ declare global {
             calendarEndTime?: string;
             initialScrollTime?: string;
 
+            slotLabelFormat?: import('@fullcalendar/core').FormatterInput;
+            slotDuration?: import('@fullcalendar/core').DurationInput;
+            slotLabelInterval?: import('@fullcalendar/core').DurationInput;
 
             // Fields from JAC.Event that appear when creating new events
             // Defaults to all fields in first event
