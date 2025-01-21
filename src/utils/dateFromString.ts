@@ -15,7 +15,14 @@ export default function dateFromString(str?: string) {
     if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})?$/.test(str)) return new Date(str);
 
     const [strDate, strTime] = str.split('T');
-    const parts = strDate.split('.');
+    const getParts = () => {
+        if (strDate.includes('/')) return strDate.split('/');
+        if (strDate.includes('-')) return strDate.split('-');
+        if (strDate.includes('.')) return strDate.split('.');
+        if (strDate.includes(' ')) return strDate.split(' ');
+        return [strDate];
+    };
+    const parts = getParts();
 
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10) - 1;
