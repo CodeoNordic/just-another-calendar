@@ -56,6 +56,7 @@ const FullCalendar: FC = () => {
     const [config, setConfig] = useConfigState() as State<JAC.Config>;
 
     const [creatingEvent, setCreatingEvent] = useState(false);
+    const [doubleClick, setDoubleClick] = useState<Date | null>(null);
     const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
     const [createTemplate, setCreateTemplate] = useState<boolean>(false);
     const [moved, setMoved] = useState<boolean>(false);
@@ -72,7 +73,7 @@ const FullCalendar: FC = () => {
         if (!config.eventButtons) return [];
         return config.eventButtons?.filter(btn => !btn._filter || searchObject(r, btn._filter));
     }, [config.eventButtons]);
-    
+
     // Automatically change date
     useEffect(() => {
         const date = config.date && dateFromString(config.date);
@@ -382,19 +383,28 @@ const FullCalendar: FC = () => {
             slotMinTime={config.calendarStartTime} 
             slotMaxTime={config.calendarEndTime}
 
-            //slotLabelFormat={/*config.view?.toLowerCase().includes('timeline') ? { day: 'numeric', weekday: 'short' }:*/ { hour: '2-digit', minute: '2-digit' }}
+            slotDuration={config.slotDuration ?? (
+                config.view?.toLowerCase().includes('timeline') 
+                    ? { days: 1 }
+                    : { minutes: 15 }
+            )}
+            
+            slotLabelInterval={
+                config.slotLabelInterval ?? (
+                config.view?.toLowerCase().includes('timeline') 
+                    ? { days: 1 }
+                    : { minutes: 15 }
+            )}
+            
             slotLabelFormat={config.slotLabelFormat ?? (
-                config.view?.toLowerCase().includes('timeline')? [
+                config.view?.toLowerCase().includes('timeline') ? [
                     { weekday: 'short', 'day': '2-digit' },
                     { hour: '2-digit', minute: '2-digit' }
-                ]: {
+                ] : {
                     hour: '2-digit',
                     minute: '2-digit'
                 }
             )}
-
-            slotDuration={config.slotDuration ??/*config.view?.toLowerCase().includes('timeline') ? { days: 1 }:*/ { minutes: 15 }}
-            slotLabelInterval={config.slotLabelInterval ??/*config.view?.toLowerCase().includes('timeline') ? { days: 1 }:*/ { minutes: 15 }}
 
             firstDay={typeof config.firstDayOfWeek === 'number' ? 
                 clamp(config.firstDayOfWeek, 0, 6) : typeof config.firstDayOfWeek === "string" ? 
@@ -602,6 +612,13 @@ const FullCalendar: FC = () => {
                     || (Boolean(config.scriptNames.onRangeSelected)/* && Boolean(config.eventTemplates?.length)*/) 
                     || Boolean(config.scriptNames.onEventCreated)}
             select={info => {
+                if (config.eventCreationDoubleClick && (info.allDay || (info.end.getTime() - info.start.getTime() == 900000)) && (!doubleClick || doubleClick.getTime() !== info.start.getTime())) {
+                    setDoubleClick(info.start);
+                    return;
+                } else {
+                    setDoubleClick(null);
+                }
+
                 const dates = newEvent && datesFromEvent(newEvent);
                 const eventParam = newEvent && {
                     ...newEvent,

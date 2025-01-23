@@ -41,6 +41,8 @@ declare global {
             resourceGroupField?: string;
             eventResourceEditable?: boolean;
 
+            eventCreationDoubleClick?: boolean;
+
             eventStartEditable?: boolean;
             eventDurationEditable?: boolean;
             
