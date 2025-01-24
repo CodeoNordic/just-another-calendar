@@ -18,6 +18,8 @@ declare global {
             sideMenuOpen?: boolean;
             sideMenuDisabled?: boolean;
 
+            hideTimeLabels?: boolean;
+
             datePickerDisabled?: boolean;
             
             eventFilters?: EventFilter[];

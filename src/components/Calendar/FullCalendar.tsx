@@ -397,10 +397,15 @@ const FullCalendar: FC = () => {
             )}
             
             slotLabelFormat={config.slotLabelFormat ?? (
-                config.view?.toLowerCase().includes('timeline') ? [
-                    { weekday: 'short', 'day': '2-digit' },
-                    { hour: '2-digit', minute: '2-digit' }
-                ] : {
+                config.view?.toLowerCase().includes('timeline') ? (
+                    !config.hideTimeLabels ? [ // TODO: Use everywhere for views
+                        { weekday: 'short', day: '2-digit' },
+                        { hour: '2-digit', minute: '2-digit' }
+                    ] : { 
+                        weekday: 'short', 
+                        day: '2-digit' 
+                    }
+                ) : {
                     hour: '2-digit',
                     minute: '2-digit'
                 }
