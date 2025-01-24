@@ -52,6 +52,9 @@ declare global {
 
         /** Debug helper to get an event's data */
         getEvent(id: string): JAC.Event|undefined;
+
+        /** Re-renders the calendar, as some values may not automatically update the calendar upon changing */
+        render(): void;
     }
 }
 

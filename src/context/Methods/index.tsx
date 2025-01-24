@@ -8,8 +8,9 @@ import useSetConfigValue from './setConfigValue';
 import useUpdateEventFilter from './updateEventFilter';
 
 import useGetEvent from './getEvent';
+import useRender from './render';
 
-// The purpose of applying the window methods in a react component is to be able to access e.g the config context
+// The purpose of applying the window methods in a react component is to be able to access other react contexts, such as calendarRef and the config
 const Methods: FC = ({ children }) => {
     useAddEvents();
     useRemoveEvents();
@@ -21,6 +22,7 @@ const Methods: FC = ({ children }) => {
     useUpdateEventFilter();
 
     useGetEvent();
+    useRender();
 
     return <>{children}</>;
 }

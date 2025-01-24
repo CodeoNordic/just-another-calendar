@@ -177,19 +177,27 @@ const FullCalendar: FC = () => {
     }, [createTemplate, newEvent]);
 
     const slotLabelContent = (info: SlotLabelContentArg) => {
-        const str = info.date.toLocaleTimeString(
-            config.locale,
-            {
-                hour: '2-digit',
-                minute: '2-digit'
-            }
-        );
+        // A react component must be made here to ensure automatic updates with config.hideTimeLabels
+        const Label = () => {
+            useEffect(() => {}, [config.hideTimeLabels]);
+            if (config.hideTimeLabels) return null;
 
-        const isHourly = str.toLowerCase().match(/00 *(am|pm)?$/);
+            const str = info.date.toLocaleTimeString(
+                config.locale,
+                {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }
+            );
+    
+            const isHourly = str.toLowerCase().match(/00 *(am|pm)?$/);
+    
+            return <span className={isHourly? 'timeslot-large': 'timeslot-small'}>
+                {isHourly? str: str.substring(3, 5)}
+            </span>
+        }
 
-        return <span className={isHourly? 'timeslot-large': 'timeslot-small'}>
-            {isHourly? str: str.substring(3, 5)}
-        </span>
+        return <Label />
     };
 
     const dayHeaderContent = (info: DayHeaderContentArg) => {
@@ -405,10 +413,10 @@ const FullCalendar: FC = () => {
                         weekday: 'short', 
                         day: '2-digit' 
                     }
-                ) : {
+                ) : (!config.hideTimeLabels ? {
                     hour: '2-digit',
                     minute: '2-digit'
-                }
+                } : {})
             )}
 
             firstDay={typeof config.firstDayOfWeek === 'number' ? 
