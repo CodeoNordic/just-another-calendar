@@ -14,9 +14,24 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
 
     const dates = datesFromEvent(event);
 
+    if (config.clampStartDates)
+        dates.start = new Date(
+            Math.max(dates.start?.valueOf() ?? 0, new Date(config.date ?? Date.now()).valueOf())
+        );
+
+    if (config.clampEndDates)
+        dates.end = new Date(
+            Math.min(dates.end?.valueOf() ?? 0, new Date(config.date ?? Date.now()).valueOf() + ((config.days ?? 0) * 1000 * 60 * 60 * 24))
+        );
+
     const eventStart = dates.start;
-    const eventEnd = dates.end;
-    
+    let eventEnd = dates.end;
+
+    if ((eventEnd?.valueOf() ?? 0) < (eventStart?.valueOf() ?? 0))
+        eventEnd = new Date(
+            (eventStart?.valueOf() ?? 0) + ((config.days ?? 0) * 1000 * 60 * 60 * 24)
+        );
+
     const resourceIds = event.resourceId instanceof Array? event.resourceId: (event.resourceId? [event.resourceId]: []);
     
     if (event._affectingFilters?.some(filter => !!filter.eventColor) && !(event.colors?.background || event.colors?.border || event.colors?.text)) {

@@ -28,7 +28,10 @@ export default function dateFromString(str?: string) {
     const getParts = () => {
         if (strDate.includes('/')) return strDate.split('/');
         if (strDate.includes('-')) return strDate.split('-');
-        if (strDate.includes('.')) return strDate.split('.');
+        if (strDate.includes('.')) {
+            const [d, m, y] = strDate.split('.');
+            return [m, d, y];
+        }
         if (strDate.includes(' ')) return strDate.split(' ');
         return [strDate];
     };
