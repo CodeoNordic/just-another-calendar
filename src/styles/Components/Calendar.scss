@@ -262,11 +262,11 @@
 
     // Top left fix
     .fc-scrollgrid-section-header>th:first-child {
+        border-right: none !important;
+        
         th.fc-timegrid-axis {
             border-bottom: none !important;
         }
-
-        border-right: none !important;
     }
 
     .fc-col-header > thead > tr:last-child > td {
