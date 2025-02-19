@@ -28,10 +28,7 @@ export default function dateFromString(str?: string) {
     const getParts = () => {
         if (strDate.includes('/')) return strDate.split('/');
         if (strDate.includes('-')) return strDate.split('-');
-        if (strDate.includes('.')) {
-            const [d, m, y] = strDate.split('.');
-            return [m, d, y];
-        }
+        if (strDate.includes('.')) return strDate.split('.');
         if (strDate.includes(' ')) return strDate.split(' ');
         return [strDate];
     };
@@ -40,8 +37,8 @@ export default function dateFromString(str?: string) {
     if (parts.length !== 3) return undefined;
 
     const [part1, part2, part3] = parts.map(Number);
-
     let year, month, day;
+
     if (part1 > 31) { // YYYY-MM-DD
         year = part1;
         month = part2 - 1;
@@ -53,6 +50,8 @@ export default function dateFromString(str?: string) {
     } else {
         return undefined; // Invalid or unsupported format
     }
+
+    console.log(year, month, day);
 
     let result = new Date(year, month, day);
     if (isNaN(result.getTime())) return undefined;
