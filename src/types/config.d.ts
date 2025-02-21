@@ -70,6 +70,9 @@ declare global {
             clampStartDates?: boolean;
             /** Forces every event outside the time range into the calendar. Useful for views where the date is irrelevant */
             clampEndDates?: boolean;
+
+            /** The format to display dates in */
+            dateFormat?: string;
             
             eventTimeFormat?: string;
             nowIndicator?: boolean;

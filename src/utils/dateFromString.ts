@@ -25,31 +25,42 @@ export default function dateFromString(str?: string) {
 
     const [strDate, strTime] = str.split('T') as [string, string | undefined];
 
-    const getParts = () => {
-        if (strDate.includes('/')) return strDate.split('/');
-        if (strDate.includes('-')) return strDate.split('-');
-        if (strDate.includes('.')) return strDate.split('.');
-        if (strDate.includes(' ')) return strDate.split(' ');
-        return [strDate];
+    const getParts = (str: string) => {
+        if (str.includes('/')) return str.split('/');
+        if (str.includes('-')) return str.split('-');
+        if (str.includes('.')) return str.split('.');
+        if (str.includes(' ')) return str.split(' ');
+        return [str];
     };
 
-    const parts = getParts();
+    const parts = getParts(strDate);
     if (parts.length !== 3) return undefined;
 
     const [part1, part2, part3] = parts.map(Number);
     let year, month, day;
+    
+    if (window._config?.dateFormat) {
+        const dateFormat = window._config.dateFormat;
+        const order = dateFormat.toLowerCase().match(/y{4}|m{2}|d{2}/g);
 
-    if (part1 > 31) { // YYYY-MM-DD
-        year = part1;
-        month = part2 - 1;
-        day = part3;
-    } else if (part3 > 31) { // DD-MM-YYYY
-        year = part3;
-        month = part2 - 1;
-        day = part1;
+        if (order) {
+            year = Number(parts[order.indexOf('yyyy')]);
+            month = Number(parts[order.indexOf('mm')]) - 1;
+            day = Number(parts[order.indexOf('dd')]);
+        }
     } else {
-        return undefined; // Invalid or unsupported format
+        if (part1 > 31) { // YYYY-MM-DD
+            year = part1;
+            month = part2 - 1;
+            day = part3;
+        } else if (part3 > 31) { // DD-MM-YYYY
+            year = part3;
+            month = part2 - 1;
+            day = part1;
+        }
     }
+
+    if (!year || !month || !day) return undefined;
 
     let result = new Date(year, month, day);
     if (isNaN(result.getTime())) return undefined;

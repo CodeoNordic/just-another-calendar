@@ -28,6 +28,15 @@ in which case you should manually set this value using [`setConfigValue('date', 
 
 **Default value:** `[Current Date]`
 
+### `dateFormat` (string)
+Controls the format of the date displayed in the calendar.
+
+```json
+{
+    "dateFormat": "DD.MM.YYYY"
+}
+```
+
 ### `days` (number)
 Controls how many days to display at once in the calendar. Certain calendar views will not use this value.
 
