@@ -51,8 +51,6 @@ export default function dateFromString(str?: string) {
         return undefined; // Invalid or unsupported format
     }
 
-    console.log(year, month, day);
-
     let result = new Date(year, month, day);
     if (isNaN(result.getTime())) return undefined;
 
