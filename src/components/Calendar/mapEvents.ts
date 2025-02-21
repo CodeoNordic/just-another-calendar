@@ -2,6 +2,7 @@ import filterEvents from './filterEvents';
 
 import calculateContrast from '@utils/contrast';
 import datesFromEvent from '@utils/datesFromEvent';
+import dateFromString from '@utils/dateFromString';
 
 import { warn } from '@utils/log';
 import tinycolor from 'tinycolor2';
@@ -16,12 +17,12 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
 
     if (config.clampStartDates)
         dates.start = new Date(
-            Math.max(dates.start?.valueOf() ?? 0, new Date(config.date ?? Date.now()).valueOf())
+            Math.max(dates.start?.valueOf() ?? 0, new Date(dateFromString(config.date) ?? Date.now()).valueOf())
         );
 
     if (config.clampEndDates)
         dates.end = new Date(
-            Math.min(dates.end?.valueOf() ?? 0, new Date(config.date ?? Date.now()).valueOf() + ((config.days ?? 0) * 1000 * 60 * 60 * 24))
+            Math.min(dates.end?.valueOf() ?? 0, new Date(dateFromString(config.date) ?? Date.now()).valueOf() + ((config.days ?? 0) * 1000 * 60 * 60 * 24))
         );
 
     const eventStart = dates.start;
