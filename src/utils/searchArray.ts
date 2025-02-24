@@ -12,7 +12,7 @@ import searchObject from './searchObject';
  * searchArray([1, 2, 3, 4, 5], 3, true); // [1, 2, 4, 5]
  * ```
  */
-export default function searchArray<T extends Array<any>>(arr: T, searchParam?: null|string|RSAny, negativeSearch: boolean = false): T {
+export default function searchArray<T extends Array<any>>(arr: T, searchParam?: null|string|RSAny|Array<string|RSAny>, negativeSearch: boolean = false): T {
     if (!searchParam) return arr;
 
     const res = arr.filter(obj => searchObject(obj, searchParam)) as T;

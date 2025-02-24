@@ -48,11 +48,12 @@ declare global {
 
         type EventField = WithFilter<{
             /** The field type. Defaults to 'text' */
-            type?: 'text'|'button'|'time'|'date';
+            type?: 'text'|'button'|'time'|'date'|'divider';
 
             /** An icon to be used alongside the field value. If the icon starts with < it is assumed to be injectable HTML */
             icon?: string|WithFilter<{ icon: string }>|WithFilter<{ icon: string }>[];
             iconPosition?: 'left'|'right';
+            iconThickness?: string|number;
 
             /** The key of the value to display, E.G "FirstName". Supports lodash.get syntax such as "NestedObject.FirstName" or "NestedArray[0]" */
             value?: string;

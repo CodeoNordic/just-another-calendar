@@ -17,7 +17,7 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
 
     // Optimize value parsing with useMemo
     const fieldValue: JSX.Element | string | null = useMemo(() => {
-        const value =  getFieldValue(props.event, {
+        const value = props.type === 'divider' ? null : getFieldValue(props.event, {
             eval: props.eval,
             htmlTemplate: props.htmlTemplate,
             template: props.template,
@@ -44,13 +44,23 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
     }, [props.icon, props.event, config]);
 
     if (!filterCheck) return null;
-    const fieldIcon = (fieldIconSrc) && <Icon src={fieldIconSrc} style={{
-        marginLeft: props.iconPosition === 'right'? '4px': undefined,
-        marginRight: props.iconPosition !== 'right'? '4px': undefined
-    }} />
+    const fieldIcon = (fieldIconSrc) && <Icon
+        src={fieldIconSrc}
+        thickness={props.iconThickness}
+        style={{
+            marginLeft: props.iconPosition === 'right'? '4px': undefined,
+            marginRight: props.iconPosition !== 'right'? '4px': undefined
+        }}
+    />
 
-    if (!props.showIfEmpty && fieldValue === null && fieldIconSrc === null) return null;
     const fieldType = props.type?.toLowerCase() || 'text';
+    
+    if (
+        props.type !== 'divider'
+        && !props.showIfEmpty
+        && fieldValue === null
+        && fieldIconSrc === null
+    ) return null;
 
     return <>
         {props.lineBreakStart && <div className="line-break" />}
@@ -74,7 +84,11 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
                 fontFamily: props.textStyle?.font,
                 fontWeight: props.textStyle?.weight ?? props.textStyle?.boldness,
                 fontStyle: props.textStyle?.style,
-                textAlign: props.textStyle?.alignment
+                textAlign: props.textStyle?.alignment,
+                borderColor: props.color ?? props.textStyle?.color ?? props.textStyle?.textColor ?? 'inherit',
+                borderTopStyle: props.type === 'divider' ? 'solid' : undefined,
+                borderTopWidth: props.type === 'divider' ? '1px' : undefined,
+                width: props.type === 'divider' ? '100%' : undefined
             }}
         >
             {['text', 'time', 'date'].includes(fieldType) && <>

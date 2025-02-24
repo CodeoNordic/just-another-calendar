@@ -2,7 +2,7 @@ type Styles = Required<JAC.Config>['styles'];
 
 const map: { [k in keyof Styles]: string } = {
     event: '.jac-event, .jac-event button',
-    resourceHeader: '.fc-resource-group, .fc-resource .fc-scrollgrid-sync-inner',
+    resourceHeader: '.resource-header',
     dateHeader: '.date-header',
     dayHeader: '.fc-timeline-slot, .fc-day.fc-col-header-cell',
     tooltip: '#tooltip'

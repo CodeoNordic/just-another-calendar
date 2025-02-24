@@ -2,15 +2,10 @@ import { useEffect } from 'react';
 import { useConfig } from '@context/Config';
 
 import FullCalendar from './FullCalendar';
-
-import dateFromString from '@utils/dateFromString';
 import stylesFromFontSizes from '@utils/stylesFromConfig';
 
 const Calendar: FC = () => {
     const config = useConfig();
-    const events = config?.events;
-
-    const date = dateFromString(config?.date)?.valueOf();
     const fontStyles = config?.styles;
 
     useEffect(() => {

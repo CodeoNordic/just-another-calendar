@@ -555,14 +555,14 @@ const FullCalendar: FC = () => {
             }}
 
             resourceLabelContent={(typeof config.scriptNames?.onResourceLabelClick === 'string')? (info => {
-                return <span className="jac-clickable-resource-label" onClick={() => {
+                return <span className="jac-clickable-resource-label resource-header" onClick={() => {
                     performScript('onResourceLabelClick', {
                         id: info.resource.id,
                         title: info.resource.title,
                         ...info.resource.extendedProps
                     })
                 }}>{info.resource.title}</span>
-            }): undefined}
+            }): info => <span className="resource-header">{info.resource.title}</span>}
 
             droppable
             drop={info => {

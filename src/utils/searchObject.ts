@@ -10,9 +10,10 @@ import fileMakerFindEquivalent from './filemakerFindEquivalent';
  * searchObject({ "FirstName": "John" }, "John"); // true
  * searchObject({ "FirstName": "John" }, { "FirstName": "John" }); // true
  * searchObject({ "FirstName": "John" }, "Doe"); // false 
+ * searchObject({ "FirstName": "John", "Age": 21 }, [{ "FirstName": "John" }, { "Age": 21 }]); Searches for anyone named John OR the age of 21
  * ```
  */
-export default function searchObject(obj: RSAny, searchParam: string|RSAny): boolean {
+export default function searchObject(obj: RSAny, searchParam: string|RSAny|Array<string|RSAny>): boolean {
     if (!obj || !searchParam) return true;
 
     if (typeof searchParam === 'string') return Object.keys(obj)
@@ -24,6 +25,14 @@ export default function searchObject(obj: RSAny, searchParam: string|RSAny): boo
                 return fileMakerFindEquivalent(value, searchParam);
 
             return false;
+        });
+
+    if (searchParam instanceof Array)
+        return searchParam.some(param => {
+            console.log(param);
+            const s = searchObject(obj, param);
+            console.log(s);
+            return s;
         });
     
     // searchParam is object

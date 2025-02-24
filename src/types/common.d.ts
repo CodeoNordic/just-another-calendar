@@ -40,7 +40,7 @@ declare global {
         [K in keyof T]: T[K] extends C? K: never
     }[keyof T]>;
 
-    type WithFilter<T> = T & { _filter?: Partial<T> };
+    type WithFilter<T> = T & { _filter?: Partial<T>|Array<Partial<T>> };
 }
 
 export {}

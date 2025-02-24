@@ -15,7 +15,10 @@ import performScript from '@utils/performScript';
 const App: React.FC = () => {
     const [config, setConfig] = useConfigState();
 
-    const css = config?.customCSS;
+    let css = config?.customCSS;
+    const cssKey = !css && config && Object.keys(config).find(k => k.toLowerCase() === 'customcss');
+    cssKey && (css = config?.[cssKey as 'customCSS']);
+
     useEffect(() => {
         if (!css) return;
         document.querySelector('style#jac-custom-css')?.remove();
