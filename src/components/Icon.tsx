@@ -5,7 +5,12 @@ import combineClasses from '@utils/combineClasses';
 
 import { warn } from '@utils/log';
 
-const Icon: FC<{ src: string; thickness?: string|number; }> = props => {
+const Icon: FC<{
+    src: string;
+    thickness?: string|number;
+    width?: string|number;
+    height?: string|number
+}> = props => {
     const config = useConfig();
     const src = useMemo(() => {
         if (!props.src) return null;
@@ -54,6 +59,8 @@ const Icon: FC<{ src: string; thickness?: string|number; }> = props => {
         style={{
             strokeWidth: typeof props.thickness === 'number' ? `${props.thickness}px` : props.thickness,
             stroke: props.thickness ? 'currentColor' : undefined,
+            width: typeof props.width === 'number' ? `${props.width}px` : props.width,
+            height: typeof props.height === 'number' ? `${props.height}px` : props.height,
             ...props.style
         }}
     />

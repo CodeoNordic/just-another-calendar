@@ -7,6 +7,18 @@ import performScript from '@utils/performScript';
 import searchObject from '@utils/searchObject';
 import { useConfig } from '@context/Config';
 
+const cssFields: (string & keyof Partial<JAC.EventField>)[] = [
+    'marginTop',
+    'marginBottom',
+    'marginLeft',
+    'marginRight',
+
+    'paddingTop',
+    'paddingBottom',
+    'paddingLeft',
+    'paddingRight'
+];
+
 const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void; onButtonLeave?: () => void; tooSmall: boolean; }> = props => {
     const config = useConfig()!;
     
@@ -43,10 +55,24 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
         return matches[0]?.icon || null;
     }, [props.icon, props.event, config]);
 
+    // Apply passed styles
+    const passedStyles = useMemo(() => {
+        const styles: RSAny = {};
+
+        cssFields.forEach(f => {
+            if (!['string', 'number'].includes(typeof props[f])) return;
+            styles[f] = typeof props[f] === 'string' ? props[f] : `${props[f]}px`;
+        });
+        
+        return styles;
+    }, cssFields.map(f => props[f]));
+
     if (!filterCheck) return null;
     const fieldIcon = (fieldIconSrc) && <Icon
         src={fieldIconSrc}
         thickness={props.iconThickness}
+        width={props.iconWidth}
+        height={props.iconHeight}
         style={{
             marginLeft: props.iconPosition === 'right'? '4px': undefined,
             marginRight: props.iconPosition !== 'right'? '4px': undefined
@@ -76,10 +102,6 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
                 backgroundColor: props.textStyle?.background ?? props.textStyle?.backgroundColor,
                 margin: props.textStyle?.margin,
                 padding: props.textStyle?.padding,
-                marginTop: (typeof props.marginTop === 'number')? `${props.marginTop}px`: props.marginTop,
-                marginBottom: (typeof props.marginBottom === 'number')? `${props.marginBottom}px`: props.marginBottom,
-                marginLeft: (typeof props.marginLeft === 'number')? `${props.marginLeft}px`: props.marginLeft,
-                marginRight: (typeof props.marginRight === 'number')? `${props.marginRight}px`: props.marginRight,
                 flexGrow: props.grow,
                 fontFamily: props.textStyle?.font,
                 fontWeight: props.textStyle?.weight ?? props.textStyle?.boldness,
@@ -88,7 +110,8 @@ const Field: FC<JAC.EventField & { event: JAC.Event; onButtonEnter?: () => void;
                 borderColor: props.color ?? props.textStyle?.color ?? props.textStyle?.textColor ?? 'inherit',
                 borderTopStyle: props.type === 'divider' ? 'solid' : undefined,
                 borderTopWidth: props.type === 'divider' ? '1px' : undefined,
-                width: props.type === 'divider' ? '100%' : undefined
+                width: props.type === 'divider' ? '100%' : undefined,
+                ...passedStyles
             }}
         >
             {['text', 'time', 'date'].includes(fieldType) && <>

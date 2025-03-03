@@ -54,6 +54,8 @@ declare global {
             icon?: string|WithFilter<{ icon: string }>|WithFilter<{ icon: string }>[];
             iconPosition?: 'left'|'right';
             iconThickness?: string|number;
+            iconWidth?: string|number;
+            iconHeight?: string|number;
 
             /** The key of the value to display, E.G "FirstName". Supports lodash.get syntax such as "NestedObject.FirstName" or "NestedArray[0]" */
             value?: string;
@@ -122,6 +124,18 @@ declare global {
 
             /** Passed to CSS 'marginRight' */
             marginRight?: string|number;
+
+            /** Passed to CSS 'paddingTop' */
+            paddingTop?: string|number;
+
+            /** Passed to CSS 'paddingBottom' */
+            paddingBottom?: string|number;
+
+            /** Passed to CSS 'paddingLeft' */
+            paddingLeft?: string|number;
+
+            /** Passed to CSS 'paddingRight' */
+            paddingRight?: string|number;
 
             /** Passed to CSS 'flex-grow' */
             grow?: number;

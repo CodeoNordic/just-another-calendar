@@ -452,7 +452,7 @@ const FullCalendar: FC = () => {
 
                 if (!end) {
                     // TODO make default duration dynamic
-                    end = new Date(start.getTime() + 1000 * 60 * 15);
+                    end = new Date(start.getTime() + (1000 * 60 * 15));
                 }
 
                 const events = config.events;
@@ -486,18 +486,22 @@ const FullCalendar: FC = () => {
 
                     const { events, ...cfg } = prev;
 
-                    event.start = start.toISOString();
-                    end && (event.end = end.toISOString());
+                    if (prev.eventStartEditable) {
+                        event.start = start.toISOString();
+                        end && (event.end = end.toISOString());
+                    }
 
-                    event.startTime = start.toTimeString().substring(0, 5);
-                    event.timeStart = event.startTime;
+                    if (prev.eventDurationEditable) {
+                        event.startTime = start.toTimeString().substring(0, 5);
+                        event.timeStart = event.startTime;
 
-                    end && (event.endTime = end.toTimeString().substring(0, 5));
-                    event.timeEnd = event.endTime;
+                        end && (event.endTime = end.toTimeString().substring(0, 5));
+                        event.timeEnd = event.endTime;
 
-                    event.allDay = info.event.allDay;
+                        event.allDay = info.event.allDay;
+                    }
 
-                    newResource && (event.resourceId = newResource.id);
+                    prev.eventResourceEditable && newResource && (event.resourceId = newResource.id);
 
                     return {
                         ...cfg,

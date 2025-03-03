@@ -29,9 +29,7 @@ export default function searchObject(obj: RSAny, searchParam: string|RSAny|Array
 
     if (searchParam instanceof Array)
         return searchParam.some(param => {
-            console.log(param);
             const s = searchObject(obj, param);
-            console.log(s);
             return s;
         });
     
