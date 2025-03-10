@@ -25,7 +25,7 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
             Math.min(
                 dates.end?.valueOf() ?? 0,
                 new Date(dateFromString(config.date) ?? Date.now()).valueOf() + (
-                    config.shortenClampedDates ? 0 : (config.days ?? 0) * 1000 * 60 * 60 * 24
+                    (config.days ?? 0) * 1000 * 60 * 60 * 24
                 )
             )
         );
