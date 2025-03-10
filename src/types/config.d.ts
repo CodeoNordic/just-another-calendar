@@ -70,6 +70,8 @@ declare global {
             clampStartDates?: boolean;
             /** Forces every event outside the time range into the calendar. Useful for views where the date is irrelevant */
             clampEndDates?: boolean;
+            /** Clamped end dates will by default clamp to the end of the range. Set this to true to set clamped end dates to the start of the range.  */
+            shortenClampedDates?: boolean;
 
             /** The format to display dates in */
             dateFormat?: string;
