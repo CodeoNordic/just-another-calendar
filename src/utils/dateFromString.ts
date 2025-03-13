@@ -15,12 +15,12 @@ export default function dateFromString(str?: string) {
 
     // ISO 8601 check
     if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})?$/.test(str)) {
-        return new Date(str.replaceAll('-', '/'));
+        return new Date(str);
     }
 
     // Date without time (YYYY-MM-DD)
     if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-        return new Date(str.replaceAll('-', '/') + 'T00:00:00Z');
+        return new Date(str + 'T00:00:00Z');
     }
 
     const [strDate, strTime] = str.split('T') as [string, string | undefined];
