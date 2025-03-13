@@ -56,7 +56,7 @@ const FullCalendar: FC = () => {
     const [config, setConfig] = useConfigState() as State<JAC.Config>;
 
     const [creatingEvent, setCreatingEvent] = useState(false);
-    const [doubleClick, setDoubleClick] = useState<Date | null>(null);
+    const [doubleClick, setDoubleClick] = useState<{date: Date, resource?: string} | null>(null);
     const [newEvent, setNewEvent] = useState<JAC.Event | null>(null);
     const [createTemplate, setCreateTemplate] = useState<boolean>(false);
     const [moved, setMoved] = useState<boolean>(false);
@@ -629,8 +629,14 @@ const FullCalendar: FC = () => {
                     || (Boolean(config.scriptNames.onRangeSelected)/* && Boolean(config.eventTemplates?.length)*/) 
                     || Boolean(config.scriptNames.onEventCreated)}
             select={info => {
-                if (config.eventCreationDoubleClick && (info.allDay || (info.end.getTime() - info.start.getTime() == 900000)) && (!doubleClick || doubleClick.getTime() !== info.start.getTime())) {
-                    setDoubleClick(info.start);
+                if (
+                    config.eventCreationDoubleClick && (info.allDay || (info.end.getTime() - info.start.getTime() == 900000)) && (
+                        !doubleClick 
+                            || doubleClick.date.getTime() !== info.start.getTime() 
+                            || doubleClick.resource !== info.resource?.id
+                    )
+                ) {
+                    setDoubleClick({ date: info.start, resource: info.resource?.id });
                     return;
                 } else {
                     setDoubleClick(null);
