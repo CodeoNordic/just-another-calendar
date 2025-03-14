@@ -81,6 +81,14 @@ const parseConfig = (cfg: string = '{}') => {
             (config as RSAny)[key] ??= defaultConfig[key as keyof JAC.Config];
         });
 
+        config.slotLabelInterval = config.view?.toLowerCase().includes('timeline') 
+            ? { days: 1 }
+            : { minutes: 15 }
+
+        config.slotDuration = config.view?.toLowerCase().includes('timeline') 
+            ? { days: 1 }
+            : { minutes: 15 }
+
         const assignedTemplates: JAC.EventTemplate[] = [];
         config.eventTemplates?.forEach(template => {
             if (!template.event.id) {
