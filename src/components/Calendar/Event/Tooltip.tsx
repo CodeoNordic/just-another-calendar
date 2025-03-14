@@ -134,14 +134,13 @@ const TooltipProvider: FC = ({ children }) => {
 
         let left = clamp(tooltip.x + 1, tooltipPadding, maxX);
         let top = clamp(tooltip.y - div.clientHeight - 1, tooltipPadding, maxY);
-
         
         // If the tooltip goes over the mouse, move it to the bottom of the event (case: too high)
         if (divRef.current) {
             const width = divRef.current.clientWidth;
             const height = divRef.current.clientHeight;
             
-            const minXPos = left - 1;
+            const minXPos = left;
             const maxXPos = left + width;
             
             const minYPos = top + 1;
