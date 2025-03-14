@@ -9,6 +9,7 @@ interface Tooltip {
     x: number;
     y: number;
     event: JAC.Event|null;
+    eventDiv: HTMLDivElement|null;
     onPointerMove(e: React.PointerEvent<HTMLDivElement>, event: JAC.Event): void;
     onPointerLeave(): void;
     onButtonEnter(): void;
@@ -21,6 +22,7 @@ const defaultState: Tooltip = {
     x: 0,
     y: 0,
     event: null,
+    eventDiv: null,
     onPointerMove: () => {},
     onPointerLeave: () => {},
     onButtonEnter: () => {},
@@ -39,6 +41,9 @@ const TooltipProvider: FC = ({ children }) => {
     const [tooltipHover, setTooltipHover] = useState<boolean>(false);
     const [buttonHover, setButtonHover] = useState<boolean>(false);
 
+    const [mouseX, setMouseX] = useState<number>(0);
+    const [mouseY, setMouseY] = useState<number>(0);
+
     const config = useConfig();
     const hoverTimeout = useRef<any>(null);
 
@@ -48,7 +53,7 @@ const TooltipProvider: FC = ({ children }) => {
         x: 0,
         y: 0,
         event: null,
-
+        eventDiv: null,
         onButtonEnter: () => {
             setButtonHover(true);
             setTooltip(prev => ({ ...prev, visible: false }));
@@ -64,7 +69,8 @@ const TooltipProvider: FC = ({ children }) => {
     const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>, event: JAC.Event) => {
         setTooltip(prev => ({
             ...prev,
-            event
+            event,
+            eventDiv: e.target as HTMLDivElement
         }));
 
         setTooltipPos({ x: e.clientX, y: e.clientY });
@@ -110,15 +116,49 @@ const TooltipProvider: FC = ({ children }) => {
     }, [config]);
 
     useEffect(() => {
+        const listener = (e: MouseEvent) => {
+            setMouseX(e.clientX || 0);
+            setMouseY(e.clientY || 0);
+        }
+
+        window.addEventListener('mousemove', listener);
+        return () => window.removeEventListener('mousemove', listener);
+    }, []);
+
+    useEffect(() => {
         const div = divRef.current;
-        if (!div) return;
+        if (!div || !tooltip.eventDiv || !tooltip.visible) return;
 
         const maxX = window.innerWidth - div.offsetWidth - tooltipPadding;
         const maxY = window.innerHeight - div.offsetHeight - tooltipPadding;
 
-        div.style.left = `${clamp(tooltip.x + 1, tooltipPadding, maxX)}px`;
-        div.style.top = `${clamp(tooltip.y - div.clientHeight - 1, tooltipPadding, maxY)}px`;
-    }, [divRef, tooltip.x, tooltip.y]);
+        let left = clamp(tooltip.x + 1, tooltipPadding, maxX);
+        let top = clamp(tooltip.y - div.clientHeight - 1, tooltipPadding, maxY);
+
+        
+        // If the tooltip goes over the mouse, move it to the bottom of the event (case: too high)
+        if (divRef.current) {
+            const width = divRef.current.clientWidth;
+            const height = divRef.current.clientHeight;
+            
+            const minXPos = left - 1;
+            const maxXPos = left + width;
+            
+            const minYPos = top + 1;
+            const maxYPos = top + height;
+
+            if (
+                mouseX >= minXPos && mouseX <= maxXPos &&
+                mouseY >= minYPos && mouseY <= maxYPos
+            ) {
+                const rect = tooltip.eventDiv.getBoundingClientRect();
+                top = rect.top + rect.height;
+            }
+        }
+
+        div.style.left = `${left}px`;
+        div.style.top = `${top}px`;
+    }, [divRef, tooltip.x, tooltip.y, tooltip.visible, tooltip.eventDiv, mouseX, mouseY]);
 
     useEffect(() => {
         hoverTimeout.current && clearTimeout(hoverTimeout.current);
