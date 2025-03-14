@@ -200,12 +200,17 @@ const FullCalendar: FC = () => {
         return <Label />
     };
 
-    const dayHeaderContent = (info: DayHeaderContentArg) => {
-        const base = capitalize(info.date.toLocaleDateString(config.locale, {
-            weekday: 'long',
-            day: '2-digit',
-            month: 'long'
-        }), true);
+    const dayHeaderContent = (short: boolean = false) => (info: DayHeaderContentArg) => {
+        const base = short
+            ? info.date.toLocaleDateString(config.locale, {
+                weekday: 'short',
+                day: '2-digit'
+            })
+            : capitalize(info.date.toLocaleDateString(config.locale, {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long'
+            }), true);
         
         const bgEvents = eventsBase.filter(ev => {
             if (ev.extendedProps!.event.type !== 'backgroundEvent') return false;
@@ -302,16 +307,15 @@ const FullCalendar: FC = () => {
 
             // Set up views
             views={{
-                timeGrid: { slotLabelContent, dayHeaderContent },
+                timeGrid: { slotLabelContent, dayHeaderContent: dayHeaderContent() },
                 //timeline: { slotLabelContent, dayHeaderContent },
 
-                // TODO duplicate code, reduce to reusable function
                 resourceTimeline: {
-                    //slotLabelContent: dayHeaderContent
+                    slotLabelContent: dayHeaderContent(true)
                 },
 
                 resourceTimeGrid: {
-                    dayHeaderContent,
+                    dayHeaderContent: dayHeaderContent(),
                     slotLabelContent,
 
                     dayHeaders: true,
