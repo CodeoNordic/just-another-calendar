@@ -7,7 +7,7 @@ import dateFromString from '@utils/dateFromString';
 import { warn } from '@utils/log';
 import tinycolor from 'tinycolor2';
 
-export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number = 0, noIdCheck: boolean = false) {
+export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number = 0, noIdCheck: boolean = false): import('@fullcalendar/core').EventInput {
     if (!event.id && !noIdCheck) {
         warn(`The following event does not have an associated ID, and will instead use its array index`, event);
         event.id = String(i);
@@ -74,11 +74,11 @@ export function eventToFcEvent(event: JAC.Event, config: JAC.Config, i: number =
             display: 'background',
             backgroundColor: backgroundColor.toRgbString(),
             borderColor: borderColor.toRgbString(),
-            textColor: config?.contrastCheck !== false ? ( 
+            textColor: event.colors?.text || (config?.contrastCheck !== false ? ( 
                 calculateContrast(textColor, backgroundColor.toRgbString(), config.contrastMin)
                     ? textColor 
                     : calculateContrast("#000", backgroundColor.toRgbString(), config.contrastMin) ? "#000" : "#fff"
-            ) : textColor, 
+            ) : textColor),
             extendedProps: { event },
             ...(resourceIds.length > 0 && { resourceId: resourceIds[0], resourceIds })
         };
