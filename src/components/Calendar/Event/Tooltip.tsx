@@ -36,6 +36,7 @@ const tooltipPadding = 20;
 
 const TooltipProvider: FC = ({ children }) => {
     const divRef = useRef<HTMLDivElement|null>(null);
+    const mousePos = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
 
     const [eventHover, setEventHover] = useState<boolean>(false);
     const [tooltipHover, setTooltipHover] = useState<boolean>(false);
@@ -117,8 +118,8 @@ const TooltipProvider: FC = ({ children }) => {
 
     useEffect(() => {
         const listener = (e: MouseEvent) => {
-            setMouseX(e.clientX || 0);
-            setMouseY(e.clientY || 0);
+            mousePos.current.x = e.clientX;
+            mousePos.current.y = e.clientY;
         }
 
         window.addEventListener('mousemove', listener);
@@ -137,18 +138,20 @@ const TooltipProvider: FC = ({ children }) => {
         
         // If the tooltip goes over the mouse, move it to the bottom of the event (case: too high)
         if (divRef.current) {
-            const width = divRef.current.clientWidth;
-            const height = divRef.current.clientHeight;
+            const width = div.offsetWidth;
+            const height = div.offsetHeight;
             
             const minXPos = left;
             const maxXPos = left + width;
             
-            const minYPos = top + 1;
-            const maxYPos = top + height;
+            const minYPos = top;
+            const maxYPos = top + height - 2;
+
+            const mouse = mousePos.current;
 
             if (
-                mouseX >= minXPos && mouseX <= maxXPos &&
-                mouseY >= minYPos && mouseY <= maxYPos
+                mouse.x >= minXPos && mouse.x <= maxXPos &&
+                mouse.y >= minYPos && mouse.y <= maxYPos
             ) {
                 const rect = tooltip.eventDiv.getBoundingClientRect();
                 top = rect.top + rect.height;
@@ -157,7 +160,7 @@ const TooltipProvider: FC = ({ children }) => {
 
         div.style.left = `${left}px`;
         div.style.top = `${top}px`;
-    }, [divRef, tooltip.x, tooltip.y, tooltip.visible, tooltip.eventDiv, mouseX, mouseY]);
+    }, [divRef, tooltip.x, tooltip.y, tooltip.visible, tooltip.eventDiv, mousePos]);
 
     useEffect(() => {
         hoverTimeout.current && clearTimeout(hoverTimeout.current);
