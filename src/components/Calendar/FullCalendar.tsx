@@ -395,18 +395,8 @@ const FullCalendar: FC = () => {
             slotMinTime={config.calendarStartTime} 
             slotMaxTime={config.calendarEndTime}
 
-            slotDuration={config.slotDuration ?? (
-                config.view?.toLowerCase().includes('timeline') 
-                    ? { days: 1 }
-                    : { minutes: 15 }
-            )}
-            
-            slotLabelInterval={
-                config.slotLabelInterval ?? (
-                config.view?.toLowerCase().includes('timeline') 
-                    ? { days: 1 }
-                    : { minutes: 15 }
-            )}
+            slotDuration={config.slotDuration}
+            slotLabelInterval={config.slotLabelInterval}
             
             slotLabelFormat={config.slotLabelFormat ?? (
                 config.view?.toLowerCase().includes('timeline') ? (
@@ -633,8 +623,9 @@ const FullCalendar: FC = () => {
                     || (Boolean(config.scriptNames.onRangeSelected)/* && Boolean(config.eventTemplates?.length)*/) 
                     || Boolean(config.scriptNames.onEventCreated)}
             select={info => {
+                const slotTime = (config.slotLabelInterval as any).minutes ? (config.slotLabelInterval as any).minutes * 6000 : (config.slotLabelInterval as any).days * 86400000;
                 if (
-                    config.eventCreationDoubleClick && (info.allDay || (info.end.getTime() - info.start.getTime() == 900000)) && (
+                    config.eventCreationDoubleClick && ((info.allDay && !(config.slotLabelInterval as any).days) || (info.end.getTime() - info.start.getTime() == slotTime)) && (
                         !doubleClick 
                             || doubleClick.date.getTime() !== info.start.getTime() 
                             || doubleClick.resource !== info.resource?.id
