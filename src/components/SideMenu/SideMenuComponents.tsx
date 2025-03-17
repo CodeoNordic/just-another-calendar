@@ -11,6 +11,7 @@ const SideMenuComponents: FC = () => {
     // filters
     const sortedFilters = useMemo(() => {
         return [...(config.eventFilters || [])]
+            .filter(f => !f.hidden)
             .map((f, i) => {
                 f._initialIndex = i;
                 return f;
