@@ -19,7 +19,7 @@ setConfigValue('date', '2024-11-19'); // The European date format can also be pa
 setConfigValue('view', 'resourceTimeGridDay');
 
 // Set 'eventResourceEditable' to false
-setConfigValue('eventResourceEditable', 0, JSONBoolean); // JSONBoolean is only available in FileMaker
+setConfigValue('eventResourceEditable', 0, JSONBoolean); // JSONBoolean is naturally only available in FileMaker
 ```
 
 ### addEvents(events) (alias: addEvent)
@@ -55,7 +55,7 @@ addEvents(
         },
 
         {
-            id: "pomn-lkji-hgfe-dcba",
+            id: "ponm-lkji-hgfe-dcba",
             start: "2024-11-19T07:00:00.000Z",
             end: "2024-11-19T08:00:00.000Z",
 

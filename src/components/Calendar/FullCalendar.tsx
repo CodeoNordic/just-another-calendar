@@ -257,13 +257,27 @@ const FullCalendar: FC = () => {
 
     const allDayContent = <div className='jac-all-day'>{config.translations?.allDaySlot ?? 'All day'}</div>;
 
+    let license: string|undefined;
+    try {
+        // @ts-ignore
+        license = config.fullCalendarLicense || atob(window[
+            window[
+                // @ts-ignore
+                (typeof([]))[+!![]]+(typeof([]))[+!![]*3+2]+(typeof([]))[+[]]+(typeof(!0))[+!![]*3+2]
+            ](
+                // @ts-ignore
+                (''+{})[5]+(''+{})[1]+(({})['']+'')[2]+(''+{})[4]+(''+{})[1]+'F'+(''+{})[5]+'Li'+(''+{})[5]+(''+{})[4]+(typeof(+[]))[0]+(typeof([]+[]))[0]+(''+{})[4]
+            )
+        ] || btoa('none')) as string;
+    } catch {}
+
     return <div>
         <FullCalendarReact
             ref={cal => calendarRef.current = cal}
             height={'100vh'}
 
             // Base config
-            schedulerLicenseKey={config.fullCalendarLicense || window[atob('Y29kZW9GY0xpY2Vuc2U=') as keyof Window]}
+            schedulerLicenseKey={license}
             locale={config.locale ?? 'no-nb'}
 
             initialView={config.view}
@@ -341,7 +355,7 @@ const FullCalendar: FC = () => {
 
             // Automatically open/close resource groups on first load
             resourceGroupLabelDidMount={info => {
-                const group = config.groups?.find(g => g.id === info.groupValue);
+                const group = config.resourceGroups?.find(g => g.id === info.groupValue);
                 const resource = config.resources?.find(r => (r as RSAny)[(config.resourceGroupField ?? 'groupId')] === info.groupValue);
 
                 if (!group || !resource) return null;
@@ -355,7 +369,7 @@ const FullCalendar: FC = () => {
 
             resourceGroupField={config.resourceGroupField}
             resourceGroupLabelContent={info => {
-                const group = config.groups?.find(g => g.id === info.groupValue);
+                const group = config.resourceGroups?.find(g => g.id === info.groupValue);
                 const resources = config.resources?.filter(r => r.groupId === group?.id);
                 
                 if (!group || !resources?.length) return null;

@@ -1,57 +1,84 @@
-# Init function
+# Init function <!-- omit in toc -->
 This function initialises the calendar with all the required values.
 
 In practice, the function can be called multiple times in order to update the calendar, but optimally you should use the appropriate function listed in the [function documentation](./functions.md).
 
-**Check the [demo file](./Demo.fmp12) and/or the [example-data.js](../example-data.js) file for examples.**
+**Check the [demo file](./Demo.fmp12) and/or the [example-data](./example-data/) folder for examples.**
 
 ---
 
-## JSON Structure
+## JSON Structure <!-- omit in toc -->
 All configuration values should be structured into the same object, in such a way that the entire configuration can be passed as a singular JSON string.
 
-Below is a list of all the available values that can be defined, along with its default value. (if relevant)
-
-If a value is followed by an asterisk \* it is required.
-
-### `date` (string)
-Controls which date is currently selected. If multiple days are shown, the currently selected date will be the first date in the range.
-
-**Note:** The date picker in the side-menu will automatically update this value UNLESS the scriptname `onDateSelected` is defined,
-in which case you should manually set this value using [`setConfigValue('date', ...)`](./functions.md#setconfigvaluekey-value).
-
-```json
-{
-    "date": "19.11.2024"
-}
-```
-
-**Default value:** `[Current Date]`
-
-### `dateFormat` (string)
-Controls the format of the date displayed in the calendar.
-
-```json
-{
-    "dateFormat": "DD.MM.YYYY"
-}
-```
-
-### `days` (number)
-Controls how many days to display at once in the calendar. Certain calendar views will not use this value.
-
-```json
-{
-    "days": 3 // shows 3 days at once
-}
-```
+## List of config values <!-- omit in toc -->
+- [`view` (string)](#view-string)
+- [`date` (string)](#date-string)
+- [`dateFormat` (string)](#dateformat-string)
+- [`clampStartDates` (boolean)](#clampstartdates-boolean)
+- [`clampEndDates` (boolean)](#clampenddates-boolean)
+- [`shortenClampedDates` (boolean)](#shortenclampeddates-boolean)
+- [`days` (number)](#days-number)
+- [`events` (array)](#events-array)
+- [`eventTimeFormat` (string)](#eventtimeformat-string)
+- [`resources` (array)](#resources-array)
+- [`resourceGroups` (array)](#resourcegroups-array)
+- [`resourceGroupField` (string)](#resourcegroupfield-string)
+- [`resourcesWidth` (string)](#resourceswidth-string)
+- [`eventFilters` (array)](#eventfilters-array)
+- [`eventFilterAreas` (array)](#eventfilterareas-array)
+- [`eventFiltersHidden` (boolean)](#eventfiltershidden-boolean)
+- [`eventFilterBehavior` (string)](#eventfilterbehavior-string)
+- [`eventTemplates` (array)](#eventtemplates-array)
+- [`eventTemplateAreas` (array)](#eventtemplateareas-array)
+- [`eventTemplatesHidden` (boolean)](#eventtemplateshidden-boolean)
+- [`eventComponents` (array)](#eventcomponents-array)
+- [`defaultEventComponent` (string)](#defaulteventcomponent-string)
+- [`searchFields` (array)](#searchfields-array)
+- [`searchFieldsHidden` (boolean)](#searchfieldshidden-boolean)
+- [`eventStartEditable` (boolean)](#eventstarteditable-boolean)
+- [`eventDurationEditable` (boolean)](#eventdurationeditable-boolean)
+- [`eventResourceEditable` (boolean)](#eventresourceeditable-boolean)
+- [`contrastCheck` (boolean)](#contrastcheck-boolean)
+- [`contrastMin` (number)](#contrastmin-number)
+- [`dayMinWidth` (number)](#dayminwidth-number)
+- [`fullCalendarLicense` (string)](#fullcalendarlicense-string)
+- [`locale` (string)](#locale-string)
+- [`translations` (object)](#translations-object)
+- [`nowIndicator` (boolean)](#nowindicator-boolean)
+- [`firstDayOfWeek` (string or number)](#firstdayofweek-string-or-number)
+- [`hideTimeLabels` (boolean)](#hidetimelabels-boolean)
+- [`slotLabelFormat` (string or object or array)](#slotlabelformat-string-or-object-or-array)
+- [`slotDuration` (string)](#slotduration-string)
+- [`slotLabelInterval` (string)](#slotlabelinterval-string)
+- [`allDaySlot` (boolean)](#alldayslot-boolean)
+- [`showWeekends` (boolean)](#showweekends-boolean)
+- [`selectableTooltips` (boolean)](#selectabletooltips-boolean)
+- [`calendarStartTime` (string) and `calendarEndTime` (string)](#calendarstarttime-string-and-calendarendtime-string)
+- [`initialScrollTime` (string)](#initialscrolltime-string)
+- [`eventCreation` (boolean)](#eventcreation-boolean)
+- [`eventCreationDoubleClick`](#eventcreationdoubleclick)
+- [`heatmap` (array or boolean)](#heatmap-array-or-boolean)
+- [`newEventFields` (array)](#neweventfields-array)
+- [`newEventMovable` (boolean)](#neweventmovable-boolean)
+- [`scriptNames` (object)](#scriptnames-object)
+- [`customCSS` (string)](#customcss-string)
+- [`styles` (object)](#styles-object)
+- [`icons` (array)](#icons-array)
+- [`eventButtons` (array)](#eventbuttons-array)
+- [`nextPollMs` (number)](#nextpollms-number)
+- [`pollIntervalMs` (number)](#pollintervalms-number)
+- [`sideMenuOpen` (boolean)](#sidemenuopen-boolean)
+- [`sideMenuDisabled` (boolean)](#sidemenudisabled-boolean)
+- [`datePickerDisabled` (boolean)](#datepickerdisabled-boolean)
+- [`ignoreInfo` (boolean)](#ignoreinfo-boolean)
+- [`ignoreWarnings` (boolean)](#ignorewarnings-boolean)
 
 ### `view` (string)
 Controls which [FullCalendar view](https://fullcalendar.io/docs/initialView) should be used.
 Although FullCalendar has an `initialView` value, this calendar will automatically update the
 view if the value is changed in the config through E.G [`setConfigValue`](./functions.md#setconfigvaluekey-value)
 
-#### All Different Views
+#### All Different Views <!-- omit in toc -->
 
 **Time Grid**
 - `timeGrid`
@@ -101,6 +128,94 @@ view if the value is changed in the config through E.G [`setConfigValue`](./func
 
 **Default value:** `timeGridWeek`
 
+### `date` (string)
+Controls which date is currently selected. If multiple days are shown, the currently selected date will be the first date in the range.
+
+**Note:** The date picker in the side-menu will automatically update this value UNLESS the scriptname `onDateSelected` is defined,
+in which case you should manually set this value using [`setConfigValue('date', ...)`](./functions.md#setconfigvaluekey-value).
+
+```json
+{
+    "date": "19.11.2024"
+}
+```
+
+**Default value:** `[Current Date]`
+
+### `dateFormat` (string)
+Controls the format of the date displayed in the calendar.
+
+```json
+{
+    "dateFormat": "DD.MM.YYYY"
+}
+```
+
+### `clampStartDates` (boolean)
+If enabled, will ensure that every event that is before the calendars time range, is forced to be displayed in the calendar, at the earliest date.
+
+This is used in Codeo's production plan, where each individual event may
+be displayed regardless of its date.
+
+```json
+{
+    "date": "2024-11-19",
+    "days": 4,
+    "clampStartDates": true,
+    "events": [
+        {
+            "id": "abcd-efgh-ijkl-mnop",
+            "start": "2024-11-18T07:00:00.000Z" // Will be shown at November 19th 
+        }
+    ]
+}
+```
+
+**Default value:** `false`
+
+### `clampEndDates` (boolean)
+If enabled, will ensure that every event that is after the calendars time range, is forced to be displayed in the calendar, at the latest date.
+
+This is used in Codeo's production plan, where each individual event may
+be displayed regardless of its date.
+
+```json
+{
+    "date": "2024-11-19",
+    "days": 4,
+    "clampEndDates": true,
+    "events": [
+        {
+            "id": "abcd-efgh-ijkl-mnop",
+            "start": "2024-11-25T07:00:00.000Z" // Will be shown at November 22nd 
+        }
+    ]
+}
+```
+
+**Default value:** `false`
+
+### `shortenClampedDates` (boolean)
+Clamped end dates will normally be clamped to the end of the range. Set this value
+to `true` to set clamped end dates to the start of the range.
+
+```json
+{
+    "shortenClampedDates": true
+}
+```
+
+**Default value:** `false`
+
+### `days` (number)
+Controls how many days to display at once in the calendar. Certain calendar views will not use this value.
+
+```json
+{
+    "days": 3 // shows 3 days at once
+}
+```
+
 ### `events` (array)
 The list of events to display in the calendar.
 
@@ -117,6 +232,13 @@ The list of events to display in the calendar.
 
 Check the [events definition](./events.md) for more information.
 
+### `eventTimeFormat` (string)
+Passes into FullCalendar's [`eventTimeFormat`](https://fullcalendar.io/docs/eventTimeFormat) value.
+
+This value does mostly nothing, as the event display is controlled by the [event component](./event-components.md).
+
+**Default value:** `HH:mm`
+
 ### `resources` (array)
 The list of resources to use in the calendar.
 
@@ -126,6 +248,55 @@ The list of resources to use in the calendar.
         {
             "id": "1",
             "title": "Room 6"
+        }
+    ]
+}
+```
+
+### `resourceGroups` (array)
+Optional array used to group resources in views that support it.
+
+```json
+{
+    "resourceGroups": [
+        {
+            "id": "group1",
+            "title": "Managers",
+            "collapsed": true, // optional boolean to expand/collapse the group by default
+        }
+    ]
+}
+```
+
+### `resourceGroupField` (string)
+Determines which value should be checked when determining
+which resource group an event should be assigned to.
+
+```json
+{
+    "resourceGroups": [
+        {
+            "id": "group_managers",
+            "title": "Managers"
+        },
+
+        {
+            "id": "group_employees",
+            "title": "Employees"
+        }
+    ],
+    "resourceGroupField": "GroupId", // Custom key
+    "events": [
+        {
+            "id": "abcd-efgh-ijkl-mnop",
+            "groupId": "group_managers",
+            // ...
+        },
+
+        {
+            "id": "ponm-lkji-hgfe-dcba",
+            "groupId": "group_employees",
+            // ...
         }
     ]
 }
@@ -141,6 +312,49 @@ Controls the width of the resources. Only relevant in views where resources are 
 ```
 
 **Default value:** `17.5rem`
+
+### `eventFilters` (array)
+The list of available event filters.
+
+Check the [event filters definition](./event-filters.md) for more information.
+
+### `eventFilterAreas` (array)
+The list of areas that [event filters](./event-filters.md) can be grouped into. The only required field is `name`.
+
+```json
+{
+    "eventFilterAreas": [
+        {
+            "name": "area1", // Unique name
+            "title": "Area 1", // Title displayed in the menu
+            "open": true, // Whether the area should be opened or collapsed
+            "sort": 3 // the order the area appears in the side menu
+        }
+    ]
+}
+```
+
+### `eventFiltersHidden` (boolean)
+Controls whether or not all event filters should be hidden.
+May serve as a global control over each individual filter's
+`hidden` value.
+
+```json
+{
+    "eventFiltersHidden": true
+}
+```
+
+### `eventFilterBehavior` (string)
+Controls how [event filters](./event-filters.md) behave in relation to one another.
+
+```json
+{
+    "eventFilterBehavior": "any"
+}
+```
+
+**Default value:** `groupedAny`
 
 ### `eventTemplates` (array)
 Displays a list of event templates in the sidemenu that can be dragged
@@ -169,42 +383,95 @@ The list of areas that [event templates](./event-templates.md) can be grouped in
 }
 ```
 
-### `eventFilters` (array)
-The list of available event filters.
-
-Check the [event filters definition](./event-filters.md) for more information.
-
-### `eventFilterAreas` (array)
-The list of areas that [event filters](./event-filters.md) can be grouped into. The only required field is `name`.
+### `eventTemplatesHidden` (boolean)
+Controls whether or not the event templates should be hidden.
+Ideally, if event templates are meant to be hidden, they shouldn't
+be passed in the first place, but this serves as a shortcut.
 
 ```json
 {
-    "eventFilterAreas": [
+    "eventTemplatesHidden": true
+}
+```
+
+### `eventComponents` (array)
+The list of event components used for displaying events.
+
+Check the [event component definition](./event-components.md) for more information.
+
+### `defaultEventComponent` (string)
+Controls which [event component](#eventcomponents-array) should be used by default
+for events that don't match the criteria of any component.
+
+If a default event component isn't defined, and the event does not match any
+component criteria, the event will not be displayed, and a warning will be shown
+in the web console.
+
+```json
+{
+    "eventComponents": [
         {
-            "name": "area1", // Unique name
-            "title": "Area 1", // Title displayed in the menu
-            "open": true, // Whether the area should be opened or collapsed
-            "sort": 3 // the order the area appears in the side menu
+            "name": "exampleComponent",
+            // ...
         }
-    ]
+    ],
+
+    "defaultEventComponent": "exampleComponent"
 }
 ```
-
-### `eventFilterBehavior` (string)
-Controls how [event filters](./event-filters.md) behave in relation to one another.
-
-```json
-{
-    "eventFilterBehavior": "any"
-}
-```
-
-**Default value:** `groupedAny`
 
 ### `searchFields` (array)
 A list of search  fields that should be available in the side-menu.
 
 Check the [searching definition](./searching.md) for more information.
+
+### `searchFieldsHidden` (boolean)
+Controls whether or not all search fields should be hidden.
+Ideally, if search fields are meant to be hidden, they shouldn't
+be passed in the first place, but this serves as a shortcut.
+
+```json
+{
+    "searchFieldsHidden": true
+}
+```
+
+### `eventStartEditable` (boolean)
+Controls whether or not events can be dragged to a different time.
+
+**This only controls the starting time. Use together with [`eventDurationEditable`](#eventdurationeditable-boolean) to disable changing any time.**
+
+```json
+{
+    "eventStartEditable": false
+}
+```
+
+**Default value:** `true`
+
+### `eventDurationEditable` (boolean)
+Controls whether or not events can have their duration changed.
+
+**This only controls the end time. Use together with [`eventStartEditable`](#eventstarteditable-boolean) to disable changing any time.**
+
+```json
+{
+    "eventDurationEditable": false
+}
+```
+
+**Default value:** `true`
+
+### `eventResourceEditable` (boolean)
+Controls whether or not events can be dragged to a different resource.
+
+```json
+{
+    "eventResourceEditable": false
+}
+```
+
+**Default value:** `true`
 
 ### `contrastCheck` (boolean)
 Controls whether or not the built-in contrast checker should be used when displaying certain elements,
@@ -224,6 +491,19 @@ Sets the level of contrast that is required for the contrast check to activate.
 ```json
 {
     "contrastMin": 3.5    
+}
+```
+
+### `dayMinWidth` (number)
+Sets the minimum width per day in the calendar. Used to enable horizontal
+scrolling, where the amount of days displayed cannot fit properly in a
+single screens width.
+
+FullCalendar only accepts a number of pixels for this value.
+
+```json
+{
+    "dayMinWidth": 200 // each day is minimum 200 pixels wide
 }
 ```
 
@@ -270,13 +550,6 @@ Translation table for various labels in the calendar.
 }
 ```
 
-### `eventTimeFormat` (string)
-Passes into FullCalendar's [`eventTimeFormat`](https://fullcalendar.io/docs/eventTimeFormat) value.
-
-This value does mostly nothing, as the event display is controlled by the [event component](./event-components.md).
-
-**Default value:** `HH:mm`
-
 ### `nowIndicator` (boolean)
 Controls whether or not an "now indicator" should be displayed in the calendar.
 
@@ -287,32 +560,6 @@ Controls whether or not an "now indicator" should be displayed in the calendar.
 ```
 
 **Default value:** `true`
-
-### `eventComponents` (array)
-The list of event components used for displaying events.
-
-Check the [event component definition](./event-components.md) for more information.
-
-### `defaultEventComponent` (string)
-Controls which [event component](#eventcomponents-array) should be used by default
-for events that don't match the criteria of any component.
-
-If a default event component isn't defined, and the event does not match any
-component criteria, the event will not be displayed, and a warning will be shown
-in the web console.
-
-```json
-{
-    "eventComponents": [
-        {
-            "name": "exampleComponent",
-            // ...
-        }
-    ],
-
-    "defaultEventComponent": "exampleComponent"
-}
-```
 
 ### `firstDayOfWeek` (string or number)
 Controls which weekday is considered the start of a week, where 0 = sunday, 1 = monday, etc.
@@ -332,12 +579,30 @@ Can also be written as a string, E.G `"mon"`, `"tuesday"` etc. These must be wri
 
 **Default value:** `1 (monday)`
 
+### `hideTimeLabels` (boolean)
+Controls whether or not FullCalendar's time-slot labels will be hidden.
+
+```json
+{
+    "hideTimeLabels": true // Hides time-slot labels
+}
+```
+
+### `slotLabelFormat` (string or object or array)
+This value is passed into FullCalendar's [`slotLabelFormat`](https://fullcalendar.io/docs/slotLabelFormat) value.
+
+### `slotDuration` (string)
+This value is passed into FullCalendar's [`slotDuration`](https://fullcalendar.io/docs/slotDuration) value.
+
+### `slotLabelInterval` (string)
+This value is passed into FullCalendar's [`slotLabelInterval](https://fullcalendar.io/docs/slotLabelInterval) value.
+
 ### `allDaySlot` (boolean)
 Controls whether or not "all day" events should be displayed or not. Passes into FullCalendar's [`allDaySlot`](https://fullcalendar.io/docs/allDaySlot) value.
 
 ```json
 {
-    "allDaySlot": true
+    "allDaySlot": false // Disables the all-day slot
 }
 ```
 
@@ -407,6 +672,11 @@ Controls whether or not events are able to be created by dragging in the calenda
 ```
 
 **Default value:** `true`
+
+### `eventCreationDoubleClick`
+Controls whether or not events can be created by double clicking.
+
+If a time is double clicked, AND [`eventCreation`](#eventcreation-boolean) is set to `false`, the [`onRangeSelected`](./script-names.md) script will run.
 
 ### `heatmap` (array or boolean)
 
@@ -561,6 +831,24 @@ the `onSideMenuOpened` and `onSideMenuClosed` scripts defined in [`scriptNames`]
 ```json
 {
     "sideMenuOpen": false
+}
+```
+
+### `sideMenuDisabled` (boolean)
+Controls whether or not the side menu should be disabled entirely.
+
+```json
+{
+    "sideMenuDisabled": true
+}
+```
+
+### `datePickerDisabled` (boolean)
+Controls whether or not the side menu's date picker should be hidden.
+
+```json
+{
+    "datePickerDisabled": true // Hides the date picker
 }
 ```
 

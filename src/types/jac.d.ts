@@ -155,7 +155,7 @@ declare global {
             hidden?: boolean;
         }
 
-        interface Group {
+        interface ResourceGroup {
             id: string;
             title?: string;
             collapsed?: boolean;

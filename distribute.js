@@ -324,7 +324,7 @@ yesNo(`The current version of ${packageJson.name} is ${version}.\nDo you wish to
 
         const indexContent = fs.readFileSync(indexPath, 'utf-8').toString();
         const injectedContent = injectLicense
-            ? indexContent.replace(/<script[^>]*>/, `<script>window[atob('${base64WindowKey}')]=atob('${base64License}');`)
+            ? indexContent.replace(/<script([^>]*)>/, `<script$1>window['${base64WindowKey}']=atob('${base64License}');`)
             : indexContent;
 
         archive.append(injectedContent, { name: `${packageJson.name}.html` });
