@@ -289,13 +289,13 @@ which resource group an event should be assigned to.
     "events": [
         {
             "id": "abcd-efgh-ijkl-mnop",
-            "groupId": "group_managers",
+            "GroupId": "group_managers",
             // ...
         },
 
         {
             "id": "ponm-lkji-hgfe-dcba",
-            "groupId": "group_employees",
+            "GroupId": "group_employees",
             // ...
         }
     ]
