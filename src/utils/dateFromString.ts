@@ -10,8 +10,6 @@
  * ```
  */
 export default function dateFromString(str?: string) {
-    console.log(str)
-
     if (!str) return;
     str = str.trim();
 
