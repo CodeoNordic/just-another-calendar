@@ -10,6 +10,8 @@
  * ```
  */
 export default function dateFromString(str?: string) {
+    console.log(str)
+
     if (!str) return;
     str = str.trim();
 
@@ -66,7 +68,8 @@ export default function dateFromString(str?: string) {
         }
     }
 
-    if (!year || !month || !day) return undefined;
+    // null matches both undefined and null
+    if (year == null || month == null || day == null) return undefined;
 
     let result = new Date(year, month, day);
     if (isNaN(result.getTime())) return undefined;
